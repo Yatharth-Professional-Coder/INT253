@@ -1,0 +1,114 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}{{ title }} | SmartStock Pro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <a href="{% url 'user_list' %}" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Back to User Management</a>
+                <h2 class="page-title mt-1">{{ title }}</h2>
+            </div>
+        </div>
+
+        <div class="card card-custom p-4 shadow-sm">
+            {% if form.errors %}
+            <div class="alert alert-danger mb-4">
+                <h6 class="fw-bold mb-1"><i class="bi bi-exclamation-octagon me-1"></i> Form Errors:</h6>
+                <ul class="mb-0 small">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <form method="POST" novalidate>
+                {% csrf_token %}
+
+                <div class="row g-3">
+                    {% if form.username %}
+                    <!-- Create Mode: Username -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Username *</label>
+                        {{ form.username }}
+                        <div class="form-text small">Used for logging into POS and ERP terminal.</div>
+                    </div>
+                    {% else %}
+                    <!-- Edit Mode: Show target username as static badge -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Account Username</label>
+                        <div class="p-2 bg-light border rounded font-monospace fw-bold text-dark">
+                            <i class="bi bi-person-badge me-2 text-primary"></i>{{ target_user.username }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- First & Last Name -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">First Name</label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Last Name</label>
+                        {{ form.last_name }}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold">Email Address</label>
+                        {{ form.email }}
+                    </div>
+
+                    <!-- System Role Assignment -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">System Role &amp; Permissions *</label>
+                        {{ form.role }}
+                        <div class="form-text small">
+                            <strong>Super Admin:</strong> Full unrestricted access (User management, system configuration, all data).<br>
+                            <strong>Store Manager:</strong> Inventory catalog, supplier purchase orders, audit corrections, and reports.<br>
+                            <strong>Cashier:</strong> Point of Sale terminal and billing invoices only.
+                        </div>
+                    </div>
+
+                    <!-- Password / New Password -->
+                    {% if form.password %}
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Account Password *</label>
+                        {{ form.password }}
+                    </div>
+                    {% endif %}
+
+                    {% if form.new_password %}
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold">Reset Password (Optional)</label>
+                        {{ form.new_password }}
+                        <div class="form-text small">{{ form.new_password.help_text }}</div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Account Active Status -->
+                    <div class="col-md-12">
+                        <div class="form-check form-switch mt-2">
+                            {{ form.is_active }}
+                            <label class="form-check-label fw-semibold" for="{{ form.is_active.id_for_label }}">
+                                Account is Active (Permitted to sign in)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a href="{% url 'user_list' %}" class="btn btn-light px-4">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">
+                        <i class="bi bi-check-circle me-1"></i> Save User Details
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -83,3 +83,74 @@ class StockAdjustmentForm(forms.Form):
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Reason for adjustment'})
     )
 
+
+class UserCreateForm(forms.Form):
+    ROLE_CHOICES = [
+        ('admin', 'Super Admin (Full System & User Control)'),
+        ('manager', 'Manager / Staff (Inventory & Purchases)'),
+        ('cashier', 'Cashier (POS Billing & Sales Access)'),
+    ]
+
+    username = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter unique username'})
+    )
+    first_name = forms.CharField(
+        max_length=150, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
+    )
+    last_name = forms.CharField(
+        max_length=150, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
+    )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'user@smartstock.local'})
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Create strong password'})
+    )
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    is_active = forms.BooleanField(
+        required=False, initial=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
+
+class UserEditForm(forms.Form):
+    ROLE_CHOICES = [
+        ('admin', 'Super Admin (Full System & User Control)'),
+        ('manager', 'Manager / Staff (Inventory & Purchases)'),
+        ('cashier', 'Cashier (POS Billing & Sales Access)'),
+    ]
+
+    first_name = forms.CharField(
+        max_length=150, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
+    )
+    last_name = forms.CharField(
+        max_length=150, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
+    )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'user@smartstock.local'})
+    )
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    is_active = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    new_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Leave blank to keep existing password'}),
+        help_text="Only fill this if you want to reset this user's password."
+    )
+
+

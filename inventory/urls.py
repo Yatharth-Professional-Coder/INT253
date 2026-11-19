@@ -35,6 +35,17 @@ urlpatterns = [
     # Stock Adjustments & Audit
     path('stock-adjustments/', views.stock_adjustment_list, name='stock_adjustment_list'),
 
+    # Authentication
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+
+    # Super Admin: User Management
+    path('users/', views.user_list, name='user_list'),
+    path('users/add/', views.user_create, name='user_create'),
+    path('users/<int:pk>/edit/', views.user_update, name='user_update'),
+    path('users/<int:pk>/delete/', views.user_delete, name='user_delete'),
+    path('users/<int:pk>/toggle-status/', views.user_toggle_status, name='user_toggle_status'),
+
     # Profit & Inventory Reports
     path('reports/', views.reports_view, name='reports'),
 ]

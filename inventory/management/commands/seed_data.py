@@ -3,6 +3,7 @@ from decimal import Decimal
 from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.contrib.auth.models import User
 from inventory.models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement
 
 class Command(BaseCommand):
@@ -218,5 +219,43 @@ class Command(BaseCommand):
                         total_price=line_tot
                     )
 
-        self.stdout.write(self.style.SUCCESS("Successfully seeded comprehensive inventory, suppliers, sales, and purchases!"))
+        # 7. Create Demo Role Accounts
+        if not User.objects.filter(username='admin').exists():
+            admin_u = User.objects.create_superuser('admin', 'admin@smartstock.local', 'admin123')
+            admin_u.first_name = "Alexander"
+            admin_u.last_name = "Admin"
+            admin_u.save()
+        else:
+            admin_u = User.objects.get(username='admin')
+            admin_u.set_password('admin123')
+            admin_u.is_superuser = True
+            admin_u.is_staff = True
+            admin_u.save()
+
+        if not User.objects.filter(username='manager').exists():
+            mgr_u = User.objects.create_user('manager', 'manager@smartstock.local', 'manager123')
+            mgr_u.first_name = "Marcus"
+            mgr_u.last_name = "Manager"
+            mgr_u.is_staff = True
+            mgr_u.save()
+        else:
+            mgr_u = User.objects.get(username='manager')
+            mgr_u.set_password('manager123')
+            mgr_u.is_staff = True
+            mgr_u.is_superuser = False
+            mgr_u.save()
+
+        if not User.objects.filter(username='cashier1').exists():
+            csh_u = User.objects.create_user('cashier1', 'cashier1@smartstock.local', 'cashier123')
+            csh_u.first_name = "Chloe"
+            csh_u.last_name = "Cashier"
+            csh_u.save()
+        else:
+            csh_u = User.objects.get(username='cashier1')
+            csh_u.set_password('cashier123')
+            csh_u.is_staff = False
+            csh_u.is_superuser = False
+            csh_u.save()
+
+        self.stdout.write(self.style.SUCCESS("Successfully seeded comprehensive inventory, suppliers, sales, purchases, and role-based demo accounts!"))
 

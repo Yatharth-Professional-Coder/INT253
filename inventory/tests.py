@@ -1,12 +1,17 @@
 from decimal import Decimal
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.auth.models import User
 from inventory.models import Category, Supplier, Product, Customer, Sale, Purchase, StockMovement
 from inventory.services import process_pos_sale, process_purchase_order, manual_stock_adjustment
 
 class SmartInventorySystemTests(TestCase):
     def setUp(self):
         self.client = Client()
+
+        # Create Users
+        self.super_admin = User.objects.create_superuser('testadmin', 'admin@test.com', 'pass123')
+        self.regular_user = User.objects.create_user('testcashier', 'cashier@test.com', 'pass123')
 
         # Create Category & Supplier
         self.category = Category.objects.create(name="Tech", description="Electronic gadgets")
@@ -63,7 +68,7 @@ class SmartInventorySystemTests(TestCase):
         self.assertFalse(self.prod_normal.is_low_stock)
         self.assertFalse(self.prod_normal.is_out_of_stock)
         self.assertEqual(self.prod_normal.stock_status, 'in_stock')
-        self.assertEqual(self.prod_normal.margin_percentage, Decimal('60.0')) # (50-20)/50 * 100
+        self.assertEqual(self.prod_normal.margin_percentage, Decimal('60.0'))
 
         self.assertTrue(self.prod_low.is_low_stock)
         self.assertFalse(self.prod_low.is_out_of_stock)
@@ -98,12 +103,10 @@ class SmartInventorySystemTests(TestCase):
         self.prod_normal.refresh_from_db()
         expected_stock = initial_stock - sold_qty
         self.assertEqual(self.prod_normal.current_stock, expected_stock)
-
-        # Verify Sale details
-        self.assertEqual(sale.subtotal, Decimal('150.00')) # 3 * 50
-        self.assertEqual(sale.tax_amount, Decimal('7.50')) # 5% of 150
+        self.assertEqual(sale.subtotal, Decimal('150.00'))
+        self.assertEqual(sale.tax_amount, Decimal('7.50'))
         self.assertEqual(sale.grand_total, Decimal('157.50'))
-        self.assertEqual(sale.total_profit, Decimal('90.00')) # (150 - (3 * 20)) = 90
+        self.assertEqual(sale.total_profit, Decimal('90.00'))
 
         # Verify StockMovement record
         movement = StockMovement.objects.filter(product=self.prod_normal, movement_type='sale').latest('created_at')
@@ -117,7 +120,7 @@ class SmartInventorySystemTests(TestCase):
             process_pos_sale(
                 items=[{
                     'product_id': self.prod_normal.id,
-                    'quantity': 100, # More than 30
+                    'quantity': 100,
                     'unit_price': self.prod_normal.selling_price
                 }]
             )
@@ -140,9 +143,9 @@ class SmartInventorySystemTests(TestCase):
         )
 
         self.prod_low.refresh_from_db()
-        self.assertEqual(self.prod_low.current_stock, initial_stock + purchase_qty) # 25
+        self.assertEqual(self.prod_low.current_stock, initial_stock + purchase_qty)
         self.assertEqual(self.prod_low.cost_price, new_cost)
-        self.assertFalse(self.prod_low.is_low_stock) # Now healthy!
+        self.assertFalse(self.prod_low.is_low_stock)
 
         # Verify Stock Movement
         movement = StockMovement.objects.filter(product=self.prod_low, movement_type='purchase').latest('created_at')
@@ -150,8 +153,16 @@ class SmartInventorySystemTests(TestCase):
         self.assertEqual(movement.previous_stock, initial_stock)
         self.assertEqual(movement.new_stock, initial_stock + purchase_qty)
 
-    def test_all_views_status_200(self):
-        """Verify that all core dashboard and management views render successfully."""
+    def test_authentication_and_route_protection(self):
+        """Test that unauthenticated users are redirected to login."""
+        res = self.client.get(reverse('dashboard'))
+        self.assertEqual(res.status_code, 302)
+        self.assertIn('/login/', res.url)
+
+        # Log in as Super Admin
+        login_success = self.client.login(username='testadmin', password='pass123')
+        self.assertTrue(login_success)
+
         routes = [
             reverse('dashboard'),
             reverse('pos'),
@@ -162,8 +173,60 @@ class SmartInventorySystemTests(TestCase):
             reverse('sale_list'),
             reverse('stock_adjustment_list'),
             reverse('reports'),
+            reverse('user_list'),
         ]
 
         for route in routes:
             response = self.client.get(route)
             self.assertEqual(response.status_code, 200, f"Route {route} failed with status {response.status_code}")
+
+    def test_super_admin_user_crud(self):
+        """Test Super Admin user creation, modification, status toggle, and deletion."""
+        self.client.login(username='testadmin', password='pass123')
+
+        # 1. Create new user
+        res_create = self.client.post(reverse('user_create'), {
+            'username': 'newstaff',
+            'first_name': 'New',
+            'last_name': 'Employee',
+            'email': 'staff@store.com',
+            'password': 'password123',
+            'role': 'manager',
+            'is_active': True
+        })
+        self.assertEqual(res_create.status_code, 302) # Redirects to user_list
+        created_user = User.objects.get(username='newstaff')
+        self.assertTrue(created_user.is_staff)
+        self.assertFalse(created_user.is_superuser)
+
+        # 2. Modify user details
+        res_edit = self.client.post(reverse('user_update', kwargs={'pk': created_user.id}), {
+            'first_name': 'Updated',
+            'last_name': 'Employee',
+            'email': 'updated@store.com',
+            'role': 'admin',
+            'is_active': True,
+            'new_password': ''
+        })
+        self.assertEqual(res_edit.status_code, 302)
+        created_user.refresh_from_db()
+        self.assertEqual(created_user.first_name, 'Updated')
+        self.assertTrue(created_user.is_superuser)
+
+        # 3. Toggle Status
+        self.client.get(reverse('user_toggle_status', kwargs={'pk': created_user.id}))
+        created_user.refresh_from_db()
+        self.assertFalse(created_user.is_active)
+
+        # 4. Delete user
+        res_delete = self.client.post(reverse('user_delete', kwargs={'pk': created_user.id}))
+        self.assertEqual(res_delete.status_code, 302)
+        self.assertFalse(User.objects.filter(username='newstaff').exists())
+
+    def test_non_superadmin_forbidden_from_user_management(self):
+        """Test that regular staff/cashier users cannot access user management."""
+        self.client.login(username='testcashier', password='pass123')
+        res = self.client.get(reverse('user_list'))
+        # Should redirect with access denied error
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.url, reverse('dashboard'))

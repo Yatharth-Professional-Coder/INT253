@@ -50,10 +50,20 @@ A comprehensive, production-ready **Smart Inventory Management & Point of Sale (
 * **Top Selling Products**: Ranked by units sold, total revenue, COGS, profit, and margin.
 * **Category Breakdown & Payment Distribution**: Visual progress bars and breakdown by payment mode.
 
+### 7. 🔐 User Authentication & Super Admin Management Portal (`/users/`)
+* **Dedicated Sign-In Page (`/login/`)**: Modern authentication portal with error alerts, remember credentials, and one-click quick-fill demo pills.
+* **Super Admin Control Center (`/users/`)**:
+  * Exclusively accessible by Super Administrators (`is_superuser=True`). Regular staff and cashiers are automatically blocked with a 403 / redirect.
+  * **View All Users**: Real-time table displaying usernames, full names, email addresses, system role badges, account active status, and registration/last login timestamps.
+  * **Create New Users**: Add system users with roles (`Super Admin`, `Store Manager`, `POS Cashier`). Passwords are automatically hashed and saved securely.
+  * **Modify / Edit User Details**: Update user names, emails, role assignments, and reset user passwords directly from the dashboard.
+  * **1-Click Status Toggle**: Activate or deactivate user access instantly.
+  * **Safe Deletion with Guardrails**: Delete inactive or terminated staff accounts, with safeguards preventing accidental self-deletion of the active Super Admin.
+
 ---
 
 ## 🛠️ Technology Stack
-* **Backend**: Python 3, Django 4.2+
+* **Backend**: Python 3, Django 4.2+ (Django Auth, Sessions, ORM)
 * **Database (SQL)**: Relational SQLite (`db.sqlite3`), with full ORM transactional integrity (`@transaction.atomic`)
 * **Frontend**: HTML5, CSS3, Bootstrap 5.3, Bootstrap Icons
 * **Visualizations**: Chart.js 4.4+ (Sales trajectories & revenue curves)
@@ -74,6 +84,8 @@ Or manually run:
 
 ### 2. Access the Application
 Open your browser and navigate to:
+* **Login Page**: [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/)
+* **Super Admin User Portal**: [http://127.0.0.1:8000/users/](http://127.0.0.1:8000/users/)
 * **Dashboard**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 * **POS Billing Terminal**: [http://127.0.0.1:8000/pos/](http://127.0.0.1:8000/pos/)
 * **Low-Stock Alerts**: [http://127.0.0.1:8000/low-stock/](http://127.0.0.1:8000/low-stock/)
@@ -83,9 +95,12 @@ Open your browser and navigate to:
 * **Profit & Inventory Reports**: [http://127.0.0.1:8000/reports/](http://127.0.0.1:8000/reports/)
 * **Django Admin**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
 
-### 3. Dev Admin Credentials
-* **Username**: `admin`
-* **Password**: `admin123`
+### 3. Pre-configured Role Credentials
+| Role | Username | Password | Access Privileges |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `admin` | `admin123` | Full access: User management (add/edit/delete), POS, Inventory, Reports, Settings |
+| **Store Manager** | `manager` | `manager123` | Inventory catalog, Supplier POs, Audit corrections, and Financial reports |
+| **POS Cashier** | `cashier1` | `cashier123` | POS Billing Terminal and sales invoice generation |
 
 ---
 

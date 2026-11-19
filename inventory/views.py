@@ -1,17 +1,71 @@
 import json
+from functools import wraps
 from decimal import Decimal
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.db.models import Sum, Count, F, Q, Avg
 from django.db.models.functions import TruncDate
 
 from .models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement
-from .forms import ProductForm, SupplierForm, CategoryForm, CustomerForm, StockAdjustmentForm
+from .forms import (
+    ProductForm, SupplierForm, CategoryForm, CustomerForm, 
+    StockAdjustmentForm, UserCreateForm, UserEditForm
+)
 from .services import process_pos_sale, process_purchase_order, manual_stock_adjustment, generate_invoice_number
 
+def superuser_required(view_func):
+    """Decorator to restrict access strictly to Super Admin accounts."""
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if not request.user.is_superuser:
+            messages.error(request, "Access restricted: Only Super Administrators have permission to manage user accounts.")
+            return redirect('dashboard')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+# ==========================================
+# AUTHENTICATION VIEWS
+# ==========================================
+def login_view(request):
+    """Clean, modern user login portal."""
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                messages.success(request, f"Welcome back, {user.first_name or user.username}!")
+                next_url = request.GET.get('next') or request.POST.get('next') or 'dashboard'
+                return redirect(next_url)
+            else:
+                messages.error(request, "This account is inactive. Please contact a Super Administrator.")
+        else:
+            messages.error(request, "Invalid username or password. Please try again.")
+
+    return render(request, 'inventory/login.html')
+
+
+def logout_view(request):
+    """User logout endpoint."""
+    logout(request)
+    messages.info(request, "You have been logged out successfully.")
+    return redirect('login')
+
+
+@login_required
 def dashboard(request):
     """Main executive dashboard with real-time inventory and profit analytics."""
     today = timezone.now().date()
@@ -97,6 +151,7 @@ def dashboard(request):
 # ==========================================
 # POS / BILLING VIEWS
 # ==========================================
+@login_required
 def pos_view(request):
     """Fast, interactive Point of Sale billing terminal."""
     categories = Category.objects.all()
@@ -221,6 +276,7 @@ def api_quick_customer(request):
 # ==========================================
 # PRODUCT & INVENTORY VIEWS
 # ==========================================
+@login_required
 def product_list(request):
     """View products with filtering, search, and stock level badges."""
     query = request.GET.get('q', '').strip()
@@ -258,6 +314,7 @@ def product_list(request):
     return render(request, 'inventory/product_list.html', context)
 
 
+@login_required
 def product_create(request):
     """Add new product to catalog."""
     if request.method == 'POST':
@@ -282,6 +339,7 @@ def product_create(request):
     return render(request, 'inventory/product_form.html', {'form': form, 'title': 'Add New Product'})
 
 
+@login_required
 def product_update(request, pk):
     """Edit existing product."""
     product = get_object_or_404(Product, pk=pk)
@@ -308,6 +366,7 @@ def product_update(request, pk):
     return render(request, 'inventory/product_form.html', {'form': form, 'title': f'Edit Product: {product.name}', 'product': product})
 
 
+@login_required
 def product_delete(request, pk):
     """Delete a product."""
     product = get_object_or_404(Product, pk=pk)
@@ -319,6 +378,7 @@ def product_delete(request, pk):
     return render(request, 'inventory/confirm_delete.html', {'object': product, 'type': 'Product'})
 
 
+@login_required
 def low_stock_view(request):
     """Dedicated Low-Stock Alerts Center."""
     low_stock_items = Product.objects.filter(
@@ -342,6 +402,7 @@ def low_stock_view(request):
 # ==========================================
 # SUPPLIER & PURCHASES VIEWS
 # ==========================================
+@login_required
 def supplier_list(request):
     """Suppliers list with purchase count & total amount."""
     suppliers = Supplier.objects.annotate(
@@ -351,6 +412,7 @@ def supplier_list(request):
     return render(request, 'inventory/supplier_list.html', {'suppliers': suppliers})
 
 
+@login_required
 def supplier_create(request):
     """Create supplier."""
     if request.method == 'POST':
@@ -364,6 +426,7 @@ def supplier_create(request):
     return render(request, 'inventory/supplier_form.html', {'form': form, 'title': 'Add Supplier'})
 
 
+@login_required
 def supplier_update(request, pk):
     """Edit supplier."""
     supplier = get_object_or_404(Supplier, pk=pk)
@@ -378,12 +441,14 @@ def supplier_update(request, pk):
     return render(request, 'inventory/supplier_form.html', {'form': form, 'title': f'Edit Supplier: {supplier.name}'})
 
 
+@login_required
 def purchase_list(request):
     """List purchase orders."""
     purchases = Purchase.objects.select_related('supplier').prefetch_related('items').order_by('-purchase_date')
     return render(request, 'inventory/purchase_list.html', {'purchases': purchases})
 
 
+@login_required
 def purchase_create(request):
     """Create a new Purchase Order / Stock In with automatic inventory increment."""
     suppliers = Supplier.objects.all()
@@ -437,6 +502,7 @@ def purchase_create(request):
     })
 
 
+@login_required
 def purchase_detail(request, pk):
     """View purchase order invoice details."""
     purchase = get_object_or_404(Purchase.objects.prefetch_related('items__product', 'supplier'), pk=pk)
@@ -446,6 +512,7 @@ def purchase_detail(request, pk):
 # ==========================================
 # SALES & BILLING RECORDS
 # ==========================================
+@login_required
 def sale_list(request):
     """Sales history list with filtering and search."""
     sales = Sale.objects.prefetch_related('items').order_by('-sale_date')
@@ -482,6 +549,7 @@ def sale_list(request):
     return render(request, 'inventory/sale_list.html', context)
 
 
+@login_required
 def sale_detail(request, pk):
     """View and print customer receipt / invoice."""
     sale = get_object_or_404(Sale.objects.prefetch_related('items__product'), pk=pk)
@@ -491,6 +559,7 @@ def sale_detail(request, pk):
 # ==========================================
 # STOCK ADJUSTMENTS & AUDIT TRAIL
 # ==========================================
+@login_required
 def stock_adjustment_list(request):
     """Stock movement audit logs and adjustment form."""
     movements = StockMovement.objects.select_related('product').order_by('-created_at')[:100]
@@ -525,6 +594,7 @@ def stock_adjustment_list(request):
 # ==========================================
 # PROFIT & INVENTORY REPORTS
 # ==========================================
+@login_required
 def reports_view(request):
     """Comprehensive Profit, Loss, and Inventory Valuation Reports."""
     range_type = request.GET.get('range', 'this_month')
@@ -641,3 +711,173 @@ def reports_view(request):
         'payment_breakdown': payment_breakdown,
     }
     return render(request, 'inventory/reports.html', context)
+
+
+# ==========================================
+# SUPER ADMIN: USER MANAGEMENT (CRUD)
+# ==========================================
+@superuser_required
+def user_list(request):
+    """Super Admin page listing all system users with role, status, and actions."""
+    users = User.objects.all().order_by('-date_joined')
+    
+    user_data = []
+    for u in users:
+        if u.is_superuser:
+            role = 'Super Admin'
+            role_badge = 'bg-danger'
+        elif u.is_staff:
+            role = 'Store Manager'
+            role_badge = 'bg-primary'
+        else:
+            role = 'POS Cashier'
+            role_badge = 'bg-info'
+            
+        user_data.append({
+            'user': u,
+            'role': role,
+            'role_badge': role_badge,
+        })
+
+    context = {
+        'users_list': user_data,
+        'total_users': users.count(),
+        'active_users': users.filter(is_active=True).count(),
+    }
+    return render(request, 'inventory/user_list.html', context)
+
+
+@superuser_required
+def user_create(request):
+    """Super Admin: Add new system user."""
+    if request.method == 'POST':
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            if User.objects.filter(username=username).exists():
+                form.add_error('username', 'Username already taken.')
+            else:
+                user = User(
+                    username=username,
+                    first_name=form.cleaned_data['first_name'],
+                    last_name=form.cleaned_data['last_name'],
+                    email=form.cleaned_data['email'],
+                    is_active=form.cleaned_data['is_active']
+                )
+                user.set_password(form.cleaned_data['password'])
+                
+                role = form.cleaned_data['role']
+                if role == 'admin':
+                    user.is_superuser = True
+                    user.is_staff = True
+                elif role == 'manager':
+                    user.is_superuser = False
+                    user.is_staff = True
+                else:
+                    user.is_superuser = False
+                    user.is_staff = False
+
+                user.save()
+                messages.success(request, f"User account '{user.username}' created successfully as {role.capitalize()}!")
+                return redirect('user_list')
+    else:
+        form = UserCreateForm()
+
+    return render(request, 'inventory/user_form.html', {'form': form, 'title': 'Create New User Account'})
+
+
+@superuser_required
+def user_update(request, pk):
+    """Super Admin: Edit and modify existing user details, roles, and password."""
+    target_user = get_object_or_404(User, pk=pk)
+
+    if request.method == 'POST':
+        form = UserEditForm(request.POST)
+        if form.is_valid():
+            target_user.first_name = form.cleaned_data['first_name']
+            target_user.last_name = form.cleaned_data['last_name']
+            target_user.email = form.cleaned_data['email']
+            
+            # Prevent superuser from deactivating themselves
+            if target_user == request.user and not form.cleaned_data['is_active']:
+                messages.error(request, "Security: You cannot deactivate your own Super Admin account!")
+                return redirect('user_list')
+
+            target_user.is_active = form.cleaned_data['is_active']
+
+            role = form.cleaned_data['role']
+            if role == 'admin':
+                target_user.is_superuser = True
+                target_user.is_staff = True
+            elif role == 'manager':
+                target_user.is_superuser = False
+                target_user.is_staff = True
+            else:
+                # If target is self, prevent revoking own superuser
+                if target_user == request.user:
+                    messages.error(request, "Security: You cannot revoke your own Super Admin privileges!")
+                    return redirect('user_list')
+                target_user.is_superuser = False
+                target_user.is_staff = False
+
+            new_pass = form.cleaned_data.get('new_password')
+            if new_pass:
+                target_user.set_password(new_pass)
+                messages.info(request, f"Password for '{target_user.username}' has been updated.")
+
+            target_user.save()
+            messages.success(request, f"User '{target_user.username}' details updated successfully!")
+            return redirect('user_list')
+    else:
+        current_role = 'admin' if target_user.is_superuser else ('manager' if target_user.is_staff else 'cashier')
+        initial_data = {
+            'first_name': target_user.first_name,
+            'last_name': target_user.last_name,
+            'email': target_user.email,
+            'is_active': target_user.is_active,
+            'role': current_role,
+        }
+        form = UserEditForm(initial=initial_data)
+
+    return render(request, 'inventory/user_form.html', {
+        'form': form, 
+        'title': f'Modify User: {target_user.username}',
+        'target_user': target_user
+    })
+
+
+@superuser_required
+def user_delete(request, pk):
+    """Super Admin: Delete user account."""
+    target_user = get_object_or_404(User, pk=pk)
+
+    if target_user == request.user:
+        messages.error(request, "Security protection: You cannot delete your own Super Admin account!")
+        return redirect('user_list')
+
+    if request.method == 'POST':
+        username = target_user.username
+        target_user.delete()
+        messages.success(request, f"User account '{username}' was permanently deleted.")
+        return redirect('user_list')
+
+    return render(request, 'inventory/confirm_delete.html', {
+        'object': f"User account '{target_user.username}' ({target_user.get_full_name() or 'No name'})",
+        'type': 'User Account'
+    })
+
+
+@superuser_required
+def user_toggle_status(request, pk):
+    """Super Admin: 1-click toggle user active/inactive."""
+    target_user = get_object_or_404(User, pk=pk)
+    if target_user == request.user:
+        messages.error(request, "You cannot deactivate your own account.")
+        return redirect('user_list')
+
+    target_user.is_active = not target_user.is_active
+    target_user.save(update_fields=['is_active'])
+    status_label = "activated" if target_user.is_active else "deactivated"
+    messages.success(request, f"User '{target_user.username}' has been {status_label}.")
+    return redirect('user_list')
+
