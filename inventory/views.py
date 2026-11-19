@@ -12,10 +12,10 @@ from django.utils import timezone
 from django.db.models import Sum, Count, F, Q, Avg
 from django.db.models.functions import TruncDate
 
-from .models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement, UserProfile
+from .models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement, UserProfile, Store
 from .forms import (
     ProductForm, SupplierForm, CategoryForm, CustomerForm, 
-    StockAdjustmentForm, UserCreateForm, UserEditForm
+    StockAdjustmentForm, UserCreateForm, UserEditForm, StoreForm
 )
 from .services import process_pos_sale, process_purchase_order, manual_stock_adjustment, generate_invoice_number
 
@@ -29,6 +29,18 @@ def superuser_required(view_func):
             messages.error(request, "Access restricted: Only the Website Owner (Super Admin) can manage access permissions and user accounts.")
             return redirect('dashboard')
         return view_func(request, *args, **kwargs)
+    return wrapper
+
+def store_admin_required(view_func):
+    """Decorator allowing Website Owner or Store Admin with store management privileges."""
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_manage_stores):
+            return view_func(request, *args, **kwargs)
+        messages.error(request, "Access restricted: You need Store Administrator privileges to add or modify stores.")
+        return redirect('dashboard')
     return wrapper
 
 # ==========================================

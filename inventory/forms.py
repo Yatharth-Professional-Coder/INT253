@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Supplier, Category, Customer, Purchase, StockMovement
+from .models import Product, Supplier, Category, Customer, Purchase, StockMovement, Store
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -84,9 +84,27 @@ class StockAdjustmentForm(forms.Form):
     )
 
 
+class StoreForm(forms.ModelForm):
+    class Meta:
+        model = Store
+        fields = ['name', 'code', 'manager_name', 'phone', 'email', 'address', 'city', 'is_main', 'is_active']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Downtown Flagship Store'}),
+            'code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. STR-01'}),
+            'manager_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Branch Manager Name'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+1 (555) 000-0000'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'store01@smartstock.local'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Street address, Suite / Unit'}),
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City, State'}),
+            'is_main': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
 class UserCreateForm(forms.Form):
     ROLE_CHOICES = [
         ('admin', 'Website Owner / Super Admin (Full Control)'),
+        ('store_admin', 'Store Admin / Multi-Branch Manager (Can Add & Modify Stores)'),
         ('manager', 'Store Manager / Supervisor'),
         ('cashier', 'POS Cashier'),
     ]
@@ -114,12 +132,22 @@ class UserCreateForm(forms.Form):
         choices=ROLE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select', 'id': 'userRoleSelect'})
     )
+    assigned_store = forms.ModelChoiceField(
+        queryset=Store.objects.all(),
+        required=False,
+        empty_label="All Stores / HQ Floating",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
     is_active = forms.BooleanField(
         required=False, initial=True,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
 
     # Granular Access Control Managed by Website Owner
+    can_manage_stores = forms.BooleanField(
+        required=False, initial=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
     can_access_pos = forms.BooleanField(
         required=False, initial=True,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
@@ -145,6 +173,7 @@ class UserCreateForm(forms.Form):
 class UserEditForm(forms.Form):
     ROLE_CHOICES = [
         ('admin', 'Website Owner / Super Admin (Full Control)'),
+        ('store_admin', 'Store Admin / Multi-Branch Manager (Can Add & Modify Stores)'),
         ('manager', 'Store Manager / Supervisor'),
         ('cashier', 'POS Cashier'),
     ]
@@ -165,6 +194,12 @@ class UserEditForm(forms.Form):
         choices=ROLE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select', 'id': 'userRoleSelect'})
     )
+    assigned_store = forms.ModelChoiceField(
+        queryset=Store.objects.all(),
+        required=False,
+        empty_label="All Stores / HQ Floating",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
     is_active = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
@@ -176,6 +211,10 @@ class UserEditForm(forms.Form):
     )
 
     # Granular Access Control Managed by Website Owner
+    can_manage_stores = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
     can_access_pos = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})

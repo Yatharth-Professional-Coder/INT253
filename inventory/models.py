@@ -112,6 +112,34 @@ class Product(models.Model):
         return max(0, self.current_stock) * self.selling_price
 
 
+class Store(models.Model):
+    name = models.CharField(max_length=150, unique=True, help_text="Store or branch outlet name")
+    code = models.CharField(max_length=30, unique=True, help_text="Branch code e.g. STR-01")
+    manager_name = models.CharField(max_length=100, blank=True, null=True, help_text="Branch manager name")
+    phone = models.CharField(max_length=30, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True, help_text="Physical store location")
+    city = models.CharField(max_length=100, blank=True, null=True)
+    is_main = models.BooleanField(default=False, help_text="Primary flagship store")
+    is_active = models.BooleanField(default=True, help_text="Store outlet is operational")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_main', 'name']
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+
+    @property
+    def total_sales_count(self):
+        return self.sales.count()
+
+    @property
+    def total_revenue(self):
+        return sum(s.grand_total for s in self.sales.filter(status='completed'))
+
+
 class Customer(models.Model):
     name = models.CharField(max_length=150, default='Walk-in Customer')
     phone = models.CharField(max_length=30, blank=True, null=True)
@@ -132,6 +160,7 @@ class Purchase(models.Model):
 
     invoice_number = models.CharField(max_length=60, unique=True)
     supplier = models.ForeignKey(Supplier, on_delete=models.PROTECT, related_name='purchases')
+    store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True, related_name='purchases')
     purchase_date = models.DateTimeField(default=timezone.now)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='received')
@@ -176,6 +205,7 @@ class Sale(models.Model):
     ]
 
     invoice_number = models.CharField(max_length=60, unique=True)
+    store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True, related_name='sales')
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True, related_name='sales')
     customer_name = models.CharField(max_length=150, default='Walk-in Customer')
     customer_phone = models.CharField(max_length=30, blank=True, null=True)
@@ -266,6 +296,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     role_title = models.CharField(max_length=100, default='Cashier')
     phone = models.CharField(max_length=30, blank=True, null=True)
+    assigned_store = models.ForeignKey(Store, on_delete=models.SET_NULL, null=True, blank=True, related_name='staff_members')
+    can_manage_stores = models.BooleanField(default=False, verbose_name="Manage Stores & Outlets", help_text="Can add, modify, and manage different store branches")
     can_access_pos = models.BooleanField(default=True, verbose_name="Access POS Billing", help_text="Can create bills and process sales at POS terminal")
     can_manage_products = models.BooleanField(default=False, verbose_name="Manage Inventory Products", help_text="Can add, edit, or delete catalog products")
     can_manage_suppliers = models.BooleanField(default=False, verbose_name="Manage Suppliers & POs", help_text="Can add suppliers and create purchase orders")
@@ -290,6 +322,7 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         UserProfile.objects.create(
             user=instance,
             role_title=role,
+            can_manage_stores=instance.is_superuser,
             can_access_pos=True,
             can_manage_products=instance.is_staff or instance.is_superuser,
             can_manage_suppliers=instance.is_staff or instance.is_superuser,
