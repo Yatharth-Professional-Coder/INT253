@@ -1,0 +1,651 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 42,
+  "totalBatches": 5,
+  "exportsByPath": {
+    "inventory/__init__.py": [],
+    "inventory/admin.py": [
+      "CategoryAdmin",
+      "SupplierAdmin",
+      "ProductAdmin",
+      "PurchaseItemInline",
+      "PurchaseAdmin",
+      "SaleItemInline",
+      "SaleAdmin",
+      "StockMovementAdmin",
+      "CustomerAdmin"
+    ],
+    "inventory/apps.py": [
+      "InventoryConfig"
+    ],
+    "inventory/context_processors.py": [
+      "inventory_globals"
+    ],
+    "inventory/forms.py": [
+      "ProductForm",
+      "SupplierForm",
+      "CategoryForm",
+      "CustomerForm",
+      "StockAdjustmentForm",
+      "UserCreateForm",
+      "UserEditForm"
+    ],
+    "inventory/management/commands/seed_data.py": [
+      "Command"
+    ],
+    "inventory/migrations/0001_initial.py": [
+      "Migration"
+    ],
+    "inventory/migrations/__init__.py": [],
+    "inventory/models.py": [
+      "Category",
+      "Supplier",
+      "Product",
+      "Customer",
+      "Purchase",
+      "PurchaseItem",
+      "Sale",
+      "SaleItem",
+      "StockMovement",
+      "UserProfile",
+      "create_or_update_user_profile"
+    ],
+    "inventory/services.py": [
+      "generate_invoice_number",
+      "generate_po_number",
+      "process_pos_sale",
+      "process_purchase_order",
+      "manual_stock_adjustment"
+    ],
+    "inventory/tests.py": [
+      "SmartInventorySystemTests"
+    ],
+    "inventory/urls.py": [],
+    "inventory/views.py": [
+      "superuser_required",
+      "login_view",
+      "logout_view",
+      "dashboard",
+      "pos_view",
+      "api_search_products",
+      "api_pos_checkout",
+      "api_quick_customer",
+      "product_list",
+      "product_create",
+      "product_update",
+      "product_delete",
+      "low_stock_view",
+      "supplier_list",
+      "supplier_create",
+      "supplier_update",
+      "purchase_list",
+      "purchase_create",
+      "purchase_detail",
+      "sale_list",
+      "sale_detail",
+      "stock_adjustment_list",
+      "reports_view",
+      "user_list",
+      "user_create",
+      "user_update",
+      "user_delete",
+      "user_toggle_status"
+    ],
+    "manage.py": [
+      "main"
+    ],
+    "smart_inventory/__init__.py": [],
+    "smart_inventory/asgi.py": [],
+    "smart_inventory/settings.py": [],
+    "smart_inventory/urls.py": [],
+    "smart_inventory/wsgi.py": [],
+    "static/.gitkeep": []
+  },
+  "batches": [
+    {
+      "batchIndex": 1,
+      "files": [
+        {
+          "path": "inventory/admin.py",
+          "language": "python",
+          "sizeLines": 52,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/context_processors.py",
+          "language": "python",
+          "sizeLines": 19,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/management/commands/seed_data.py",
+          "language": "python",
+          "sizeLines": 261,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/models.py",
+          "language": "python",
+          "sizeLines": 259,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "inventory/admin.py": [
+          "inventory/models.py"
+        ],
+        "inventory/context_processors.py": [
+          "inventory/models.py"
+        ],
+        "inventory/management/commands/seed_data.py": [
+          "inventory/models.py"
+        ],
+        "inventory/models.py": []
+      },
+      "neighborMap": {
+        "inventory/models.py": [
+          {
+            "path": "inventory/forms.py",
+            "batchIndex": 2,
+            "symbols": [
+              "ProductForm",
+              "SupplierForm",
+              "CategoryForm",
+              "CustomerForm",
+              "StockAdjustmentForm",
+              "UserCreateForm",
+              "UserEditForm"
+            ]
+          },
+          {
+            "path": "inventory/services.py",
+            "batchIndex": 5,
+            "symbols": [
+              "generate_invoice_number",
+              "generate_po_number",
+              "process_pos_sale",
+              "process_purchase_order",
+              "manual_stock_adjustment"
+            ]
+          },
+          {
+            "path": "inventory/tests.py",
+            "batchIndex": 5,
+            "symbols": [
+              "SmartInventorySystemTests"
+            ]
+          },
+          {
+            "path": "inventory/views.py",
+            "batchIndex": 2,
+            "symbols": [
+              "superuser_required",
+              "login_view",
+              "logout_view",
+              "dashboard",
+              "pos_view",
+              "api_search_products",
+              "api_pos_checkout",
+              "api_quick_customer",
+              "product_list",
+              "product_create",
+              "product_update",
+              "product_delete",
+              "low_stock_view",
+              "supplier_list",
+              "supplier_create",
+              "supplier_update",
+              "purchase_list",
+              "purchase_create",
+              "purchase_detail",
+              "sale_list",
+              "sale_detail",
+              "stock_adjustment_list",
+              "reports_view",
+              "user_list",
+              "user_create",
+              "user_update",
+              "user_delete",
+              "user_toggle_status"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": "inventory/forms.py",
+          "language": "python",
+          "sizeLines": 156,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/urls.py",
+          "language": "python",
+          "sizeLines": 52,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/views.py",
+          "language": "python",
+          "sizeLines": 883,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "inventory/forms.py": [
+          "inventory/models.py"
+        ],
+        "inventory/urls.py": [
+          "inventory/views.py"
+        ],
+        "inventory/views.py": [
+          "inventory/forms.py",
+          "inventory/models.py",
+          "inventory/services.py"
+        ]
+      },
+      "neighborMap": {
+        "inventory/forms.py": [
+          {
+            "path": "inventory/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "Category",
+              "Supplier",
+              "Product",
+              "Customer",
+              "Purchase",
+              "PurchaseItem",
+              "Sale",
+              "SaleItem",
+              "StockMovement",
+              "UserProfile",
+              "create_or_update_user_profile"
+            ]
+          }
+        ],
+        "inventory/views.py": [
+          {
+            "path": "inventory/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "Category",
+              "Supplier",
+              "Product",
+              "Customer",
+              "Purchase",
+              "PurchaseItem",
+              "Sale",
+              "SaleItem",
+              "StockMovement",
+              "UserProfile",
+              "create_or_update_user_profile"
+            ]
+          },
+          {
+            "path": "inventory/services.py",
+            "batchIndex": 5,
+            "symbols": [
+              "generate_invoice_number",
+              "generate_po_number",
+              "process_pos_sale",
+              "process_purchase_order",
+              "manual_stock_adjustment"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "batchIndex": 3,
+      "files": [
+        {
+          "path": "README.md",
+          "language": "markdown",
+          "sizeLines": 160,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "requirements.txt",
+          "language": "txt",
+          "sizeLines": 6,
+          "fileCategory": "docs"
+        },
+        {
+          "path": "start.sh",
+          "language": "shell",
+          "sizeLines": 28,
+          "fileCategory": "script"
+        }
+      ],
+      "batchImportData": {
+        "README.md": [],
+        "requirements.txt": [],
+        "start.sh": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 4,
+      "files": [
+        {
+          "path": "templates/inventory/base.html",
+          "language": "html",
+          "sizeLines": 348,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/confirm_delete.html",
+          "language": "html",
+          "sizeLines": 29,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/dashboard.html",
+          "language": "html",
+          "sizeLines": 374,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/login.html",
+          "language": "html",
+          "sizeLines": 176,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/low_stock_alerts.html",
+          "language": "html",
+          "sizeLines": 210,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/pos.html",
+          "language": "html",
+          "sizeLines": 871,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/product_form.html",
+          "language": "html",
+          "sizeLines": 113,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/product_list.html",
+          "language": "html",
+          "sizeLines": 144,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/purchase_detail.html",
+          "language": "html",
+          "sizeLines": 108,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/purchase_form.html",
+          "language": "html",
+          "sizeLines": 216,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/purchase_list.html",
+          "language": "html",
+          "sizeLines": 87,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/reports.html",
+          "language": "html",
+          "sizeLines": 237,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/sale_list.html",
+          "language": "html",
+          "sizeLines": 150,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/sale_receipt.html",
+          "language": "html",
+          "sizeLines": 149,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/stock_adjustments.html",
+          "language": "html",
+          "sizeLines": 143,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/supplier_form.html",
+          "language": "html",
+          "sizeLines": 62,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/supplier_list.html",
+          "language": "html",
+          "sizeLines": 87,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/user_form.html",
+          "language": "html",
+          "sizeLines": 114,
+          "fileCategory": "markup"
+        },
+        {
+          "path": "templates/inventory/user_list.html",
+          "language": "html",
+          "sizeLines": 166,
+          "fileCategory": "markup"
+        }
+      ],
+      "batchImportData": {
+        "templates/inventory/base.html": [],
+        "templates/inventory/confirm_delete.html": [],
+        "templates/inventory/dashboard.html": [],
+        "templates/inventory/login.html": [],
+        "templates/inventory/low_stock_alerts.html": [],
+        "templates/inventory/pos.html": [],
+        "templates/inventory/product_form.html": [],
+        "templates/inventory/product_list.html": [],
+        "templates/inventory/purchase_detail.html": [],
+        "templates/inventory/purchase_form.html": [],
+        "templates/inventory/purchase_list.html": [],
+        "templates/inventory/reports.html": [],
+        "templates/inventory/sale_list.html": [],
+        "templates/inventory/sale_receipt.html": [],
+        "templates/inventory/stock_adjustments.html": [],
+        "templates/inventory/supplier_form.html": [],
+        "templates/inventory/supplier_list.html": [],
+        "templates/inventory/user_form.html": [],
+        "templates/inventory/user_list.html": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 5,
+      "files": [
+        {
+          "path": "inventory/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/apps.py",
+          "language": "python",
+          "sizeLines": 6,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/migrations/0001_initial.py",
+          "language": "python",
+          "sizeLines": 171,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/migrations/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/services.py",
+          "language": "python",
+          "sizeLines": 214,
+          "fileCategory": "code"
+        },
+        {
+          "path": "inventory/tests.py",
+          "language": "python",
+          "sizeLines": 232,
+          "fileCategory": "code"
+        },
+        {
+          "path": "manage.py",
+          "language": "python",
+          "sizeLines": 22,
+          "fileCategory": "code"
+        },
+        {
+          "path": "smart_inventory/__init__.py",
+          "language": "python",
+          "sizeLines": 0,
+          "fileCategory": "code"
+        },
+        {
+          "path": "smart_inventory/asgi.py",
+          "language": "python",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "smart_inventory/settings.py",
+          "language": "python",
+          "sizeLines": 134,
+          "fileCategory": "code"
+        },
+        {
+          "path": "smart_inventory/urls.py",
+          "language": "python",
+          "sizeLines": 29,
+          "fileCategory": "code"
+        },
+        {
+          "path": "smart_inventory/wsgi.py",
+          "language": "python",
+          "sizeLines": 16,
+          "fileCategory": "code"
+        },
+        {
+          "path": "static/.gitkeep",
+          "language": "unknown",
+          "sizeLines": 1,
+          "fileCategory": "code"
+        }
+      ],
+      "batchImportData": {
+        "inventory/__init__.py": [],
+        "inventory/apps.py": [],
+        "inventory/migrations/0001_initial.py": [],
+        "inventory/migrations/__init__.py": [],
+        "inventory/services.py": [
+          "inventory/models.py"
+        ],
+        "inventory/tests.py": [
+          "inventory/models.py",
+          "inventory/services.py"
+        ],
+        "manage.py": [],
+        "smart_inventory/__init__.py": [],
+        "smart_inventory/asgi.py": [],
+        "smart_inventory/settings.py": [],
+        "smart_inventory/urls.py": [],
+        "smart_inventory/wsgi.py": [],
+        "static/.gitkeep": []
+      },
+      "neighborMap": {
+        "inventory/services.py": [
+          {
+            "path": "inventory/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "Category",
+              "Supplier",
+              "Product",
+              "Customer",
+              "Purchase",
+              "PurchaseItem",
+              "Sale",
+              "SaleItem",
+              "StockMovement",
+              "UserProfile",
+              "create_or_update_user_profile"
+            ]
+          },
+          {
+            "path": "inventory/views.py",
+            "batchIndex": 2,
+            "symbols": [
+              "superuser_required",
+              "login_view",
+              "logout_view",
+              "dashboard",
+              "pos_view",
+              "api_search_products",
+              "api_pos_checkout",
+              "api_quick_customer",
+              "product_list",
+              "product_create",
+              "product_update",
+              "product_delete",
+              "low_stock_view",
+              "supplier_list",
+              "supplier_create",
+              "supplier_update",
+              "purchase_list",
+              "purchase_create",
+              "purchase_detail",
+              "sale_list",
+              "sale_detail",
+              "stock_adjustment_list",
+              "reports_view",
+              "user_list",
+              "user_create",
+              "user_update",
+              "user_delete",
+              "user_toggle_status"
+            ]
+          }
+        ],
+        "inventory/tests.py": [
+          {
+            "path": "inventory/models.py",
+            "batchIndex": 1,
+            "symbols": [
+              "Category",
+              "Supplier",
+              "Product",
+              "Customer",
+              "Purchase",
+              "PurchaseItem",
+              "Sale",
+              "SaleItem",
+              "StockMovement",
+              "UserProfile",
+              "create_or_update_user_profile"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
