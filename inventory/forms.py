@@ -86,9 +86,9 @@ class StockAdjustmentForm(forms.Form):
 
 class UserCreateForm(forms.Form):
     ROLE_CHOICES = [
-        ('admin', 'Super Admin (Full System & User Control)'),
-        ('manager', 'Manager / Staff (Inventory & Purchases)'),
-        ('cashier', 'Cashier (POS Billing & Sales Access)'),
+        ('admin', 'Website Owner / Super Admin (Full Control)'),
+        ('manager', 'Store Manager / Supervisor'),
+        ('cashier', 'POS Cashier'),
     ]
 
     username = forms.CharField(
@@ -112,19 +112,41 @@ class UserCreateForm(forms.Form):
     )
     role = forms.ChoiceField(
         choices=ROLE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select', 'id': 'userRoleSelect'})
     )
     is_active = forms.BooleanField(
         required=False, initial=True,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
 
+    # Granular Access Control Managed by Website Owner
+    can_access_pos = forms.BooleanField(
+        required=False, initial=True,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_manage_products = forms.BooleanField(
+        required=False, initial=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_manage_suppliers = forms.BooleanField(
+        required=False, initial=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_view_reports = forms.BooleanField(
+        required=False, initial=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_adjust_stock = forms.BooleanField(
+        required=False, initial=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
 
 class UserEditForm(forms.Form):
     ROLE_CHOICES = [
-        ('admin', 'Super Admin (Full System & User Control)'),
-        ('manager', 'Manager / Staff (Inventory & Purchases)'),
-        ('cashier', 'Cashier (POS Billing & Sales Access)'),
+        ('admin', 'Website Owner / Super Admin (Full Control)'),
+        ('manager', 'Store Manager / Supervisor'),
+        ('cashier', 'POS Cashier'),
     ]
 
     first_name = forms.CharField(
@@ -141,7 +163,7 @@ class UserEditForm(forms.Form):
     )
     role = forms.ChoiceField(
         choices=ROLE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select', 'id': 'userRoleSelect'})
     )
     is_active = forms.BooleanField(
         required=False,
@@ -151,6 +173,28 @@ class UserEditForm(forms.Form):
         required=False,
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Leave blank to keep existing password'}),
         help_text="Only fill this if you want to reset this user's password."
+    )
+
+    # Granular Access Control Managed by Website Owner
+    can_access_pos = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_manage_products = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_manage_suppliers = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_view_reports = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+    can_adjust_stock = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
 
 
