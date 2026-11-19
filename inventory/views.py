@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.db.models import Sum, Count, F, Q, Avg
 from django.db.models.functions import TruncDate
 
-from .models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement
+from .models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement, UserProfile
 from .forms import (
     ProductForm, SupplierForm, CategoryForm, CustomerForm, 
     StockAdjustmentForm, UserCreateForm, UserEditForm
@@ -20,13 +20,13 @@ from .forms import (
 from .services import process_pos_sale, process_purchase_order, manual_stock_adjustment, generate_invoice_number
 
 def superuser_required(view_func):
-    """Decorator to restrict access strictly to Super Admin accounts."""
+    """Decorator to restrict access strictly to Website Owner / Super Admin accounts."""
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
         if not request.user.is_superuser:
-            messages.error(request, "Access restricted: Only Super Administrators have permission to manage user accounts.")
+            messages.error(request, "Access restricted: Only the Website Owner (Super Admin) can manage access permissions and user accounts.")
             return redirect('dashboard')
         return view_func(request, *args, **kwargs)
     return wrapper
@@ -154,6 +154,10 @@ def dashboard(request):
 @login_required
 def pos_view(request):
     """Fast, interactive Point of Sale billing terminal."""
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_access_pos)):
+        messages.error(request, "Access Restricted: You do not have permission to access the POS Billing terminal. Please contact the Website Owner.")
+        return redirect('dashboard')
+
     categories = Category.objects.all()
     products = Product.objects.filter(is_active=True).select_related('category')
     customers = Customer.objects.all().order_by('name')
@@ -317,6 +321,10 @@ def product_list(request):
 @login_required
 def product_create(request):
     """Add new product to catalog."""
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_manage_products)):
+        messages.error(request, "Access Restricted: You do not have permission to add new products. Contact the Website Owner.")
+        return redirect('product_list')
+
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -342,6 +350,10 @@ def product_create(request):
 @login_required
 def product_update(request, pk):
     """Edit existing product."""
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_manage_products)):
+        messages.error(request, "Access Restricted: You do not have permission to edit products. Contact the Website Owner.")
+        return redirect('product_list')
+
     product = get_object_or_404(Product, pk=pk)
     old_stock = product.current_stock
     if request.method == 'POST':
@@ -369,6 +381,9 @@ def product_update(request, pk):
 @login_required
 def product_delete(request, pk):
     """Delete a product."""
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_manage_products)):
+        messages.error(request, "Access Restricted: You do not have permission to delete products. Contact the Website Owner.")
+        return redirect('product_list')
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
         name = product.name
@@ -451,6 +466,10 @@ def purchase_list(request):
 @login_required
 def purchase_create(request):
     """Create a new Purchase Order / Stock In with automatic inventory increment."""
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_manage_suppliers)):
+        messages.error(request, "Access Restricted: You do not have permission to create purchase orders. Contact the Website Owner.")
+        return redirect('purchase_list')
+
     suppliers = Supplier.objects.all()
     products = Product.objects.filter(is_active=True).order_by('name')
 
@@ -563,8 +582,13 @@ def sale_detail(request, pk):
 def stock_adjustment_list(request):
     """Stock movement audit logs and adjustment form."""
     movements = StockMovement.objects.select_related('product').order_by('-created_at')[:100]
-    
+    can_adjust = request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_adjust_stock)
+
     if request.method == 'POST':
+        if not can_adjust:
+            messages.error(request, "Access Restricted: You do not have permission to make stock adjustments. Contact the Website Owner.")
+            return redirect('stock_adjustment_list')
+
         form = StockAdjustmentForm(request.POST)
         if form.is_valid():
             product = form.cleaned_data['product']
@@ -597,6 +621,10 @@ def stock_adjustment_list(request):
 @login_required
 def reports_view(request):
     """Comprehensive Profit, Loss, and Inventory Valuation Reports."""
+    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_view_reports)):
+        messages.error(request, "Access Restricted: You do not have permission to view Financial & Profit reports. Contact the Website Owner.")
+        return redirect('dashboard')
+
     range_type = request.GET.get('range', 'this_month')
     now = timezone.now()
     today = now.date()
@@ -714,27 +742,42 @@ def reports_view(request):
 
 
 # ==========================================
-# SUPER ADMIN: USER MANAGEMENT (CRUD)
+# SUPER ADMIN (WEBSITE OWNER): USER MANAGEMENT & ACCESS CONTROL
 # ==========================================
 @superuser_required
 def user_list(request):
-    """Super Admin page listing all system users with role, status, and actions."""
-    users = User.objects.all().order_by('-date_joined')
+    """Website Owner portal listing all system users with role, status, and granular permissions."""
+    users = User.objects.all().select_related('profile').order_by('-date_joined')
     
     user_data = []
     for u in users:
+        profile = getattr(u, 'profile', None)
+        if not profile:
+            profile, _ = UserProfile.objects.get_or_create(
+                user=u,
+                defaults={
+                    'role_title': "Website Owner" if u.is_superuser else ("Store Manager" if u.is_staff else "Cashier"),
+                    'can_access_pos': True,
+                    'can_manage_products': u.is_staff or u.is_superuser,
+                    'can_manage_suppliers': u.is_staff or u.is_superuser,
+                    'can_view_reports': u.is_staff or u.is_superuser,
+                    'can_adjust_stock': u.is_staff or u.is_superuser,
+                }
+            )
+
         if u.is_superuser:
-            role = 'Super Admin'
+            role = 'Website Owner (Super Admin)'
             role_badge = 'bg-danger'
         elif u.is_staff:
-            role = 'Store Manager'
+            role = profile.role_title or 'Store Manager'
             role_badge = 'bg-primary'
         else:
-            role = 'POS Cashier'
-            role_badge = 'bg-info'
+            role = profile.role_title or 'POS Cashier'
+            role_badge = 'bg-info text-dark'
             
         user_data.append({
             'user': u,
+            'profile': profile,
             'role': role,
             'role_badge': role_badge,
         })
@@ -749,7 +792,7 @@ def user_list(request):
 
 @superuser_required
 def user_create(request):
-    """Super Admin: Add new system user."""
+    """Website Owner: Add new system user and configure access permissions."""
     if request.method == 'POST':
         form = UserCreateForm(request.POST)
         if form.is_valid():
@@ -770,26 +813,51 @@ def user_create(request):
                 if role == 'admin':
                     user.is_superuser = True
                     user.is_staff = True
+                    role_title = "Website Owner"
                 elif role == 'manager':
                     user.is_superuser = False
                     user.is_staff = True
+                    role_title = "Store Manager"
                 else:
                     user.is_superuser = False
                     user.is_staff = False
+                    role_title = "POS Cashier"
 
                 user.save()
-                messages.success(request, f"User account '{user.username}' created successfully as {role.capitalize()}!")
+
+                # Configure UserProfile access permissions
+                profile, _ = UserProfile.objects.get_or_create(user=user)
+                profile.role_title = role_title
+                profile.can_access_pos = form.cleaned_data['can_access_pos']
+                profile.can_manage_products = form.cleaned_data['can_manage_products'] if not user.is_superuser else True
+                profile.can_manage_suppliers = form.cleaned_data['can_manage_suppliers'] if not user.is_superuser else True
+                profile.can_view_reports = form.cleaned_data['can_view_reports'] if not user.is_superuser else True
+                profile.can_adjust_stock = form.cleaned_data['can_adjust_stock'] if not user.is_superuser else True
+                profile.save()
+
+                messages.success(request, f"User account '{user.username}' created and access permissions configured!")
                 return redirect('user_list')
     else:
         form = UserCreateForm()
 
-    return render(request, 'inventory/user_form.html', {'form': form, 'title': 'Create New User Account'})
+    return render(request, 'inventory/user_form.html', {'form': form, 'title': 'Create New User & Configure Access'})
 
 
 @superuser_required
 def user_update(request, pk):
-    """Super Admin: Edit and modify existing user details, roles, and password."""
-    target_user = get_object_or_404(User, pk=pk)
+    """Website Owner: Modify user details, roles, and access permissions."""
+    target_user = get_object_or_404(User.objects.select_related('profile'), pk=pk)
+    profile, _ = UserProfile.objects.get_or_create(
+        user=target_user,
+        defaults={
+            'role_title': "Website Owner" if target_user.is_superuser else ("Store Manager" if target_user.is_staff else "Cashier"),
+            'can_access_pos': True,
+            'can_manage_products': target_user.is_staff or target_user.is_superuser,
+            'can_manage_suppliers': target_user.is_staff or target_user.is_superuser,
+            'can_view_reports': target_user.is_staff or target_user.is_superuser,
+            'can_adjust_stock': target_user.is_staff or target_user.is_superuser,
+        }
+    )
 
     if request.method == 'POST':
         form = UserEditForm(request.POST)
@@ -800,7 +868,7 @@ def user_update(request, pk):
             
             # Prevent superuser from deactivating themselves
             if target_user == request.user and not form.cleaned_data['is_active']:
-                messages.error(request, "Security: You cannot deactivate your own Super Admin account!")
+                messages.error(request, "Security: You cannot deactivate your own Website Owner account!")
                 return redirect('user_list')
 
             target_user.is_active = form.cleaned_data['is_active']
@@ -809,16 +877,18 @@ def user_update(request, pk):
             if role == 'admin':
                 target_user.is_superuser = True
                 target_user.is_staff = True
+                role_title = "Website Owner"
             elif role == 'manager':
                 target_user.is_superuser = False
                 target_user.is_staff = True
+                role_title = "Store Manager"
             else:
-                # If target is self, prevent revoking own superuser
                 if target_user == request.user:
-                    messages.error(request, "Security: You cannot revoke your own Super Admin privileges!")
+                    messages.error(request, "Security: You cannot revoke your own Website Owner privileges!")
                     return redirect('user_list')
                 target_user.is_superuser = False
                 target_user.is_staff = False
+                role_title = "POS Cashier"
 
             new_pass = form.cleaned_data.get('new_password')
             if new_pass:
@@ -826,7 +896,17 @@ def user_update(request, pk):
                 messages.info(request, f"Password for '{target_user.username}' has been updated.")
 
             target_user.save()
-            messages.success(request, f"User '{target_user.username}' details updated successfully!")
+
+            # Update Access Permissions in UserProfile
+            profile.role_title = role_title
+            profile.can_access_pos = form.cleaned_data['can_access_pos']
+            profile.can_manage_products = form.cleaned_data['can_manage_products'] if not target_user.is_superuser else True
+            profile.can_manage_suppliers = form.cleaned_data['can_manage_suppliers'] if not target_user.is_superuser else True
+            profile.can_view_reports = form.cleaned_data['can_view_reports'] if not target_user.is_superuser else True
+            profile.can_adjust_stock = form.cleaned_data['can_adjust_stock'] if not target_user.is_superuser else True
+            profile.save()
+
+            messages.success(request, f"Access privileges and details for '{target_user.username}' updated successfully!")
             return redirect('user_list')
     else:
         current_role = 'admin' if target_user.is_superuser else ('manager' if target_user.is_staff else 'cashier')
@@ -836,12 +916,17 @@ def user_update(request, pk):
             'email': target_user.email,
             'is_active': target_user.is_active,
             'role': current_role,
+            'can_access_pos': profile.can_access_pos,
+            'can_manage_products': profile.can_manage_products,
+            'can_manage_suppliers': profile.can_manage_suppliers,
+            'can_view_reports': profile.can_view_reports,
+            'can_adjust_stock': profile.can_adjust_stock,
         }
         form = UserEditForm(initial=initial_data)
 
     return render(request, 'inventory/user_form.html', {
         'form': form, 
-        'title': f'Modify User: {target_user.username}',
+        'title': f'Manage Access & Details: {target_user.username}',
         'target_user': target_user
     })
 

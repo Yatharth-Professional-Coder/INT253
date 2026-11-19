@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
 from decimal import Decimal
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -257,3 +260,40 @@ class StockMovement(models.Model):
 
     def __str__(self):
         return f"{self.product.name} ({self.quantity:+d}) - {self.movement_type}"
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    role_title = models.CharField(max_length=100, default='Cashier')
+    phone = models.CharField(max_length=30, blank=True, null=True)
+    can_access_pos = models.BooleanField(default=True, verbose_name="Access POS Billing", help_text="Can create bills and process sales at POS terminal")
+    can_manage_products = models.BooleanField(default=False, verbose_name="Manage Inventory Products", help_text="Can add, edit, or delete catalog products")
+    can_manage_suppliers = models.BooleanField(default=False, verbose_name="Manage Suppliers & POs", help_text="Can add suppliers and create purchase orders")
+    can_view_reports = models.BooleanField(default=False, verbose_name="View Financial & Profit Reports", help_text="Can view gross profit, revenue, and margins")
+    can_adjust_stock = models.BooleanField(default=False, verbose_name="Perform Stock Adjustments", help_text="Can manually adjust stock and log audit movements")
+    notes = models.TextField(blank=True, null=True, help_text="Owner's internal notes on this user")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} ({self.role_title})"
+
+    @property
+    def is_owner(self):
+        return self.user.is_superuser
+
+
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        role = "Website Owner" if instance.is_superuser else ("Store Manager" if instance.is_staff else "Cashier")
+        UserProfile.objects.create(
+            user=instance,
+            role_title=role,
+            can_access_pos=True,
+            can_manage_products=instance.is_staff or instance.is_superuser,
+            can_manage_suppliers=instance.is_staff or instance.is_superuser,
+            can_view_reports=instance.is_staff or instance.is_superuser,
+            can_adjust_stock=instance.is_staff or instance.is_superuser,
+        )
+

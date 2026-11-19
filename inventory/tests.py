@@ -181,10 +181,10 @@ class SmartInventorySystemTests(TestCase):
             self.assertEqual(response.status_code, 200, f"Route {route} failed with status {response.status_code}")
 
     def test_super_admin_user_crud(self):
-        """Test Super Admin user creation, modification, status toggle, and deletion."""
+        """Test Super Admin (Website Owner) user creation, modification, status toggle, and deletion."""
         self.client.login(username='testadmin', password='pass123')
 
-        # 1. Create new user
+        # 1. Create new user with granular permissions
         res_create = self.client.post(reverse('user_create'), {
             'username': 'newstaff',
             'first_name': 'New',
@@ -192,21 +192,33 @@ class SmartInventorySystemTests(TestCase):
             'email': 'staff@store.com',
             'password': 'password123',
             'role': 'manager',
-            'is_active': True
+            'is_active': True,
+            'can_access_pos': True,
+            'can_manage_products': True,
+            'can_manage_suppliers': False,
+            'can_view_reports': True,
+            'can_adjust_stock': False,
         })
-        self.assertEqual(res_create.status_code, 302) # Redirects to user_list
+        self.assertEqual(res_create.status_code, 302)
         created_user = User.objects.get(username='newstaff')
         self.assertTrue(created_user.is_staff)
         self.assertFalse(created_user.is_superuser)
+        self.assertTrue(created_user.profile.can_view_reports)
+        self.assertFalse(created_user.profile.can_manage_suppliers)
 
-        # 2. Modify user details
+        # 2. Modify user details and grant supplier permissions
         res_edit = self.client.post(reverse('user_update', kwargs={'pk': created_user.id}), {
             'first_name': 'Updated',
             'last_name': 'Employee',
             'email': 'updated@store.com',
             'role': 'admin',
             'is_active': True,
-            'new_password': ''
+            'new_password': '',
+            'can_access_pos': True,
+            'can_manage_products': True,
+            'can_manage_suppliers': True,
+            'can_view_reports': True,
+            'can_adjust_stock': True,
         })
         self.assertEqual(res_edit.status_code, 302)
         created_user.refresh_from_db()
@@ -227,6 +239,22 @@ class SmartInventorySystemTests(TestCase):
         """Test that regular staff/cashier users cannot access user management."""
         self.client.login(username='testcashier', password='pass123')
         res = self.client.get(reverse('user_list'))
-        # Should redirect with access denied error
         self.assertEqual(res.status_code, 302)
         self.assertEqual(res.url, reverse('dashboard'))
+
+    def test_granular_permission_enforcement(self):
+        """Test that Website Owner's permission restrictions are actively enforced on cashier."""
+        self.client.login(username='testcashier', password='pass123')
+        
+        # Cashier default has can_view_reports=False -> redirected
+        res_reports = self.client.get(reverse('reports'))
+        self.assertEqual(res_reports.status_code, 302)
+        self.assertEqual(res_reports.url, reverse('dashboard'))
+
+        # Website Owner grants can_view_reports=True to cashier
+        self.regular_user.profile.can_view_reports = True
+        self.regular_user.profile.save()
+
+        # Now cashier can access reports!
+        res_reports_ok = self.client.get(reverse('reports'))
+        self.assertEqual(res_reports_ok.status_code, 200)
