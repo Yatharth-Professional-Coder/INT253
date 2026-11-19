@@ -1,0 +1,36 @@
+{
+  "projectRoot": "c:/LPU/SEM 7/INT 253/INT253",
+  "batchFiles": [
+    {
+      "path": "inventory/forms.py",
+      "language": "python",
+      "sizeLines": 156,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/urls.py",
+      "language": "python",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/views.py",
+      "language": "python",
+      "sizeLines": 883,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "inventory/forms.py": [
+      "inventory/models.py"
+    ],
+    "inventory/urls.py": [
+      "inventory/views.py"
+    ],
+    "inventory/views.py": [
+      "inventory/forms.py",
+      "inventory/models.py",
+      "inventory/services.py"
+    ]
+  }
+}

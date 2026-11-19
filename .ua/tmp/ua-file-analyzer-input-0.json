@@ -1,0 +1,41 @@
+{
+  "projectRoot": "c:/LPU/SEM 7/INT 253/INT253",
+  "batchFiles": [
+    {
+      "path": "inventory/admin.py",
+      "language": "python",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/context_processors.py",
+      "language": "python",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/management/commands/seed_data.py",
+      "language": "python",
+      "sizeLines": 261,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/models.py",
+      "language": "python",
+      "sizeLines": 259,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "inventory/admin.py": [
+      "inventory/models.py"
+    ],
+    "inventory/context_processors.py": [
+      "inventory/models.py"
+    ],
+    "inventory/management/commands/seed_data.py": [
+      "inventory/models.py"
+    ],
+    "inventory/models.py": []
+  }
+}

@@ -1,0 +1,1226 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 12,
+  "filesSkipped": [
+    "static/.gitkeep"
+  ],
+  "filesUnreadable": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 12,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 12,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "inventory/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 0,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "inventory/apps.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 6,
+      "nonEmptyLines": 4,
+      "classes": [
+        {
+          "name": "InventoryConfig",
+          "startLine": 4,
+          "endLine": 6,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "InventoryConfig",
+          "line": 4,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "inventory/migrations/0001_initial.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 171,
+      "nonEmptyLines": 165,
+      "classes": [
+        {
+          "name": "Migration",
+          "startLine": 8,
+          "endLine": 171,
+          "methods": [],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "Migration",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "inventory/migrations/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 0,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "inventory/services.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 214,
+      "nonEmptyLines": 180,
+      "functions": [
+        {
+          "name": "generate_invoice_number",
+          "startLine": 7,
+          "endLine": 10,
+          "params": [
+            "prefix"
+          ]
+        },
+        {
+          "name": "generate_po_number",
+          "startLine": 12,
+          "endLine": 13,
+          "params": []
+        },
+        {
+          "name": "process_pos_sale",
+          "startLine": 16,
+          "endLine": 115,
+          "params": [
+            "items",
+            "customer",
+            "customer_name",
+            "customer_phone",
+            "tax_rate",
+            "discount_amount",
+            "amount_paid",
+            "payment_method",
+            "cashier",
+            "notes"
+          ]
+        },
+        {
+          "name": "process_purchase_order",
+          "startLine": 119,
+          "endLine": 186,
+          "params": [
+            "supplier",
+            "invoice_number",
+            "items_data",
+            "status",
+            "purchase_date",
+            "notes"
+          ]
+        },
+        {
+          "name": "manual_stock_adjustment",
+          "startLine": 190,
+          "endLine": 213,
+          "params": [
+            "product",
+            "quantity_change",
+            "movement_type",
+            "reference",
+            "notes"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generate_invoice_number",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "generate_po_number",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "process_pos_sale",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "process_purchase_order",
+          "line": 118,
+          "isDefault": false
+        },
+        {
+          "name": "manual_stock_adjustment",
+          "line": 189,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "generate_invoice_number",
+          "callee": "timezone.now().strftime",
+          "lineNumber": 8
+        },
+        {
+          "caller": "generate_invoice_number",
+          "callee": "timezone.now",
+          "lineNumber": 8
+        },
+        {
+          "caller": "generate_invoice_number",
+          "callee": "uuid.uuid4().hex[:5].upper",
+          "lineNumber": 9
+        },
+        {
+          "caller": "generate_invoice_number",
+          "callee": "uuid.uuid4",
+          "lineNumber": 9
+        },
+        {
+          "caller": "generate_po_number",
+          "callee": "generate_invoice_number",
+          "lineNumber": 13
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 17
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 17
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 18
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "ValueError",
+          "lineNumber": 24
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 28
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Product.objects.select_for_update().get",
+          "lineNumber": 31
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Product.objects.select_for_update",
+          "lineNumber": 31
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "int",
+          "lineNumber": 32
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "ValueError",
+          "lineNumber": 34
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "ValueError",
+          "lineNumber": 37
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 39
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "str",
+          "lineNumber": 39
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "item_data.get",
+          "lineNumber": 39
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 40
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "str",
+          "lineNumber": 40
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "item_data.get",
+          "lineNumber": 40
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "validated_items.append",
+          "lineNumber": 44
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 54
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "str",
+          "lineNumber": 54
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 55
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "str",
+          "lineNumber": 55
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "max",
+          "lineNumber": 56
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 56
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "round",
+          "lineNumber": 57
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 57
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 60
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "str",
+          "lineNumber": 60
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "max",
+          "lineNumber": 61
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 61
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "generate_invoice_number",
+          "lineNumber": 63
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "Sale.objects.create",
+          "lineNumber": 66
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "SaleItem.objects.create",
+          "lineNumber": 89
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "product.save",
+          "lineNumber": 103
+        },
+        {
+          "caller": "process_pos_sale",
+          "callee": "StockMovement.objects.create",
+          "lineNumber": 105
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "generate_po_number",
+          "lineNumber": 125
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "timezone.now",
+          "lineNumber": 128
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "Decimal",
+          "lineNumber": 130
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "Product.objects.select_for_update().get",
+          "lineNumber": 134
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "Product.objects.select_for_update",
+          "lineNumber": 134
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "int",
+          "lineNumber": 135
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "Decimal",
+          "lineNumber": 136
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "str",
+          "lineNumber": 136
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "validated_items.append",
+          "lineNumber": 139
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "Purchase.objects.create",
+          "lineNumber": 146
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "PurchaseItem.objects.create",
+          "lineNumber": 160
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "product.save",
+          "lineNumber": 174
+        },
+        {
+          "caller": "process_purchase_order",
+          "callee": "StockMovement.objects.create",
+          "lineNumber": 176
+        },
+        {
+          "caller": "manual_stock_adjustment",
+          "callee": "Product.objects.select_for_update().get",
+          "lineNumber": 194
+        },
+        {
+          "caller": "manual_stock_adjustment",
+          "callee": "Product.objects.select_for_update",
+          "lineNumber": 194
+        },
+        {
+          "caller": "manual_stock_adjustment",
+          "callee": "ValueError",
+          "lineNumber": 198
+        },
+        {
+          "caller": "manual_stock_adjustment",
+          "callee": "product.save",
+          "lineNumber": 201
+        },
+        {
+          "caller": "manual_stock_adjustment",
+          "callee": "StockMovement.objects.create",
+          "lineNumber": 203
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 5,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "inventory/tests.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 260,
+      "nonEmptyLines": 227,
+      "classes": [
+        {
+          "name": "SmartInventorySystemTests",
+          "startLine": 8,
+          "endLine": 260,
+          "methods": [
+            "setUp",
+            "test_stock_status_properties",
+            "test_automatic_stock_deduction_on_pos_sale",
+            "test_overselling_prevention",
+            "test_automatic_stock_increment_on_purchase",
+            "test_authentication_and_route_protection",
+            "test_super_admin_user_crud",
+            "test_non_superadmin_forbidden_from_user_management",
+            "test_granular_permission_enforcement"
+          ],
+          "properties": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "SmartInventorySystemTests",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "setUp",
+          "callee": "Client",
+          "lineNumber": 10
+        },
+        {
+          "caller": "setUp",
+          "callee": "User.objects.create_superuser",
+          "lineNumber": 13
+        },
+        {
+          "caller": "setUp",
+          "callee": "User.objects.create_user",
+          "lineNumber": 14
+        },
+        {
+          "caller": "setUp",
+          "callee": "Category.objects.create",
+          "lineNumber": 17
+        },
+        {
+          "caller": "setUp",
+          "callee": "Supplier.objects.create",
+          "lineNumber": 18
+        },
+        {
+          "caller": "setUp",
+          "callee": "Product.objects.create",
+          "lineNumber": 23
+        },
+        {
+          "caller": "setUp",
+          "callee": "Decimal",
+          "lineNumber": 29
+        },
+        {
+          "caller": "setUp",
+          "callee": "Decimal",
+          "lineNumber": 30
+        },
+        {
+          "caller": "setUp",
+          "callee": "Product.objects.create",
+          "lineNumber": 36
+        },
+        {
+          "caller": "setUp",
+          "callee": "Decimal",
+          "lineNumber": 42
+        },
+        {
+          "caller": "setUp",
+          "callee": "Decimal",
+          "lineNumber": 43
+        },
+        {
+          "caller": "setUp",
+          "callee": "Product.objects.create",
+          "lineNumber": 49
+        },
+        {
+          "caller": "setUp",
+          "callee": "Decimal",
+          "lineNumber": 55
+        },
+        {
+          "caller": "setUp",
+          "callee": "Decimal",
+          "lineNumber": 56
+        },
+        {
+          "caller": "setUp",
+          "callee": "Customer.objects.create",
+          "lineNumber": 62
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertFalse",
+          "lineNumber": 68
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertFalse",
+          "lineNumber": 69
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertEqual",
+          "lineNumber": 70
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertEqual",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "Decimal",
+          "lineNumber": 71
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertTrue",
+          "lineNumber": 73
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertFalse",
+          "lineNumber": 74
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertEqual",
+          "lineNumber": 75
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertFalse",
+          "lineNumber": 77
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertTrue",
+          "lineNumber": 78
+        },
+        {
+          "caller": "test_stock_status_properties",
+          "callee": "self.assertEqual",
+          "lineNumber": 79
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "process_pos_sale",
+          "lineNumber": 86
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 91
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 96
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 97
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.prod_normal.refresh_from_db",
+          "lineNumber": 103
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 105
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 106
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 106
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 107
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 108
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 108
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 109
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "Decimal",
+          "lineNumber": 109
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "StockMovement.objects.filter(product=self.prod_normal, movement_type='sale').latest",
+          "lineNumber": 112
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "StockMovement.objects.filter",
+          "lineNumber": 112
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 113
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 114
+        },
+        {
+          "caller": "test_automatic_stock_deduction_on_pos_sale",
+          "callee": "self.assertEqual",
+          "lineNumber": 115
+        },
+        {
+          "caller": "test_overselling_prevention",
+          "callee": "self.assertRaises",
+          "lineNumber": 119
+        },
+        {
+          "caller": "test_overselling_prevention",
+          "callee": "process_pos_sale",
+          "lineNumber": 120
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "Decimal",
+          "lineNumber": 132
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "process_purchase_order",
+          "lineNumber": 134
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "self.prod_low.refresh_from_db",
+          "lineNumber": 145
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "self.assertEqual",
+          "lineNumber": 146
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "self.assertEqual",
+          "lineNumber": 147
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "self.assertFalse",
+          "lineNumber": 148
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "StockMovement.objects.filter(product=self.prod_low, movement_type='purchase').latest",
+          "lineNumber": 151
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "StockMovement.objects.filter",
+          "lineNumber": 151
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "self.assertEqual",
+          "lineNumber": 152
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "self.assertEqual",
+          "lineNumber": 153
+        },
+        {
+          "caller": "test_automatic_stock_increment_on_purchase",
+          "callee": "self.assertEqual",
+          "lineNumber": 154
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "self.client.get",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 158
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "self.assertEqual",
+          "lineNumber": 159
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "self.assertIn",
+          "lineNumber": 160
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "self.client.login",
+          "lineNumber": 163
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "self.assertTrue",
+          "lineNumber": 164
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 167
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 168
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 169
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 170
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 171
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 172
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 173
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 174
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 175
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "reverse",
+          "lineNumber": 176
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "self.client.get",
+          "lineNumber": 180
+        },
+        {
+          "caller": "test_authentication_and_route_protection",
+          "callee": "self.assertEqual",
+          "lineNumber": 181
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.client.login",
+          "lineNumber": 185
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.client.post",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "reverse",
+          "lineNumber": 188
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertEqual",
+          "lineNumber": 202
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "User.objects.get",
+          "lineNumber": 203
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertTrue",
+          "lineNumber": 204
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertFalse",
+          "lineNumber": 205
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertTrue",
+          "lineNumber": 206
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertFalse",
+          "lineNumber": 207
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.client.post",
+          "lineNumber": 210
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "reverse",
+          "lineNumber": 210
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertEqual",
+          "lineNumber": 223
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "created_user.refresh_from_db",
+          "lineNumber": 224
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertEqual",
+          "lineNumber": 225
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertTrue",
+          "lineNumber": 226
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.client.get",
+          "lineNumber": 229
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "reverse",
+          "lineNumber": 229
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "created_user.refresh_from_db",
+          "lineNumber": 230
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertFalse",
+          "lineNumber": 231
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.client.post",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "reverse",
+          "lineNumber": 234
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertEqual",
+          "lineNumber": 235
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "self.assertFalse",
+          "lineNumber": 236
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "User.objects.filter(username='newstaff').exists",
+          "lineNumber": 236
+        },
+        {
+          "caller": "test_super_admin_user_crud",
+          "callee": "User.objects.filter",
+          "lineNumber": 236
+        },
+        {
+          "caller": "test_non_superadmin_forbidden_from_user_management",
+          "callee": "self.client.login",
+          "lineNumber": 240
+        },
+        {
+          "caller": "test_non_superadmin_forbidden_from_user_management",
+          "callee": "self.client.get",
+          "lineNumber": 241
+        },
+        {
+          "caller": "test_non_superadmin_forbidden_from_user_management",
+          "callee": "reverse",
+          "lineNumber": 241
+        },
+        {
+          "caller": "test_non_superadmin_forbidden_from_user_management",
+          "callee": "self.assertEqual",
+          "lineNumber": 242
+        },
+        {
+          "caller": "test_non_superadmin_forbidden_from_user_management",
+          "callee": "self.assertEqual",
+          "lineNumber": 243
+        },
+        {
+          "caller": "test_non_superadmin_forbidden_from_user_management",
+          "callee": "reverse",
+          "lineNumber": 243
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "self.client.login",
+          "lineNumber": 247
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "self.client.get",
+          "lineNumber": 250
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "reverse",
+          "lineNumber": 250
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "self.assertEqual",
+          "lineNumber": 251
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "self.assertEqual",
+          "lineNumber": 252
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "reverse",
+          "lineNumber": 252
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "self.regular_user.profile.save",
+          "lineNumber": 256
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "self.client.get",
+          "lineNumber": 259
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "reverse",
+          "lineNumber": 259
+        },
+        {
+          "caller": "test_granular_permission_enforcement",
+          "callee": "self.assertEqual",
+          "lineNumber": 260
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "manage.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 22,
+      "nonEmptyLines": 18,
+      "functions": [
+        {
+          "name": "main",
+          "startLine": 7,
+          "endLine": 18,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "main",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "main",
+          "callee": "os.environ.setdefault",
+          "lineNumber": 9
+        },
+        {
+          "caller": "main",
+          "callee": "ImportError",
+          "lineNumber": 13
+        },
+        {
+          "caller": "main",
+          "callee": "execute_from_command_line",
+          "lineNumber": 18
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "smart_inventory/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 0,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "smart_inventory/asgi.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 10,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "smart_inventory/settings.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 134,
+      "nonEmptyLines": 99,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "smart_inventory/urls.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 29,
+      "nonEmptyLines": 25,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "smart_inventory/wsgi.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 10,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

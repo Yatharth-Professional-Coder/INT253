@@ -1,0 +1,103 @@
+{
+  "projectRoot": "c:/LPU/SEM 7/INT 253/INT253",
+  "batchFiles": [
+    {
+      "path": "inventory/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/apps.py",
+      "language": "python",
+      "sizeLines": 6,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 171,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/services.py",
+      "language": "python",
+      "sizeLines": 214,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/tests.py",
+      "language": "python",
+      "sizeLines": 232,
+      "fileCategory": "code"
+    },
+    {
+      "path": "manage.py",
+      "language": "python",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/asgi.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/settings.py",
+      "language": "python",
+      "sizeLines": 134,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/urls.py",
+      "language": "python",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/wsgi.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "static/.gitkeep",
+      "language": "unknown",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "inventory/__init__.py": [],
+    "inventory/apps.py": [],
+    "inventory/migrations/0001_initial.py": [],
+    "inventory/migrations/__init__.py": [],
+    "inventory/services.py": [
+      "inventory/models.py"
+    ],
+    "inventory/tests.py": [
+      "inventory/models.py",
+      "inventory/services.py"
+    ],
+    "manage.py": [],
+    "smart_inventory/__init__.py": [],
+    "smart_inventory/asgi.py": [],
+    "smart_inventory/settings.py": [],
+    "smart_inventory/urls.py": [],
+    "smart_inventory/wsgi.py": [],
+    "static/.gitkeep": []
+  }
+}
