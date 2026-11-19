@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.contrib.auth.models import User
-from inventory.models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement
+from inventory.models import Category, Supplier, Product, Customer, Purchase, PurchaseItem, Sale, SaleItem, StockMovement, Store, UserProfile
 
 class Command(BaseCommand):
     help = 'Seed realistic sample inventory, suppliers, purchases, sales, and low-stock alerts'
@@ -22,6 +22,43 @@ class Command(BaseCommand):
         Category.objects.all().delete()
         Supplier.objects.all().delete()
         Customer.objects.all().delete()
+        Store.objects.all().delete()
+
+        # 0. Create Retail Store Branches
+        store_hq = Store.objects.create(
+            name="SmartStock Flagship (Downtown)",
+            code="STR-01",
+            manager_name="Marcus Sterling",
+            city="San Jose, CA",
+            phone="+1 (555) 100-2001",
+            email="downtown@smartstock.local",
+            address="100 Grand Boulevard, Downtown",
+            is_main=True,
+            is_active=True
+        )
+        store_mall = Store.objects.create(
+            name="SmartStock Metro Mall Branch",
+            code="STR-02",
+            manager_name="Jessica Taylor",
+            city="San Francisco, CA",
+            phone="+1 (555) 100-2002",
+            email="metromall@smartstock.local",
+            address="Level 2, North Wing, Metro Mall",
+            is_main=False,
+            is_active=True
+        )
+        store_west = Store.objects.create(
+            name="SmartStock Westside Express",
+            code="STR-03",
+            manager_name="David Kim",
+            city="Oakland, CA",
+            phone="+1 (555) 100-2003",
+            email="westside@smartstock.local",
+            address="742 Sunset Avenue",
+            is_main=False,
+            is_active=True
+        )
+        all_stores = [store_hq, store_mall, store_west]
 
         # 1. Create Categories
         categories_data = [
@@ -134,6 +171,7 @@ class Command(BaseCommand):
             po = Purchase.objects.create(
                 invoice_number=f"PO-2026-00{idx}",
                 supplier=sup,
+                store=random.choice(all_stores),
                 purchase_date=p_date,
                 status='received',
                 notes="Standard monthly restocking inventory order"
@@ -191,6 +229,7 @@ class Command(BaseCommand):
 
                 sale = Sale.objects.create(
                     invoice_number=f"INV-202611-{sale_counter:04d}",
+                    store=random.choice(all_stores),
                     customer=cust if cust.name != "Walk-in Customer" else None,
                     customer_name=cust.name,
                     customer_phone=cust.phone or "",
@@ -231,6 +270,30 @@ class Command(BaseCommand):
             admin_u.is_superuser = True
             admin_u.is_staff = True
             admin_u.save()
+
+        # Store Administrator (Can add and modify different stores)
+        if not User.objects.filter(username='storeadmin').exists():
+            sa_u = User.objects.create_user('storeadmin', 'storeadmin@smartstock.local', 'storeadmin123')
+            sa_u.first_name = "Samantha"
+            sa_u.last_name = "StoreAdmin"
+            sa_u.is_staff = True
+            sa_u.save()
+        else:
+            sa_u = User.objects.get(username='storeadmin')
+            sa_u.set_password('storeadmin123')
+            sa_u.is_staff = True
+            sa_u.is_superuser = False
+            sa_u.save()
+
+        sa_profile, _ = UserProfile.objects.get_or_create(user=sa_u)
+        sa_profile.role_title = "Store Admin"
+        sa_profile.can_manage_stores = True
+        sa_profile.can_manage_products = True
+        sa_profile.can_manage_suppliers = True
+        sa_profile.can_view_reports = True
+        sa_profile.can_access_pos = True
+        sa_profile.assigned_store = store_hq
+        sa_profile.save()
 
         if not User.objects.filter(username='manager').exists():
             mgr_u = User.objects.create_user('manager', 'manager@smartstock.local', 'manager123')

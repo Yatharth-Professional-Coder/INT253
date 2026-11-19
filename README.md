@@ -50,15 +50,24 @@ A comprehensive, production-ready **Smart Inventory Management & Point of Sale (
 * **Top Selling Products**: Ranked by units sold, total revenue, COGS, profit, and margin.
 * **Category Breakdown & Payment Distribution**: Visual progress bars and breakdown by payment mode.
 
-### 7. 🔐 User Authentication & Super Admin Management Portal (`/users/`)
+### 7. 🏪 Multi-Store & Retail Branch Management (`/stores/`)
+* **Multi-Location Architecture**: Complete support for retail chains, franchises, and regional branches (e.g. Flagship HQ, Downtown Branch, Westside Outlet).
+* **Dedicated Store Admin Role**:
+  * Users with the `Store Admin` role can create new stores, update store contact and address details, and view store branch performance.
+  * Website Owners (Super Admin) maintain full control to assign managers and toggle active status.
+* **Store Deletion Guardrails**: Protected against accidental deletion of the primary headquarters (`is_main=True`) or stores with historical transaction ledgers.
+* **Branch-Tagged Transactions**: All purchases, sales, and employee user profiles are linked directly to designated branch stores.
+
+### 8. 🔐 User Authentication & Super Admin Control Center (`/users/`)
 * **Dedicated Sign-In Page (`/login/`)**: Modern authentication portal with error alerts, remember credentials, and one-click quick-fill demo pills.
-* **Super Admin Control Center (`/users/`)**:
-  * Exclusively accessible by Super Administrators (`is_superuser=True`). Regular staff and cashiers are automatically blocked with a 403 / redirect.
-  * **View All Users**: Real-time table displaying usernames, full names, email addresses, system role badges, account active status, and registration/last login timestamps.
-  * **Create New Users**: Add system users with roles (`Super Admin`, `Store Manager`, `POS Cashier`). Passwords are automatically hashed and saved securely.
-  * **Modify / Edit User Details**: Update user names, emails, role assignments, and reset user passwords directly from the dashboard.
+* **Website Owner (Super Admin) Control Center (`/users/`)**:
+  * Exclusively accessible by the Website Owner (`is_superuser=True`). Regular staff and cashiers are automatically blocked with a 403 / redirect.
+  * **Granular Permission Matrix**: Toggle individual module rights per user (`Can Manage Stores`, `Can Manage Products`, `Can Manage Suppliers`, `Can View Reports`, `Can Access POS`, `Can Adjust Stock`).
+  * **View All Users**: Real-time table displaying usernames, full names, email addresses, system role badges, assigned branch store, account active status, and timestamps.
+  * **Create New Users**: Add system users with roles (`Website Owner`, `Store Admin`, `Store Manager`, `POS Cashier`). Passwords are automatically hashed and saved securely.
+  * **Modify / Edit User Details**: Update user names, emails, role assignments, store assignments, and reset user passwords directly from the dashboard.
   * **1-Click Status Toggle**: Activate or deactivate user access instantly.
-  * **Safe Deletion with Guardrails**: Delete inactive or terminated staff accounts, with safeguards preventing accidental self-deletion of the active Super Admin.
+  * **Safe Deletion with Guardrails**: Safeguards prevent accidental self-deletion of the active Super Admin.
 
 ---
 
@@ -85,6 +94,7 @@ Or manually run:
 ### 2. Access the Application
 Open your browser and navigate to:
 * **Login Page**: [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/)
+* **Multi-Store Management**: [http://127.0.0.1:8000/stores/](http://127.0.0.1:8000/stores/)
 * **Super Admin User Portal**: [http://127.0.0.1:8000/users/](http://127.0.0.1:8000/users/)
 * **Dashboard**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 * **POS Billing Terminal**: [http://127.0.0.1:8000/pos/](http://127.0.0.1:8000/pos/)
@@ -98,9 +108,10 @@ Open your browser and navigate to:
 ### 3. Pre-configured Role Credentials
 | Role | Username | Password | Access Privileges |
 | :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin` | `admin123` | Full access: User management (add/edit/delete), POS, Inventory, Reports, Settings |
-| **Store Manager** | `manager` | `manager123` | Inventory catalog, Supplier POs, Audit corrections, and Financial reports |
-| **POS Cashier** | `cashier1` | `cashier123` | POS Billing Terminal and sales invoice generation |
+| **Website Owner (Super Admin)** | `admin` | `admin123` | Complete platform control: User & permission matrix, Store outlets, POS, Inventory, Reports, Django Admin |
+| **Store Admin** | `storeadmin` | `storeadmin123` | Multi-Store management: Add, edit, and configure store branches, view branch performance, products & reports |
+| **Store Manager** | `manager` | `manager123` | Branch inventory catalog, Supplier POs, Audit corrections, and Financial reports |
+| **POS Cashier** | `cashier1` | `cashier123` | POS Billing Terminal, sales checkout, and sales invoice generation |
 
 ---
 
@@ -142,7 +153,12 @@ untitled folder/
 └── templates/
     └── inventory/
         ├── base.html             # Master layout with responsive navbar & alert badges
+        ├── login.html            # Dedicated user authentication & quick-fill role portal
         ├── dashboard.html        # Executive KPIs, 7-day sales chart, critical stock alerts
+        ├── store_list.html       # Multi-Store branches overview & management
+        ├── store_form.html       # Add / edit retail store branch
+        ├── user_list.html        # Website Owner user & permission matrix
+        ├── user_form.html        # Add / edit user and granular access control
         ├── pos.html              # Flagship POS Billing Terminal with barcode scan & cart
         ├── product_list.html     # Inventory catalog table with filters
         ├── product_form.html     # Add/edit product

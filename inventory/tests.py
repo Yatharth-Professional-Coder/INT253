@@ -258,3 +258,62 @@ class SmartInventorySystemTests(TestCase):
         # Now cashier can access reports!
         res_reports_ok = self.client.get(reverse('reports'))
         self.assertEqual(res_reports_ok.status_code, 200)
+
+    def test_store_admin_crud_and_access_control(self):
+        """Test Store Admin role: adding, modifying, toggling and deleting store branches."""
+        from inventory.models import Store
+        
+        # 1. Cashier is blocked from store management
+        self.client.login(username='testcashier', password='pass123')
+        res_cashier = self.client.get(reverse('store_list'))
+        self.assertEqual(res_cashier.status_code, 302)
+        self.assertEqual(res_cashier.url, reverse('dashboard'))
+
+        # 2. Create Store Admin user with can_manage_stores=True
+        store_admin = User.objects.create_user('storelead', 'lead@test.com', 'pass123', is_staff=True)
+        store_admin.profile.can_manage_stores = True
+        store_admin.profile.role_title = "Store Admin"
+        store_admin.profile.save()
+
+        self.client.login(username='storelead', password='pass123')
+        res_stores = self.client.get(reverse('store_list'))
+        self.assertEqual(res_stores.status_code, 200)
+
+        # 3. Add new store branch
+        res_add = self.client.post(reverse('store_create'), {
+            'name': 'Eastside Mall Branch',
+            'code': 'STR-EAST-01',
+            'manager_name': 'Robert Manager',
+            'phone': '+1 555-8888',
+            'city': 'Seattle, WA',
+            'is_main': False,
+            'is_active': True
+        })
+        self.assertEqual(res_add.status_code, 302)
+        new_store = Store.objects.get(code='STR-EAST-01')
+        self.assertEqual(new_store.name, 'Eastside Mall Branch')
+
+        # 4. Modify store branch details
+        res_edit = self.client.post(reverse('store_update', kwargs={'pk': new_store.id}), {
+            'name': 'Eastside Supercenter',
+            'code': 'STR-EAST-01',
+            'manager_name': 'Robert Manager',
+            'phone': '+1 555-9999',
+            'city': 'Seattle, WA',
+            'is_main': False,
+            'is_active': True
+        })
+        self.assertEqual(res_edit.status_code, 302)
+        new_store.refresh_from_db()
+        self.assertEqual(new_store.name, 'Eastside Supercenter')
+
+        # 5. Toggle store operational status
+        self.client.get(reverse('store_toggle_status', kwargs={'pk': new_store.id}))
+        new_store.refresh_from_db()
+        self.assertFalse(new_store.is_active)
+
+        # 6. Delete store branch
+        res_del = self.client.post(reverse('store_delete', kwargs={'pk': new_store.id}))
+        self.assertEqual(res_del.status_code, 302)
+        self.assertFalse(Store.objects.filter(code='STR-EAST-01').exists())
+
