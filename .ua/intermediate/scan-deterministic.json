@@ -1,0 +1,279 @@
+{
+  "scriptCompleted": true,
+  "contentDigest": "626c671850b36ef1dc07d8f24264a333779a18acbf77bd99b6e06c1971ae86da",
+  "files": [
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 160,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "inventory/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/admin.py",
+      "language": "python",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/apps.py",
+      "language": "python",
+      "sizeLines": 6,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/context_processors.py",
+      "language": "python",
+      "sizeLines": 19,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/forms.py",
+      "language": "python",
+      "sizeLines": 156,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/management/commands/seed_data.py",
+      "language": "python",
+      "sizeLines": 261,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/migrations/0001_initial.py",
+      "language": "python",
+      "sizeLines": 171,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/migrations/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/models.py",
+      "language": "python",
+      "sizeLines": 259,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/services.py",
+      "language": "python",
+      "sizeLines": 214,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/tests.py",
+      "language": "python",
+      "sizeLines": 232,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/urls.py",
+      "language": "python",
+      "sizeLines": 52,
+      "fileCategory": "code"
+    },
+    {
+      "path": "inventory/views.py",
+      "language": "python",
+      "sizeLines": 883,
+      "fileCategory": "code"
+    },
+    {
+      "path": "manage.py",
+      "language": "python",
+      "sizeLines": 22,
+      "fileCategory": "code"
+    },
+    {
+      "path": "requirements.txt",
+      "language": "txt",
+      "sizeLines": 6,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "smart_inventory/__init__.py",
+      "language": "python",
+      "sizeLines": 0,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/asgi.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/settings.py",
+      "language": "python",
+      "sizeLines": 134,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/urls.py",
+      "language": "python",
+      "sizeLines": 29,
+      "fileCategory": "code"
+    },
+    {
+      "path": "smart_inventory/wsgi.py",
+      "language": "python",
+      "sizeLines": 16,
+      "fileCategory": "code"
+    },
+    {
+      "path": "start.sh",
+      "language": "shell",
+      "sizeLines": 28,
+      "fileCategory": "script"
+    },
+    {
+      "path": "static/.gitkeep",
+      "language": "unknown",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "templates/inventory/base.html",
+      "language": "html",
+      "sizeLines": 348,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/confirm_delete.html",
+      "language": "html",
+      "sizeLines": 29,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/dashboard.html",
+      "language": "html",
+      "sizeLines": 374,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/login.html",
+      "language": "html",
+      "sizeLines": 176,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/low_stock_alerts.html",
+      "language": "html",
+      "sizeLines": 210,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/pos.html",
+      "language": "html",
+      "sizeLines": 871,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/product_form.html",
+      "language": "html",
+      "sizeLines": 113,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/product_list.html",
+      "language": "html",
+      "sizeLines": 144,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/purchase_detail.html",
+      "language": "html",
+      "sizeLines": 108,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/purchase_form.html",
+      "language": "html",
+      "sizeLines": 216,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/purchase_list.html",
+      "language": "html",
+      "sizeLines": 87,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/reports.html",
+      "language": "html",
+      "sizeLines": 237,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/sale_list.html",
+      "language": "html",
+      "sizeLines": 150,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/sale_receipt.html",
+      "language": "html",
+      "sizeLines": 149,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/stock_adjustments.html",
+      "language": "html",
+      "sizeLines": 143,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/supplier_form.html",
+      "language": "html",
+      "sizeLines": 62,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/supplier_list.html",
+      "language": "html",
+      "sizeLines": 87,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/user_form.html",
+      "language": "html",
+      "sizeLines": 114,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "templates/inventory/user_list.html",
+      "language": "html",
+      "sizeLines": 166,
+      "fileCategory": "markup"
+    }
+  ],
+  "totalFiles": 42,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "moderate",
+  "failures": [],
+  "stats": {
+    "filesScanned": 42,
+    "byCategory": {
+      "docs": 2,
+      "code": 20,
+      "script": 1,
+      "markup": 19
+    },
+    "byLanguage": {
+      "markdown": 1,
+      "python": 19,
+      "txt": 1,
+      "shell": 1,
+      "unknown": 1,
+      "html": 19
+    }
+  }
+}
