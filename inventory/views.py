@@ -780,6 +780,9 @@ def user_list(request):
         if u.is_superuser:
             role = 'Website Owner (Super Admin)'
             role_badge = 'bg-danger'
+        elif profile.can_manage_stores:
+            role = 'Store Admin (Multi-Store)'
+            role_badge = 'bg-warning text-dark'
         elif u.is_staff:
             role = profile.role_title or 'Store Manager'
             role_badge = 'bg-primary'
@@ -826,6 +829,10 @@ def user_create(request):
                     user.is_superuser = True
                     user.is_staff = True
                     role_title = "Website Owner"
+                elif role == 'store_admin':
+                    user.is_superuser = False
+                    user.is_staff = True
+                    role_title = "Store Admin"
                 elif role == 'manager':
                     user.is_superuser = False
                     user.is_staff = True
@@ -840,6 +847,8 @@ def user_create(request):
                 # Configure UserProfile access permissions
                 profile, _ = UserProfile.objects.get_or_create(user=user)
                 profile.role_title = role_title
+                profile.assigned_store = form.cleaned_data.get('assigned_store')
+                profile.can_manage_stores = form.cleaned_data.get('can_manage_stores', False) or (role == 'store_admin') or user.is_superuser
                 profile.can_access_pos = form.cleaned_data['can_access_pos']
                 profile.can_manage_products = form.cleaned_data['can_manage_products'] if not user.is_superuser else True
                 profile.can_manage_suppliers = form.cleaned_data['can_manage_suppliers'] if not user.is_superuser else True
