@@ -1,0 +1,87 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Purchase Orders & Stock In | SmartStock Pro{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 page-header">
+    <div>
+        <h1 class="page-title">Purchase Orders &amp; Stock Replenishment</h1>
+        <p class="page-subtitle">Track incoming vendor shipments. Marking an order "Received" automatically increases product stock.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'purchase_create' %}" class="btn btn-primary d-flex align-items-center gap-2 fw-semibold px-3 py-2 shadow-sm">
+            <i class="bi bi-cart-plus-fill"></i> New Purchase Order
+        </a>
+    </div>
+</div>
+
+<div class="card card-custom overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-custom align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>PO Invoice #</th>
+                    <th>Supplier</th>
+                    <th>Date Ordered</th>
+                    <th class="text-center">Items Received</th>
+                    <th>Status</th>
+                    <th class="text-end">Total Amount</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for po in purchases %}
+                <tr>
+                    <td>
+                        <a href="{% url 'purchase_detail' po.id %}" class="fw-bold text-decoration-none">
+                            {{ po.invoice_number }}
+                        </a>
+                    </td>
+                    <td>
+                        <div class="fw-semibold text-dark">{{ po.supplier.name }}</div>
+                        <span class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ po.supplier.phone }}</span>
+                    </td>
+                    <td>
+                        <span>{{ po.purchase_date|date:"M d, Y" }}</span>
+                        <div class="text-muted small">{{ po.purchase_date|date:"H:i A" }}</div>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-light text-dark border">{{ po.items.count }} items ({{ po.item_count }} units)</span>
+                    </td>
+                    <td>
+                        {% if po.status == 'received' %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2">
+                                <i class="bi bi-check2-circle me-1"></i>Received &amp; Stocked
+                            </span>
+                        {% elif po.status == 'pending' %}
+                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle py-1 px-2">
+                                <i class="bi bi-clock me-1"></i>Pending Arrival
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger py-1 px-2">Cancelled</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end font-monospace fw-bold text-dark fs-6">
+                        ${{ po.total_amount|floatformat:2 }}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'purchase_detail' po.id %}" class="btn btn-sm btn-outline-secondary" title="View Purchase Order">
+                            <i class="bi bi-eye"></i> View PO
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-bag-plus fs-1 mb-2 d-block"></i>
+                        <p class="mb-1 fw-semibold">No purchase orders recorded yet.</p>
+                        <a href="{% url 'purchase_create' %}" class="btn btn-sm btn-primary mt-2">Create First Purchase Order</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

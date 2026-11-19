@@ -1,0 +1,871 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}POS Billing Terminal | SmartStock Pro{% endblock %}
+
+{% block extra_head %}
+<style>
+    .pos-container {
+        height: calc(100vh - 120px);
+        min-height: 650px;
+    }
+    .product-grid-container {
+        overflow-y: auto;
+        height: calc(100vh - 230px);
+        padding-right: 6px;
+    }
+    .cart-items-container {
+        overflow-y: auto;
+        height: calc(100vh - 460px);
+        min-height: 200px;
+        padding-right: 4px;
+    }
+    .pos-card {
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        background: #ffffff;
+        position: relative;
+    }
+    .pos-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(37, 99, 235, 0.12);
+        border-color: var(--primary-color);
+    }
+    .pos-card.out-of-stock {
+        opacity: 0.55;
+        cursor: not-allowed;
+        background-color: #f8fafc;
+    }
+    .category-pill {
+        cursor: pointer;
+        font-size: 0.825rem;
+        font-weight: 600;
+        padding: 0.45rem 1rem;
+        border-radius: 20px;
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        transition: all 0.2s;
+    }
+    .category-pill:hover, .category-pill.active {
+        background-color: var(--primary-color);
+        color: #ffffff;
+    }
+    .cart-table th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #64748b;
+        background: #f8fafc;
+        padding: 0.5rem;
+    }
+    .cart-table td {
+        padding: 0.6rem 0.5rem;
+        vertical-align: middle;
+        font-size: 0.875rem;
+    }
+    .qty-btn {
+        width: 26px;
+        height: 26px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+    .payment-method-btn {
+        flex: 1;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.25rem;
+    }
+    .payment-method-btn.active {
+        background-color: var(--primary-color);
+        color: #ffffff;
+        border-color: var(--primary-color);
+    }
+
+    /* Print receipt styling */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #printableReceipt, #printableReceipt * {
+            visibility: visible;
+        }
+        #printableReceipt {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            margin: 0;
+            padding: 10px;
+        }
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3 pos-container">
+    <!-- LEFT PANEL: PRODUCT SEARCH, CATEGORY FILTERS & PRODUCTS GRID -->
+    <div class="col-lg-7 col-xl-8 d-flex flex-column">
+        <!-- Top Toolbar: Barcode/Search & Category Filters -->
+        <div class="card card-custom p-3 mb-3">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-7">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" id="posSearchInput" class="form-control border-start-0 ps-0" placeholder="Scan barcode or type product name / SKU (Press F2 to focus)..." autofocus autocomplete="off">
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                </div>
+                <div class="col-md-5 d-flex gap-2 justify-content-md-end">
+                    <div class="badge bg-light text-dark border d-flex align-items-center gap-1 px-3">
+                        <i class="bi bi-upc-scan text-primary"></i>
+                        <span>Barcode Ready</span>
+                    </div>
+                    <span id="productCounter" class="badge bg-primary-subtle text-primary border d-flex align-items-center px-3">
+                        Loading products...
+                    </span>
+                </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="d-flex gap-2 overflow-auto pt-2 pb-1" id="categoryPillsList">
+                <button class="category-pill active" data-category="">All Categories</button>
+                {% for cat in categories %}
+                <button class="category-pill" data-category="{{ cat.id }}">{{ cat.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Products Cards Grid -->
+        <div class="product-grid-container" id="productGrid">
+            <!-- Dynamic product cards populated via JavaScript -->
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: ACTIVE BILLING CART & CHECKOUT TERMINAL -->
+    <div class="col-lg-5 col-xl-4 d-flex flex-column">
+        <div class="card card-custom p-3 h-100 d-flex flex-column shadow-sm">
+            <!-- Customer Selector Bar -->
+            <div class="d-flex gap-2 mb-3">
+                <div class="flex-grow-1">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light"><i class="bi bi-person-fill"></i></span>
+                        <select id="customerSelect" class="form-select form-select-sm">
+                            <option value="">Walk-in Customer</option>
+                            {% for c in customers %}
+                            <option value="{{ c.id }}" data-name="{{ c.name }}" data-phone="{{ c.phone|default:'' }}">{{ c.name }} ({{ c.phone|default:'No Phone' }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#newCustomerModal" title="Add Customer">
+                    <i class="bi bi-person-plus-fill"></i>
+                </button>
+            </div>
+
+            <!-- Cart Table Items -->
+            <div class="cart-items-container flex-grow-1 border rounded-3 mb-2 bg-light">
+                <table class="table cart-table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th class="text-center" style="width: 100px;">Qty</th>
+                            <th class="text-end" style="width: 75px;">Total</th>
+                            <th style="width: 32px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartItemsList">
+                        <!-- Items rendered via JS -->
+                    </tbody>
+                </table>
+                <div id="cartEmptyState" class="text-center py-5 text-muted">
+                    <i class="bi bi-cart3 fs-1 text-secondary opacity-50 mb-2 d-block"></i>
+                    <p class="mb-0 fw-medium">Cart is currently empty.</p>
+                    <small>Scan a barcode or click a product on the left to add items.</small>
+                </div>
+            </div>
+
+            <!-- Billing Calculations & Totals -->
+            <div class="bg-light p-3 rounded-3 border mb-3">
+                <div class="d-flex justify-content-between text-muted small mb-1">
+                    <span>Subtotal</span>
+                    <span id="displaySubtotal" class="fw-semibold text-dark">$0.00</span>
+                </div>
+                <div class="row g-2 align-items-center mb-1">
+                    <div class="col-6 d-flex align-items-center text-muted small">
+                        <span>Tax Rate:</span>
+                        <select id="taxRateSelect" class="form-select form-select-sm py-0 ms-1" style="width: 70px; font-size: 0.8rem;">
+                            <option value="0">0%</option>
+                            <option value="5" selected>5%</option>
+                            <option value="10">10%</option>
+                            <option value="12">12%</option>
+                            <option value="18">18%</option>
+                        </select>
+                    </div>
+                    <div class="col-6 text-end text-muted small">
+                        <span>+$</span><span id="displayTax">0.00</span>
+                    </div>
+                </div>
+                <div class="row g-2 align-items-center mb-2">
+                    <div class="col-6 d-flex align-items-center text-muted small">
+                        <span>Discount ($):</span>
+                        <input type="number" id="discountInput" class="form-control form-control-sm py-0 ms-1" value="0.00" min="0" step="0.50" style="width: 75px; font-size: 0.8rem;">
+                    </div>
+                    <div class="col-6 text-end text-muted small">
+                        <span>-$</span><span id="displayDiscount">0.00</span>
+                    </div>
+                </div>
+
+                <div class="border-top pt-2 d-flex justify-content-between align-items-center">
+                    <span class="fs-6 fw-bold text-dark">Grand Total</span>
+                    <span id="displayGrandTotal" class="fs-4 fw-extrabold text-primary">$0.00</span>
+                </div>
+            </div>
+
+            <!-- Payment Method & Tender Calculator -->
+            <div class="mb-3">
+                <label class="form-label text-muted small fw-bold text-uppercase mb-1">Payment Method</label>
+                <div class="d-flex gap-1 mb-2">
+                    <button type="button" class="btn btn-outline-secondary payment-method-btn active" data-method="cash">
+                        <i class="bi bi-cash me-1"></i> Cash
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary payment-method-btn" data-method="card">
+                        <i class="bi bi-credit-card me-1"></i> Card
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary payment-method-btn" data-method="upi">
+                        <i class="bi bi-qr-code-scan me-1"></i> UPI
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary payment-method-btn" data-method="due">
+                        <i class="bi bi-clock-history me-1"></i> Credit
+                    </button>
+                </div>
+
+                <!-- Cash Tendered & Change -->
+                <div id="cashTenderContainer" class="row g-2 align-items-center">
+                    <div class="col-6">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="amountPaidInput" class="form-control" placeholder="Tendered" min="0" step="1">
+                        </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <div class="small text-muted">Change:</div>
+                        <div id="displayChange" class="fw-bold text-success fs-6">$0.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons: Clear & Checkout -->
+            <div class="d-flex gap-2">
+                <button type="button" id="clearCartBtn" class="btn btn-outline-danger px-3" title="Clear Cart">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <button type="button" id="checkoutBtn" class="btn btn-primary flex-grow-1 fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-check2-circle fs-5"></i>
+                    <span>Complete Sale &amp; Bill</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: ADD QUICK CUSTOMER -->
+<div class="modal fade" id="newCustomerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="bi bi-person-plus text-primary me-2"></i>Quick Add Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Customer Name *</label>
+                    <input type="text" id="newCustName" class="form-control" placeholder="Full Name" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Phone Number</label>
+                    <input type="text" id="newCustPhone" class="form-control" placeholder="+1 (555) 000-0000">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Email</label>
+                    <input type="email" id="newCustEmail" class="form-control" placeholder="name@domain.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="saveQuickCustomerBtn" class="btn btn-primary">Save &amp; Select</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: RECEIPT & PRINT PREVIEW -->
+<div class="modal fade" id="receiptModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success-subtle border-0">
+                <h5 class="modal-title text-success fw-bold">
+                    <i class="bi bi-check-circle-fill me-2"></i>Transaction Completed!
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" id="printableReceipt">
+                <!-- Thermal Receipt Layout -->
+                <div class="text-center pb-3 border-bottom border-dashed">
+                    <h4 class="fw-bold mb-0">SmartStock Pro</h4>
+                    <p class="text-muted small mb-1">Official Tax Invoice / Cash Memo</p>
+                    <div class="small text-secondary">Tel: +1 (555) 123-4567 | info@smartstock.local</div>
+                </div>
+
+                <div class="py-2 border-bottom border-dashed small">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Invoice No:</span>
+                        <strong id="receiptInvoiceNo">-</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Date &amp; Time:</span>
+                        <span id="receiptDateTime">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Customer:</span>
+                        <span id="receiptCustomer">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Payment:</span>
+                        <span id="receiptPayment" class="text-uppercase fw-semibold">-</span>
+                    </div>
+                </div>
+
+                <!-- Receipt Items -->
+                <div class="py-2 border-bottom border-dashed">
+                    <table class="w-100 small">
+                        <thead>
+                            <tr class="text-muted border-bottom">
+                                <th class="text-start pb-1">Item</th>
+                                <th class="text-center pb-1">Qty</th>
+                                <th class="text-end pb-1">Price</th>
+                                <th class="text-end pb-1">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiptItemsBody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Receipt Totals -->
+                <div class="py-2 border-bottom border-dashed small">
+                    <div class="d-flex justify-content-between text-muted">
+                        <span>Subtotal:</span>
+                        <span id="receiptSubtotal">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted">
+                        <span>Discount:</span>
+                        <span id="receiptDiscount">-$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted">
+                        <span>Tax:</span>
+                        <span id="receiptTax">+$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 fw-bold text-dark pt-1">
+                        <span>Total Paid:</span>
+                        <span id="receiptGrandTotal">$0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted" id="receiptChangeRow">
+                        <span>Cash Tendered: <strong id="receiptTendered">$0.00</strong></span>
+                        <span>Change Returned: <strong class="text-success" id="receiptChange">$0.00</strong></span>
+                    </div>
+                </div>
+
+                <div class="text-center pt-3 small text-muted">
+                    <p class="mb-1">Thank you for your business!</p>
+                    <p class="mb-0 text-secondary" style="font-size: 0.7rem;">Stock inventory automatically updated &bull; Powered by SmartStock POS</p>
+                </div>
+            </div>
+            <div class="modal-footer no-print">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="window.print()">
+                    <i class="bi bi-printer-fill me-1"></i> Print Receipt
+                </button>
+                <button type="button" class="btn btn-success" id="receiptNewSaleBtn">
+                    <i class="bi bi-plus-circle me-1"></i> Next Sale
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // State management for POS Terminal
+    const posState = {
+        products: [],
+        filteredProducts: [],
+        selectedCategory: "",
+        searchQuery: "",
+        cart: [], // [{ id, name, sku, price, stock, quantity, unit }]
+        taxRate: 5.0,
+        discountAmount: 0.0,
+        paymentMethod: "cash",
+        amountPaid: 0.0,
+        lastSale: null
+    };
+
+    // DOM Elements
+    const searchInput = document.getElementById('posSearchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const categoryPills = document.querySelectorAll('.category-pill');
+    const productGrid = document.getElementById('productGrid');
+    const productCounter = document.getElementById('productCounter');
+    const cartItemsList = document.getElementById('cartItemsList');
+    const cartEmptyState = document.getElementById('cartEmptyState');
+    const displaySubtotal = document.getElementById('displaySubtotal');
+    const displayTax = document.getElementById('displayTax');
+    const displayDiscount = document.getElementById('displayDiscount');
+    const displayGrandTotal = document.getElementById('displayGrandTotal');
+    const taxRateSelect = document.getElementById('taxRateSelect');
+    const discountInput = document.getElementById('discountInput');
+    const amountPaidInput = document.getElementById('amountPaidInput');
+    const displayChange = document.getElementById('displayChange');
+    const customerSelect = document.getElementById('customerSelect');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const clearCartBtn = document.getElementById('clearCartBtn');
+    const receiptModalEl = document.getElementById('receiptModal');
+    const receiptModal = new bootstrap.Modal(receiptModalEl);
+
+    // Load initial products from API
+    async function loadProducts() {
+        try {
+            const url = `{% url 'api_pos_search' %}?q=${encodeURIComponent(posState.searchQuery)}&category=${encodeURIComponent(posState.selectedCategory)}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            posState.products = data.products;
+            renderProductGrid();
+        } catch (err) {
+            console.error("Error loading products:", err);
+            productCounter.innerText = "Error loading products";
+        }
+    }
+
+    // Render Product Cards Grid
+    function renderProductGrid() {
+        productCounter.innerText = `${posState.products.length} Products`;
+        if (posState.products.length === 0) {
+            productGrid.innerHTML = `
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-search fs-1 mb-2 d-block"></i>
+                    <p class="mb-0 fw-semibold">No products found matching your search.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '<div class="row g-3">';
+        posState.products.forEach(p => {
+            const isOutOfStock = p.current_stock <= 0;
+            const isLowStock = p.is_low_stock;
+
+            let badgeHtml = '';
+            if (isOutOfStock) {
+                badgeHtml = '<span class="badge badge-out-of-stock position-absolute top-0 end-0 m-2">Out of Stock</span>';
+            } else if (isLowStock) {
+                badgeHtml = `<span class="badge badge-low-stock position-absolute top-0 end-0 m-2">Low Stock: ${p.current_stock}</span>`;
+            } else {
+                badgeHtml = `<span class="badge badge-in-stock position-absolute top-0 end-0 m-2">Stock: ${p.current_stock}</span>`;
+            }
+
+            html += `
+                <div class="col-sm-6 col-md-4 col-xl-3">
+                    <div class="pos-card p-3 h-100 ${isOutOfStock ? 'out-of-stock' : ''}" onclick="handleProductClick(${p.id})">
+                        ${badgeHtml}
+                        <div class="text-muted small mb-1 pe-4" style="font-size: 0.72rem;">${p.category}</div>
+                        <h6 class="fw-bold mb-1 text-truncate" title="${p.name}">${p.name}</h6>
+                        <div class="text-secondary small mb-2" style="font-size: 0.75rem;">SKU: ${p.sku}</div>
+                        <div class="d-flex align-items-center justify-content-between mt-auto">
+                            <span class="fs-6 fw-bold text-primary">$${p.selling_price.toFixed(2)}</span>
+                            <button class="btn btn-sm ${isOutOfStock ? 'btn-secondary' : 'btn-outline-primary'} py-0 px-2" ${isOutOfStock ? 'disabled' : ''}>
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        productGrid.innerHTML = html;
+    }
+
+    // Handle Card Click -> Add to Cart
+    window.handleProductClick = function(productId) {
+        const product = posState.products.find(p => p.id === productId);
+        if (!product || product.current_stock <= 0) return;
+
+        const cartItem = posState.cart.find(item => item.id === productId);
+        if (cartItem) {
+            if (cartItem.quantity + 1 > product.current_stock) {
+                alert(`Cannot add more. Only ${product.current_stock} available in stock!`);
+                return;
+            }
+            cartItem.quantity += 1;
+        } else {
+            posState.cart.push({
+                id: product.id,
+                name: product.name,
+                sku: product.sku,
+                price: product.selling_price,
+                stock: product.current_stock,
+                unit: product.unit,
+                quantity: 1
+            });
+        }
+        renderCart();
+    };
+
+    // Render Cart Items & Recalculate Totals
+    function renderCart() {
+        if (posState.cart.length === 0) {
+            cartItemsList.innerHTML = '';
+            cartEmptyState.style.display = 'block';
+            displaySubtotal.innerText = '$0.00';
+            displayTax.innerText = '0.00';
+            displayDiscount.innerText = '0.00';
+            displayGrandTotal.innerText = '$0.00';
+            displayChange.innerText = '$0.00';
+            amountPaidInput.value = '';
+            return;
+        }
+
+        cartEmptyState.style.display = 'none';
+        let subtotal = 0;
+        let html = '';
+
+        posState.cart.forEach((item, index) => {
+            const lineTotal = item.price * item.quantity;
+            subtotal += lineTotal;
+
+            html += `
+                <tr>
+                    <td>
+                        <div class="fw-semibold text-truncate" style="max-width: 140px;" title="${item.name}">${item.name}</div>
+                        <span class="text-muted" style="font-size: 0.75rem;">$${item.price.toFixed(2)} / ${item.unit}</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-inline-flex align-items-center gap-1">
+                            <button class="btn btn-sm btn-light border qty-btn" onclick="updateItemQty(${index}, -1)">-</button>
+                            <span class="fw-bold px-1" style="font-size: 0.9rem;">${item.quantity}</span>
+                            <button class="btn btn-sm btn-light border qty-btn" onclick="updateItemQty(${index}, 1)">+</button>
+                        </div>
+                    </td>
+                    <td class="text-end fw-semibold text-dark">
+                        $${lineTotal.toFixed(2)}
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm text-danger p-0 border-0 bg-transparent" onclick="removeFromCart(${index})" title="Remove">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        cartItemsList.innerHTML = html;
+
+        // Financial Totals Calculations
+        const discount = parseFloat(discountInput.value) || 0.0;
+        const taxRate = parseFloat(taxRateSelect.value) || 0.0;
+        const taxable = Math.max(0, subtotal - discount);
+        const taxAmount = (taxable * (taxRate / 100));
+        const grandTotal = taxable + taxAmount;
+
+        displaySubtotal.innerText = '$' + subtotal.toFixed(2);
+        displayDiscount.innerText = discount.toFixed(2);
+        displayTax.innerText = taxAmount.toFixed(2);
+        displayGrandTotal.innerText = '$' + grandTotal.toFixed(2);
+
+        // Update tendered & change
+        if (!amountPaidInput.value || parseFloat(amountPaidInput.value) < grandTotal) {
+            amountPaidInput.value = grandTotal.toFixed(2);
+        }
+        updateChangeCalculation(grandTotal);
+    }
+
+    window.updateItemQty = function(index, delta) {
+        const item = posState.cart[index];
+        if (!item) return;
+        const newQty = item.quantity + delta;
+        if (newQty <= 0) {
+            removeFromCart(index);
+            return;
+        }
+        if (newQty > item.stock) {
+            alert(`Stock limit reached! Only ${item.stock} available.`);
+            return;
+        }
+        item.quantity = newQty;
+        renderCart();
+    };
+
+    window.removeFromCart = function(index) {
+        posState.cart.splice(index, 1);
+        renderCart();
+    };
+
+    function updateChangeCalculation(grandTotal) {
+        const paid = parseFloat(amountPaidInput.value) || 0.0;
+        const change = Math.max(0, paid - grandTotal);
+        displayChange.innerText = '$' + change.toFixed(2);
+    }
+
+    amountPaidInput.addEventListener('input', function() {
+        const grandTotalText = displayGrandTotal.innerText.replace('$', '');
+        const grandTotal = parseFloat(grandTotalText) || 0.0;
+        updateChangeCalculation(grandTotal);
+    });
+
+    discountInput.addEventListener('input', renderCart);
+    taxRateSelect.addEventListener('change', renderCart);
+
+    // Payment method selector buttons
+    document.querySelectorAll('.payment-method-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.payment-method-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            posState.paymentMethod = this.dataset.method;
+        });
+    });
+
+    // Clear Cart
+    clearCartBtn.addEventListener('click', function() {
+        if (posState.cart.length > 0 && confirm("Clear current cart?")) {
+            posState.cart = [];
+            renderCart();
+        }
+    });
+
+    // Search and barcode scanner behavior
+    let searchTimeout = null;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+            posState.searchQuery = searchInput.value.trim();
+            // If barcode matches exactly 1 item, auto add!
+            await loadProducts();
+            if (posState.products.length === 1 && (posState.products[0].barcode === posState.searchQuery || posState.products[0].sku.toLowerCase() === posState.searchQuery.toLowerCase())) {
+                handleProductClick(posState.products[0].id);
+                searchInput.value = '';
+                posState.searchQuery = '';
+                await loadProducts();
+            }
+        }, 250);
+    });
+
+    clearSearchBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        posState.searchQuery = '';
+        loadProducts();
+        searchInput.focus();
+    });
+
+    // Hotkey F2 to focus search
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'F2') {
+            e.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+        }
+    });
+
+    // Category pills filter
+    categoryPills.forEach(pill => {
+        pill.addEventListener('click', function() {
+            categoryPills.forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+            posState.selectedCategory = this.dataset.category;
+            loadProducts();
+        });
+    });
+
+    // POS Checkout Submission
+    checkoutBtn.addEventListener('click', async function() {
+        if (posState.cart.length === 0) {
+            alert("Cart is empty! Add products first.");
+            return;
+        }
+
+        const grandTotalText = displayGrandTotal.innerText.replace('$', '');
+        const grandTotal = parseFloat(grandTotalText) || 0.0;
+        const paid = parseFloat(amountPaidInput.value) || grandTotal;
+
+        if (posState.paymentMethod === 'cash' && paid < grandTotal) {
+            if (!confirm(`Amount tendered ($${paid.toFixed(2)}) is less than Grand Total ($${grandTotal.toFixed(2)}). Mark balance as Due/Credit?`)) {
+                return;
+            }
+        }
+
+        checkoutBtn.disabled = true;
+        checkoutBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+
+        const selectedCustomerOption = customerSelect.options[customerSelect.selectedIndex];
+        const customerId = customerSelect.value || null;
+        const customerName = selectedCustomerOption ? selectedCustomerOption.dataset.name || "Walk-in Customer" : "Walk-in Customer";
+        const customerPhone = selectedCustomerOption ? selectedCustomerOption.dataset.phone || "" : "";
+
+        const payload = {
+            items: posState.cart.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity,
+                unit_price: item.price,
+                discount: 0
+            })),
+            customer_id: customerId,
+            customer_name: customerName,
+            customer_phone: customerPhone,
+            payment_method: posState.paymentMethod,
+            tax_rate: parseFloat(taxRateSelect.value) || 0,
+            discount_amount: parseFloat(discountInput.value) || 0,
+            amount_paid: paid,
+            cashier: "Admin Cashier",
+            notes: "POS Terminal Transaction"
+        };
+
+        try {
+            const res = await fetch("{% url 'api_pos_checkout' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await res.json();
+            if (result.success) {
+                // Populate Printable Receipt Modal
+                showReceiptModal(result, payload);
+                // Clear cart & reload products to reflect updated inventory in real time!
+                posState.cart = [];
+                renderCart();
+                loadProducts();
+            } else {
+                alert("Checkout Failed: " + result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Network or transaction error occurred.");
+        } finally {
+            checkoutBtn.disabled = false;
+            checkoutBtn.innerHTML = '<i class="bi bi-check2-circle fs-5"></i> <span>Complete Sale &amp; Bill</span>';
+        }
+    });
+
+    // Populate Receipt Modal
+    function showReceiptModal(saleResult, payload) {
+        document.getElementById('receiptInvoiceNo').innerText = saleResult.invoice_number;
+        document.getElementById('receiptDateTime').innerText = new Date().toLocaleString();
+        document.getElementById('receiptCustomer').innerText = payload.customer_name;
+        document.getElementById('receiptPayment').innerText = payload.payment_method;
+
+        let itemsHtml = '';
+        payload.items.forEach(item => {
+            const p = posState.products.find(x => x.id === item.product_id) || { name: 'Item' };
+            const line = item.quantity * item.unit_price;
+            itemsHtml += `
+                <tr>
+                    <td class="text-start py-1">${p.name}</td>
+                    <td class="text-center py-1">${item.quantity}</td>
+                    <td class="text-end py-1">$${item.unit_price.toFixed(2)}</td>
+                    <td class="text-end py-1 font-monospace">$${line.toFixed(2)}</td>
+                </tr>
+            `;
+        });
+        document.getElementById('receiptItemsBody').innerHTML = itemsHtml;
+
+        document.getElementById('receiptSubtotal').innerText = '$' + (saleResult.grand_total - (payload.tax_rate > 0 ? (saleResult.grand_total * payload.tax_rate / 100) : 0)).toFixed(2);
+        document.getElementById('receiptDiscount').innerText = '-$' + payload.discount_amount.toFixed(2);
+        document.getElementById('receiptTax').innerText = '+$' + ((saleResult.grand_total * payload.tax_rate / 100) || 0).toFixed(2);
+        document.getElementById('receiptGrandTotal').innerText = '$' + saleResult.grand_total.toFixed(2);
+        document.getElementById('receiptTendered').innerText = '$' + saleResult.amount_paid.toFixed(2);
+        document.getElementById('receiptChange').innerText = '$' + saleResult.change_amount.toFixed(2);
+
+        receiptModal.show();
+    }
+
+    document.getElementById('receiptNewSaleBtn').addEventListener('click', function() {
+        receiptModal.hide();
+        searchInput.focus();
+    });
+
+    // Quick add customer via modal
+    document.getElementById('saveQuickCustomerBtn').addEventListener('click', async function() {
+        const name = document.getElementById('newCustName').value.trim();
+        const phone = document.getElementById('newCustPhone').value.trim();
+        const email = document.getElementById('newCustEmail').value.trim();
+
+        if (!name) {
+            alert("Customer name is required.");
+            return;
+        }
+
+        try {
+            const res = await fetch("{% url 'api_quick_customer' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken')
+                },
+                body: JSON.stringify({ name, phone, email })
+            });
+            const data = await res.json();
+            if (data.success) {
+                // Add option to customerSelect and select it
+                const opt = document.createElement('option');
+                opt.value = data.id;
+                opt.dataset.name = data.name;
+                opt.dataset.phone = data.phone;
+                opt.innerText = `${data.name} (${data.phone || 'No Phone'})`;
+                opt.selected = true;
+                customerSelect.appendChild(opt);
+
+                bootstrap.Modal.getInstance(document.getElementById('newCustomerModal')).hide();
+                document.getElementById('newCustName').value = '';
+                document.getElementById('newCustPhone').value = '';
+                document.getElementById('newCustEmail').value = '';
+            } else {
+                alert("Failed: " + data.error);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    });
+
+    // Helper: Django CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Initialize
+    loadProducts();
+</script>
+{% endblock %}
+

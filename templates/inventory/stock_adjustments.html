@@ -1,0 +1,143 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Stock Movements & Audit Log | SmartStock Pro{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 page-header">
+    <div>
+        <h1 class="page-title">Stock Movements &amp; Audit Log</h1>
+        <p class="page-subtitle">Complete ledger of automatic stock deductions (sales), additions (purchases), and manual corrections.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Manual Adjustment Form -->
+    <div class="col-lg-4">
+        <div class="card card-custom p-4 shadow-sm">
+            <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                <i class="bi bi-sliders text-primary"></i> Manual Stock Adjustment
+            </h5>
+            <p class="text-muted small mb-3">Record physical inventory count discrepancies, damaged/expired items, or customer returns.</p>
+
+            <form method="POST" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Select Product *</label>
+                    {{ form.product }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Adjustment Reason / Type *</label>
+                    {{ form.movement_type }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Quantity Change (+ or -) *</label>
+                    {{ form.quantity_change }}
+                    <div class="form-text small">{{ form.quantity_change.help_text }}</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Reference / Audit Memo</label>
+                    {{ form.reference_number }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Notes</label>
+                    {{ form.notes }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2">
+                    <i class="bi bi-arrow-repeat me-1"></i> Apply Stock Adjustment
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Movement Audit Trail Table -->
+    <div class="col-lg-8">
+        <div class="card card-custom overflow-hidden shadow-sm">
+            <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="fw-bold mb-0">Recent Stock Movements (Audit Trail)</h5>
+                <span class="badge bg-light text-muted border">Latest 100 events</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date &amp; Time</th>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th class="text-center">Change</th>
+                            <th class="text-center">New Stock</th>
+                            <th>Reference / Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in movements %}
+                        <tr>
+                            <td class="small text-muted" style="white-space: nowrap;">
+                                {{ m.created_at|date:"M d, H:i" }}
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark text-truncate" style="max-width: 170px;">{{ m.product.name }}</div>
+                                <span class="badge bg-light text-muted border font-monospace" style="font-size: 0.7rem;">{{ m.product.sku }}</span>
+                            </td>
+                            <td>
+                                {% if m.movement_type == 'purchase' %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                                        <i class="bi bi-box-arrow-in-down me-1"></i>Purchase
+                                    </span>
+                                {% elif m.movement_type == 'sale' %}
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                                        <i class="bi bi-cart-dash me-1"></i>POS Sale
+                                    </span>
+                                {% elif m.movement_type == 'damage' %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                                        <i class="bi bi-shield-x me-1"></i>Damaged
+                                    </span>
+                                {% elif m.movement_type == 'return' %}
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle">
+                                        <i class="bi bi-arrow-counterclockwise me-1"></i>Return
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary border">
+                                        <i class="bi bi-pencil-square me-1"></i>Audit Adj.
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center font-monospace fw-bold fs-6">
+                                {% if m.quantity > 0 %}
+                                    <span class="text-success">+{{ m.quantity }}</span>
+                                {% else %}
+                                    <span class="text-danger">{{ m.quantity }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center font-monospace fw-semibold">
+                                {{ m.new_stock }}
+                                <span class="text-muted small">({{ m.previous_stock }} &rarr; {{ m.new_stock }})</span>
+                            </td>
+                            <td class="small text-muted">
+                                {% if m.reference_number %}
+                                    <span class="fw-semibold text-dark">{{ m.reference_number }}</span>
+                                {% endif %}
+                                {% if m.notes %}<div class="text-truncate" style="max-width: 200px;" title="{{ m.notes }}">{{ m.notes }}</div>{% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-clock-history fs-1 mb-2 d-block"></i>
+                                <p class="mb-0">No stock movements recorded yet.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

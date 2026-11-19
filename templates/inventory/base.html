@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Inventory & POS System{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-subtle: #eff6ff;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-surface: #0f172a;
+            --card-border: #e2e8f0;
+            --bg-body: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Bar */
+        .navbar-custom {
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--primary-color) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 0.5rem 0.85rem !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+            background-color: var(--primary-subtle);
+        }
+
+        .pos-btn-nav {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: #ffffff !important;
+            font-weight: 700;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
+        }
+        .pos-btn-nav:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px -2px rgba(37, 99, 235, 0.4);
+            color: #ffffff !important;
+        }
+
+        /* Card Styles */
+        .card-custom {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-custom:hover {
+            box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-card {
+            border-radius: 14px;
+            padding: 1.25rem;
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+
+        /* Stock Badges */
+        .badge-in-stock {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            font-weight: 600;
+        }
+        .badge-low-stock {
+            background-color: #fffbeb;
+            color: #92400e;
+            border: 1px solid #fde68a;
+            font-weight: 600;
+        }
+        .badge-out-of-stock {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            font-weight: 600;
+        }
+
+        /* Tables */
+        .table-custom {
+            background: #ffffff;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+        .table-custom th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .table-custom td {
+            padding: 0.85rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.925rem;
+        }
+        .table-custom tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Page header */
+        .page-header {
+            margin-bottom: 1.5rem;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+        }
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--card-border);
+            background: #ffffff;
+            padding: 1.25rem 0;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Alerts pulsing indicator */
+        .pulse-badge {
+            animation: pulse-animation 2s infinite;
+        }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-lg-4">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">
+                <i class="bi bi-box-seam-fill"></i>
+                <span>SmartStock <span class="badge bg-primary text-white" style="font-size: 0.65rem; vertical-align: middle;">PRO</span></span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'dashboard' %}">
+                            <i class="bi bi-grid-1x2-fill"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/products/' in request.path %}active{% endif %}" href="{% url 'product_list' %}">
+                            <i class="bi bi-boxes"></i> Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item position-relative">
+                        <a class="nav-link {% if '/low-stock/' in request.path %}active{% endif %}" href="{% url 'low_stock_alerts' %}">
+                            <i class="bi bi-exclamation-triangle-fill text-warning"></i> Stock Alerts
+                            {% if total_stock_alerts > 0 %}
+                            <span class="badge bg-danger rounded-pill pulse-badge ms-1">{{ total_stock_alerts }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/suppliers/' in request.path %}active{% endif %}" href="{% url 'supplier_list' %}">
+                            <i class="bi bi-truck"></i> Suppliers
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/purchases/' in request.path %}active{% endif %}" href="{% url 'purchase_list' %}">
+                            <i class="bi bi-bag-plus-fill"></i> Purchases
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/sales/' in request.path %}active{% endif %}" href="{% url 'sale_list' %}">
+                            <i class="bi bi-receipt"></i> Sales Log
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/stock-adjustments/' in request.path %}active{% endif %}" href="{% url 'stock_adjustment_list' %}">
+                            <i class="bi bi-arrow-left-right"></i> Audit Log
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if '/reports/' in request.path %}active{% endif %}" href="{% url 'reports' %}">
+                            <i class="bi bi-graph-up-arrow"></i> Profit & Reports
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Quick POS Button -->
+                    <a href="{% url 'pos' %}" class="pos-btn-nav text-decoration-none">
+                        <i class="bi bi-calculator-fill me-1"></i> POS Billing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ALERT MESSAGES CONTAINER -->
+    <div class="container-fluid px-lg-4 mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% elif message.tags == 'error' %}bi-exclamation-octagon-fill{% else %}bi-info-circle-fill{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- MAIN BODY CONTENT -->
+    <main class="container-fluid px-lg-4 py-3 flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container-fluid px-lg-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div>
+                <strong>SmartStock Pro</strong> &mdash; Smart Inventory, Purchasing, POS Billing &amp; Profit Engine.
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-light text-dark border"><i class="bi bi-database me-1"></i> SQLite Database Active</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="bi bi-check2-circle me-1"></i> Auto Stock Sync Enabled</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
