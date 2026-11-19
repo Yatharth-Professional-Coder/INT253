@@ -1,0 +1,400 @@
+{
+  "batchIndex": 4,
+  "nodes": [
+    {
+      "id": "file:inventory/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "inventory/__init__.py",
+      "summary": "Source file __init__.py in the inventory module.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:inventory/apps.py",
+      "type": "file",
+      "name": "apps.py",
+      "filePath": "inventory/apps.py",
+      "summary": "Source file apps.py in the inventory module.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/apps.py:InventoryConfig",
+      "type": "class",
+      "name": "InventoryConfig",
+      "filePath": "inventory/apps.py",
+      "lineRange": [
+        4,
+        6
+      ],
+      "summary": "Class InventoryConfig implementing core logic for apps.",
+      "tags": [
+        "class",
+        "apps",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:inventory/migrations/0001_initial.py",
+      "type": "file",
+      "name": "0001_initial.py",
+      "filePath": "inventory/migrations/0001_initial.py",
+      "summary": "Source file 0001_initial.py in the inventory/migrations module.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:inventory/migrations/0001_initial.py:Migration",
+      "type": "class",
+      "name": "Migration",
+      "filePath": "inventory/migrations/0001_initial.py",
+      "lineRange": [
+        8,
+        171
+      ],
+      "summary": "Class Migration implementing core logic for 0001_initial.",
+      "tags": [
+        "class",
+        "0001_initial",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:inventory/migrations/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "inventory/migrations/__init__.py",
+      "summary": "Source file __init__.py in the inventory/migrations module.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:inventory/services.py",
+      "type": "file",
+      "name": "services.py",
+      "filePath": "inventory/services.py",
+      "summary": "Atomic transaction services for POS sales checkouts, purchase order receipts, and audit logs.",
+      "tags": [
+        "service",
+        "business-logic",
+        "transactions"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:inventory/services.py:generate_invoice_number",
+      "type": "function",
+      "name": "generate_invoice_number",
+      "filePath": "inventory/services.py",
+      "lineRange": [
+        7,
+        10
+      ],
+      "summary": "Function generate_invoice_number in services.py.",
+      "tags": [
+        "function",
+        "services",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/services.py:generate_po_number",
+      "type": "function",
+      "name": "generate_po_number",
+      "filePath": "inventory/services.py",
+      "lineRange": [
+        12,
+        13
+      ],
+      "summary": "Function generate_po_number in services.py.",
+      "tags": [
+        "function",
+        "services",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/services.py:process_pos_sale",
+      "type": "function",
+      "name": "process_pos_sale",
+      "filePath": "inventory/services.py",
+      "lineRange": [
+        16,
+        115
+      ],
+      "summary": "Function process_pos_sale in services.py.",
+      "tags": [
+        "function",
+        "services",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/services.py:process_purchase_order",
+      "type": "function",
+      "name": "process_purchase_order",
+      "filePath": "inventory/services.py",
+      "lineRange": [
+        119,
+        186
+      ],
+      "summary": "Function process_purchase_order in services.py.",
+      "tags": [
+        "function",
+        "services",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/services.py:manual_stock_adjustment",
+      "type": "function",
+      "name": "manual_stock_adjustment",
+      "filePath": "inventory/services.py",
+      "lineRange": [
+        190,
+        213
+      ],
+      "summary": "Function manual_stock_adjustment in services.py.",
+      "tags": [
+        "function",
+        "services",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:inventory/tests.py",
+      "type": "file",
+      "name": "tests.py",
+      "filePath": "inventory/tests.py",
+      "summary": "Automated unit test suite verifying stock deductions, oversell protections, and receipt calculations.",
+      "tags": [
+        "test",
+        "unit-test",
+        "qa"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:inventory/tests.py:SmartInventorySystemTests",
+      "type": "class",
+      "name": "SmartInventorySystemTests",
+      "filePath": "inventory/tests.py",
+      "lineRange": [
+        8,
+        260
+      ],
+      "summary": "Class SmartInventorySystemTests implementing core logic for tests.",
+      "tags": [
+        "class",
+        "tests",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:manage.py",
+      "type": "file",
+      "name": "manage.py",
+      "filePath": "manage.py",
+      "summary": "Django CLI management utility entry point.",
+      "tags": [
+        "entry-point",
+        "config",
+        "server"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:manage.py:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "manage.py",
+      "lineRange": [
+        7,
+        18
+      ],
+      "summary": "Function main in manage.py.",
+      "tags": [
+        "function",
+        "manage",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:smart_inventory/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "smart_inventory/__init__.py",
+      "summary": "Source file __init__.py in the smart_inventory module.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:smart_inventory/asgi.py",
+      "type": "file",
+      "name": "asgi.py",
+      "filePath": "smart_inventory/asgi.py",
+      "summary": "Source file asgi.py in the smart_inventory module.",
+      "tags": [
+        "entry-point",
+        "config",
+        "server"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:smart_inventory/settings.py",
+      "type": "file",
+      "name": "settings.py",
+      "filePath": "smart_inventory/settings.py",
+      "summary": "Django application configuration, database settings, installed apps, and middleware pipeline.",
+      "tags": [
+        "entry-point",
+        "config",
+        "server"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:smart_inventory/urls.py",
+      "type": "file",
+      "name": "urls.py",
+      "filePath": "smart_inventory/urls.py",
+      "summary": "URL routing dispatch for POS register, inventory management, reports, and authentication.",
+      "tags": [
+        "routing",
+        "urls",
+        "endpoints"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:smart_inventory/wsgi.py",
+      "type": "file",
+      "name": "wsgi.py",
+      "filePath": "smart_inventory/wsgi.py",
+      "summary": "Source file wsgi.py in the smart_inventory module.",
+      "tags": [
+        "entry-point",
+        "config",
+        "server"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:inventory/apps.py",
+      "target": "class:inventory/apps.py:InventoryConfig",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/migrations/0001_initial.py",
+      "target": "class:inventory/migrations/0001_initial.py:Migration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/services.py",
+      "target": "function:inventory/services.py:generate_invoice_number",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/services.py",
+      "target": "function:inventory/services.py:generate_po_number",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/services.py",
+      "target": "function:inventory/services.py:process_pos_sale",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/services.py",
+      "target": "function:inventory/services.py:process_purchase_order",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/services.py",
+      "target": "function:inventory/services.py:manual_stock_adjustment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/services.py",
+      "target": "file:inventory/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/tests.py",
+      "target": "class:inventory/tests.py:SmartInventorySystemTests",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/tests.py",
+      "target": "file:inventory/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/tests.py",
+      "target": "file:inventory/services.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:manage.py",
+      "target": "function:manage.py:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    }
+  ]
+}

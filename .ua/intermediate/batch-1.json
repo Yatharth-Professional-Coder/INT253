@@ -1,0 +1,921 @@
+{
+  "batchIndex": 1,
+  "nodes": [
+    {
+      "id": "file:inventory/forms.py",
+      "type": "file",
+      "name": "forms.py",
+      "filePath": "inventory/forms.py",
+      "summary": "Django ModelForms for Product, Supplier, Customer, and Stock Adjustment validation.",
+      "tags": [
+        "forms",
+        "validation",
+        "input"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:inventory/forms.py:ProductForm",
+      "type": "class",
+      "name": "ProductForm",
+      "filePath": "inventory/forms.py",
+      "lineRange": [
+        4,
+        21
+      ],
+      "summary": "Class ProductForm implementing core logic for forms.",
+      "tags": [
+        "class",
+        "forms",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/forms.py:SupplierForm",
+      "type": "class",
+      "name": "SupplierForm",
+      "filePath": "inventory/forms.py",
+      "lineRange": [
+        24,
+        35
+      ],
+      "summary": "Class SupplierForm implementing core logic for forms.",
+      "tags": [
+        "class",
+        "forms",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/forms.py:CategoryForm",
+      "type": "class",
+      "name": "CategoryForm",
+      "filePath": "inventory/forms.py",
+      "lineRange": [
+        38,
+        45
+      ],
+      "summary": "Class CategoryForm implementing core logic for forms.",
+      "tags": [
+        "class",
+        "forms",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/forms.py:CustomerForm",
+      "type": "class",
+      "name": "CustomerForm",
+      "filePath": "inventory/forms.py",
+      "lineRange": [
+        48,
+        57
+      ],
+      "summary": "Class CustomerForm implementing core logic for forms.",
+      "tags": [
+        "class",
+        "forms",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/forms.py:StockAdjustmentForm",
+      "type": "class",
+      "name": "StockAdjustmentForm",
+      "filePath": "inventory/forms.py",
+      "lineRange": [
+        60,
+        84
+      ],
+      "summary": "Class StockAdjustmentForm implementing core logic for forms.",
+      "tags": [
+        "class",
+        "forms",
+        "component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:inventory/forms.py:UserCreateForm",
+      "type": "class",
+      "name": "UserCreateForm",
+      "filePath": "inventory/forms.py",
+      "lineRange": [
+        87,
+        142
+      ],
+      "summary": "Class UserCreateForm implementing core logic for forms.",
+      "tags": [
+        "class",
+        "forms",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:inventory/forms.py:UserEditForm",
+      "type": "class",
+      "name": "UserEditForm",
+      "filePath": "inventory/forms.py",
+      "lineRange": [
+        145,
+        198
+      ],
+      "summary": "Class UserEditForm implementing core logic for forms.",
+      "tags": [
+        "class",
+        "forms",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:inventory/urls.py",
+      "type": "file",
+      "name": "urls.py",
+      "filePath": "inventory/urls.py",
+      "summary": "URL routing dispatch for POS register, inventory management, reports, and authentication.",
+      "tags": [
+        "routing",
+        "urls",
+        "endpoints"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:inventory/views.py",
+      "type": "file",
+      "name": "views.py",
+      "filePath": "inventory/views.py",
+      "summary": "HTTP views handling Dashboard metrics, POS terminal transactions, stock alerts, and financial reporting.",
+      "tags": [
+        "api-handler",
+        "views",
+        "controller"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:inventory/views.py:superuser_required",
+      "type": "function",
+      "name": "superuser_required",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        22,
+        32
+      ],
+      "summary": "Function superuser_required in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:login_view",
+      "type": "function",
+      "name": "login_view",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        37,
+        58
+      ],
+      "summary": "Function login_view in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:logout_view",
+      "type": "function",
+      "name": "logout_view",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        61,
+        65
+      ],
+      "summary": "Function logout_view in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:dashboard",
+      "type": "function",
+      "name": "dashboard",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        69,
+        148
+      ],
+      "summary": "Function dashboard in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:pos_view",
+      "type": "function",
+      "name": "pos_view",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        155,
+        169
+      ],
+      "summary": "Function pos_view in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:api_search_products",
+      "type": "function",
+      "name": "api_search_products",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        172,
+        205
+      ],
+      "summary": "Function api_search_products in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:api_pos_checkout",
+      "type": "function",
+      "name": "api_pos_checkout",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        208,
+        256
+      ],
+      "summary": "Function api_pos_checkout in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:api_quick_customer",
+      "type": "function",
+      "name": "api_quick_customer",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        259,
+        277
+      ],
+      "summary": "Function api_quick_customer in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:product_list",
+      "type": "function",
+      "name": "product_list",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        284,
+        318
+      ],
+      "summary": "Function product_list in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:product_create",
+      "type": "function",
+      "name": "product_create",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        322,
+        347
+      ],
+      "summary": "Function product_create in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:product_update",
+      "type": "function",
+      "name": "product_update",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        351,
+        378
+      ],
+      "summary": "Function product_update in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:product_delete",
+      "type": "function",
+      "name": "product_delete",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        382,
+        393
+      ],
+      "summary": "Function product_delete in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:low_stock_view",
+      "type": "function",
+      "name": "low_stock_view",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        397,
+        414
+      ],
+      "summary": "Function low_stock_view in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:supplier_list",
+      "type": "function",
+      "name": "supplier_list",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        421,
+        427
+      ],
+      "summary": "Function supplier_list in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:supplier_create",
+      "type": "function",
+      "name": "supplier_create",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        431,
+        441
+      ],
+      "summary": "Function supplier_create in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:supplier_update",
+      "type": "function",
+      "name": "supplier_update",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        445,
+        456
+      ],
+      "summary": "Function supplier_update in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:purchase_list",
+      "type": "function",
+      "name": "purchase_list",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        460,
+        463
+      ],
+      "summary": "Function purchase_list in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:purchase_create",
+      "type": "function",
+      "name": "purchase_create",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        467,
+        521
+      ],
+      "summary": "Function purchase_create in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:purchase_detail",
+      "type": "function",
+      "name": "purchase_detail",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        525,
+        528
+      ],
+      "summary": "Function purchase_detail in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:sale_list",
+      "type": "function",
+      "name": "sale_list",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        535,
+        568
+      ],
+      "summary": "Function sale_list in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:sale_detail",
+      "type": "function",
+      "name": "sale_detail",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        572,
+        575
+      ],
+      "summary": "Function sale_detail in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:stock_adjustment_list",
+      "type": "function",
+      "name": "stock_adjustment_list",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        582,
+        615
+      ],
+      "summary": "Function stock_adjustment_list in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:reports_view",
+      "type": "function",
+      "name": "reports_view",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        622,
+        741
+      ],
+      "summary": "Function reports_view in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:user_list",
+      "type": "function",
+      "name": "user_list",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        748,
+        790
+      ],
+      "summary": "Function user_list in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:user_create",
+      "type": "function",
+      "name": "user_create",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        794,
+        843
+      ],
+      "summary": "Function user_create in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:user_update",
+      "type": "function",
+      "name": "user_update",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        847,
+        931
+      ],
+      "summary": "Function user_update in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:inventory/views.py:user_delete",
+      "type": "function",
+      "name": "user_delete",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        935,
+        952
+      ],
+      "summary": "Function user_delete in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/views.py:user_toggle_status",
+      "type": "function",
+      "name": "user_toggle_status",
+      "filePath": "inventory/views.py",
+      "lineRange": [
+        956,
+        967
+      ],
+      "summary": "Function user_toggle_status in views.py.",
+      "tags": [
+        "function",
+        "views",
+        "handler"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:inventory/forms.py",
+      "target": "class:inventory/forms.py:ProductForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/forms.py",
+      "target": "class:inventory/forms.py:SupplierForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/forms.py",
+      "target": "class:inventory/forms.py:CategoryForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/forms.py",
+      "target": "class:inventory/forms.py:CustomerForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/forms.py",
+      "target": "class:inventory/forms.py:StockAdjustmentForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/forms.py",
+      "target": "class:inventory/forms.py:UserCreateForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/forms.py",
+      "target": "class:inventory/forms.py:UserEditForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/forms.py",
+      "target": "file:inventory/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/urls.py",
+      "target": "file:inventory/views.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:superuser_required",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:login_view",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:logout_view",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:dashboard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:pos_view",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:api_search_products",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:api_pos_checkout",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:api_quick_customer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:product_list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:product_create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:product_update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:product_delete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:low_stock_view",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:supplier_list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:supplier_create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:supplier_update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:purchase_list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:purchase_create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:purchase_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:sale_list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:sale_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:stock_adjustment_list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:reports_view",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:user_list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:user_create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:user_update",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:user_delete",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "function:inventory/views.py:user_toggle_status",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "file:inventory/forms.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "file:inventory/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/views.py",
+      "target": "file:inventory/services.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    }
+  ]
+}

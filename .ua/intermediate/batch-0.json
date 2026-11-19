@@ -1,0 +1,608 @@
+{
+  "batchIndex": 0,
+  "nodes": [
+    {
+      "id": "file:inventory/admin.py",
+      "type": "file",
+      "name": "admin.py",
+      "filePath": "inventory/admin.py",
+      "summary": "Configures Django admin models and inlines for inventory, suppliers, and sales records.",
+      "tags": [
+        "admin",
+        "dashboard",
+        "backoffice"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:inventory/admin.py:CategoryAdmin",
+      "type": "class",
+      "name": "CategoryAdmin",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        5,
+        7
+      ],
+      "summary": "Class CategoryAdmin implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:SupplierAdmin",
+      "type": "class",
+      "name": "SupplierAdmin",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        10,
+        12
+      ],
+      "summary": "Class SupplierAdmin implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:ProductAdmin",
+      "type": "class",
+      "name": "ProductAdmin",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        15,
+        18
+      ],
+      "summary": "Class ProductAdmin implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:PurchaseItemInline",
+      "type": "class",
+      "name": "PurchaseItemInline",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        20,
+        22
+      ],
+      "summary": "Class PurchaseItemInline implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:PurchaseAdmin",
+      "type": "class",
+      "name": "PurchaseAdmin",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        25,
+        29
+      ],
+      "summary": "Class PurchaseAdmin implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:SaleItemInline",
+      "type": "class",
+      "name": "SaleItemInline",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        31,
+        34
+      ],
+      "summary": "Class SaleItemInline implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:SaleAdmin",
+      "type": "class",
+      "name": "SaleAdmin",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        37,
+        41
+      ],
+      "summary": "Class SaleAdmin implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:StockMovementAdmin",
+      "type": "class",
+      "name": "StockMovementAdmin",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        44,
+        47
+      ],
+      "summary": "Class StockMovementAdmin implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/admin.py:CustomerAdmin",
+      "type": "class",
+      "name": "CustomerAdmin",
+      "filePath": "inventory/admin.py",
+      "lineRange": [
+        50,
+        52
+      ],
+      "summary": "Class CustomerAdmin implementing core logic for admin.",
+      "tags": [
+        "class",
+        "admin",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:inventory/context_processors.py",
+      "type": "file",
+      "name": "context_processors.py",
+      "filePath": "inventory/context_processors.py",
+      "summary": "Provides global template context variables including low-stock threshold alert counts.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/context_processors.py:inventory_globals",
+      "type": "function",
+      "name": "inventory_globals",
+      "filePath": "inventory/context_processors.py",
+      "lineRange": [
+        4,
+        19
+      ],
+      "summary": "Function inventory_globals in context_processors.py.",
+      "tags": [
+        "function",
+        "context_processors",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:inventory/management/commands/seed_data.py",
+      "type": "file",
+      "name": "seed_data.py",
+      "filePath": "inventory/management/commands/seed_data.py",
+      "summary": "Management command that populates sample products, categories, suppliers, and transactions.",
+      "tags": [
+        "command",
+        "seeding",
+        "fixtures"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:inventory/management/commands/seed_data.py:Command",
+      "type": "class",
+      "name": "Command",
+      "filePath": "inventory/management/commands/seed_data.py",
+      "lineRange": [
+        9,
+        260
+      ],
+      "summary": "Class Command implementing core logic for seed_data.",
+      "tags": [
+        "class",
+        "seed_data",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:inventory/models.py",
+      "type": "file",
+      "name": "models.py",
+      "filePath": "inventory/models.py",
+      "summary": "Defines relational database schemas for Products, Categories, Suppliers, Purchases, Sales, and UserProfiles.",
+      "tags": [
+        "data-model",
+        "database",
+        "orm"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:inventory/models.py:Category",
+      "type": "class",
+      "name": "Category",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        8,
+        22
+      ],
+      "summary": "Class Category implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/models.py:Supplier",
+      "type": "class",
+      "name": "Supplier",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        25,
+        42
+      ],
+      "summary": "Class Supplier implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/models.py:Product",
+      "type": "class",
+      "name": "Product",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        45,
+        112
+      ],
+      "summary": "Class Product implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:inventory/models.py:Customer",
+      "type": "class",
+      "name": "Customer",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        115,
+        123
+      ],
+      "summary": "Class Customer implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/models.py:Purchase",
+      "type": "class",
+      "name": "Purchase",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        126,
+        149
+      ],
+      "summary": "Class Purchase implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:inventory/models.py:PurchaseItem",
+      "type": "class",
+      "name": "PurchaseItem",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        152,
+        160
+      ],
+      "summary": "Class PurchaseItem implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/models.py:Sale",
+      "type": "class",
+      "name": "Sale",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        163,
+        217
+      ],
+      "summary": "Class Sale implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:inventory/models.py:SaleItem",
+      "type": "class",
+      "name": "SaleItem",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        220,
+        237
+      ],
+      "summary": "Class SaleItem implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:inventory/models.py:StockMovement",
+      "type": "class",
+      "name": "StockMovement",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        240,
+        262
+      ],
+      "summary": "Class StockMovement implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:inventory/models.py:UserProfile",
+      "type": "class",
+      "name": "UserProfile",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        265,
+        283
+      ],
+      "summary": "Class UserProfile implementing core logic for models.",
+      "tags": [
+        "class",
+        "models",
+        "component"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:inventory/models.py:create_or_update_user_profile",
+      "type": "function",
+      "name": "create_or_update_user_profile",
+      "filePath": "inventory/models.py",
+      "lineRange": [
+        287,
+        298
+      ],
+      "summary": "Function create_or_update_user_profile in models.py.",
+      "tags": [
+        "function",
+        "models",
+        "handler"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:CategoryAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:SupplierAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:ProductAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:PurchaseItemInline",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:PurchaseAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:SaleItemInline",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:SaleAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:StockMovementAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "class:inventory/admin.py:CustomerAdmin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/admin.py",
+      "target": "file:inventory/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/context_processors.py",
+      "target": "function:inventory/context_processors.py:inventory_globals",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/context_processors.py",
+      "target": "file:inventory/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/management/commands/seed_data.py",
+      "target": "class:inventory/management/commands/seed_data.py:Command",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/management/commands/seed_data.py",
+      "target": "file:inventory/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:Category",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:Supplier",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:Product",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:Customer",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:Purchase",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:PurchaseItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:Sale",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:SaleItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:StockMovement",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "class:inventory/models.py:UserProfile",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "file:inventory/models.py",
+      "target": "function:inventory/models.py:create_or_update_user_profile",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "batchIndex": 2,
+  "nodes": [
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Comprehensive system documentation, architectural overview, feature list, and deployment guides.",
+      "tags": [
+        "documentation",
+        "overview",
+        "readme"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:start.sh",
+      "type": "file",
+      "name": "start.sh",
+      "filePath": "start.sh",
+      "summary": "Launcher script to migrate database and start the local development server.",
+      "tags": [
+        "entry-point",
+        "config",
+        "server"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": []
+}
