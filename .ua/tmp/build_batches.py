@@ -92,10 +92,14 @@ for i, batch in enumerate(batches_data["batches"]):
 
     nodes = []
     edges = []
+    processed_paths = set()
     import_data = batch.get("batchImportData", {})
+    batch_files_map = {f["path"]: f for f in batch.get("files", [])}
 
+    # 1. Process files from results
     for res in ext_data.get("results", []):
         fpath = res["path"]
+        processed_paths.add(fpath)
         fcat = res.get("fileCategory", "code")
         ntype = get_node_type(fpath, fcat)
         fid = f"{ntype}:{fpath}"
@@ -178,6 +182,42 @@ for i, batch in enumerate(batches_data["batches"]):
                 "type": "imports",
                 "direction": "forward",
                 "weight": 0.7
+            })
+
+    # 2. Process skipped files (markup, markdown, scripts, config)
+    for fpath in ext_data.get("filesSkipped", []):
+        if fpath in processed_paths:
+            continue
+        file_meta = batch_files_map.get(fpath, {})
+        fcat = file_meta.get("fileCategory", "markup" if fpath.endswith(".html") else "code")
+        ntype = get_node_type(fpath, fcat)
+        fid = f"{ntype}:{fpath}"
+        lines = file_meta.get("sizeLines", 20)
+
+        complexity = "simple"
+        if lines > 200:
+            complexity = "complex"
+        elif lines > 50:
+            complexity = "moderate"
+
+        nodes.append({
+            "id": fid,
+            "type": ntype,
+            "name": Path(fpath).name,
+            "filePath": fpath,
+            "summary": get_file_summary(fpath),
+            "tags": get_tags(fpath, ntype),
+            "complexity": complexity
+        })
+
+        # Template extension relationship
+        if fpath.endswith(".html") and "base.html" not in fpath:
+            edges.append({
+                "source": fid,
+                "target": "file:templates/inventory/base.html",
+                "type": "inherits",
+                "direction": "forward",
+                "weight": 0.8
             })
 
     out_batch = {

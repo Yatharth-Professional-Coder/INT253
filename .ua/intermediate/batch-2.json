@@ -26,6 +26,19 @@
         "server"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "config:requirements.txt",
+      "type": "config",
+      "name": "requirements.txt",
+      "filePath": "requirements.txt",
+      "summary": "Python dependency specification including Django, Whitenoise, and Gunicorn.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "simple"
     }
   ],
   "edges": []

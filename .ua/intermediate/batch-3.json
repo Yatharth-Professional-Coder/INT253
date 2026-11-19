@@ -1,5 +1,380 @@
 {
   "batchIndex": 3,
-  "nodes": [],
-  "edges": []
+  "nodes": [
+    {
+      "id": "file:templates/inventory/base.html",
+      "type": "file",
+      "name": "base.html",
+      "filePath": "templates/inventory/base.html",
+      "summary": "Base layout template with navigation bar, responsive sidebar, and alert badge counters.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/inventory/confirm_delete.html",
+      "type": "file",
+      "name": "confirm_delete.html",
+      "filePath": "templates/inventory/confirm_delete.html",
+      "summary": "Source file confirm_delete.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/inventory/dashboard.html",
+      "type": "file",
+      "name": "dashboard.html",
+      "filePath": "templates/inventory/dashboard.html",
+      "summary": "Main management dashboard featuring KPI cards, sales charts, and low-stock alert counters.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/inventory/login.html",
+      "type": "file",
+      "name": "login.html",
+      "filePath": "templates/inventory/login.html",
+      "summary": "Source file login.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/low_stock_alerts.html",
+      "type": "file",
+      "name": "low_stock_alerts.html",
+      "filePath": "templates/inventory/low_stock_alerts.html",
+      "summary": "Source file low_stock_alerts.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/inventory/pos.html",
+      "type": "file",
+      "name": "pos.html",
+      "filePath": "templates/inventory/pos.html",
+      "summary": "Interactive Point-of-Sale (POS) cashier terminal template with live search, cart calculations, and receipt modals.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/inventory/product_form.html",
+      "type": "file",
+      "name": "product_form.html",
+      "filePath": "templates/inventory/product_form.html",
+      "summary": "Source file product_form.html in the templates/inventory module.",
+      "tags": [
+        "forms",
+        "validation",
+        "input"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/product_list.html",
+      "type": "file",
+      "name": "product_list.html",
+      "filePath": "templates/inventory/product_list.html",
+      "summary": "Source file product_list.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/purchase_detail.html",
+      "type": "file",
+      "name": "purchase_detail.html",
+      "filePath": "templates/inventory/purchase_detail.html",
+      "summary": "Source file purchase_detail.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/purchase_form.html",
+      "type": "file",
+      "name": "purchase_form.html",
+      "filePath": "templates/inventory/purchase_form.html",
+      "summary": "Source file purchase_form.html in the templates/inventory module.",
+      "tags": [
+        "forms",
+        "validation",
+        "input"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/inventory/purchase_list.html",
+      "type": "file",
+      "name": "purchase_list.html",
+      "filePath": "templates/inventory/purchase_list.html",
+      "summary": "Source file purchase_list.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/reports.html",
+      "type": "file",
+      "name": "reports.html",
+      "filePath": "templates/inventory/reports.html",
+      "summary": "Financial P&L and inventory valuation reporting interface with Chart.js analytics.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:templates/inventory/sale_list.html",
+      "type": "file",
+      "name": "sale_list.html",
+      "filePath": "templates/inventory/sale_list.html",
+      "summary": "Source file sale_list.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/sale_receipt.html",
+      "type": "file",
+      "name": "sale_receipt.html",
+      "filePath": "templates/inventory/sale_receipt.html",
+      "summary": "Source file sale_receipt.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/stock_adjustments.html",
+      "type": "file",
+      "name": "stock_adjustments.html",
+      "filePath": "templates/inventory/stock_adjustments.html",
+      "summary": "Source file stock_adjustments.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/supplier_form.html",
+      "type": "file",
+      "name": "supplier_form.html",
+      "filePath": "templates/inventory/supplier_form.html",
+      "summary": "Source file supplier_form.html in the templates/inventory module.",
+      "tags": [
+        "forms",
+        "validation",
+        "input"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/supplier_list.html",
+      "type": "file",
+      "name": "supplier_list.html",
+      "filePath": "templates/inventory/supplier_list.html",
+      "summary": "Source file supplier_list.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/user_form.html",
+      "type": "file",
+      "name": "user_form.html",
+      "filePath": "templates/inventory/user_form.html",
+      "summary": "Source file user_form.html in the templates/inventory module.",
+      "tags": [
+        "forms",
+        "validation",
+        "input"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/inventory/user_list.html",
+      "type": "file",
+      "name": "user_list.html",
+      "filePath": "templates/inventory/user_list.html",
+      "summary": "Source file user_list.html in the templates/inventory module.",
+      "tags": [
+        "markup",
+        "template",
+        "ui"
+      ],
+      "complexity": "moderate"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:templates/inventory/confirm_delete.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/dashboard.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/login.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/low_stock_alerts.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/pos.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/product_form.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/product_list.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/purchase_detail.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/purchase_form.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/purchase_list.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/reports.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/sale_list.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/sale_receipt.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/stock_adjustments.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/supplier_form.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/supplier_list.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/user_form.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/inventory/user_list.html",
+      "target": "file:templates/inventory/base.html",
+      "type": "inherits",
+      "direction": "forward",
+      "weight": 0.8
+    }
+  ]
 }

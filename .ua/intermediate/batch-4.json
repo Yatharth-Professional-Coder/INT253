@@ -309,6 +309,19 @@
         "server"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "config:static/.gitkeep",
+      "type": "config",
+      "name": ".gitkeep",
+      "filePath": "static/.gitkeep",
+      "summary": "Source file .gitkeep in the static module.",
+      "tags": [
+        "utility",
+        "component",
+        "code"
+      ],
+      "complexity": "simple"
     }
   ],
   "edges": [
