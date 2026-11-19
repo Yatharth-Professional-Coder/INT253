@@ -1675,63 +1675,63 @@
       "target": "class:inventory/admin.py:CategoryAdmin",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:SupplierAdmin",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:ProductAdmin",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:PurchaseItemInline",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:PurchaseAdmin",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:SaleItemInline",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:SaleAdmin",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:StockMovementAdmin",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
       "target": "class:inventory/admin.py:CustomerAdmin",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/admin.py",
@@ -1745,7 +1745,7 @@
       "target": "function:inventory/context_processors.py:inventory_globals",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/context_processors.py",
@@ -1759,7 +1759,7 @@
       "target": "class:inventory/management/commands/seed_data.py:Command",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/management/commands/seed_data.py",
@@ -1773,126 +1773,126 @@
       "target": "class:inventory/models.py:Category",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:Supplier",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:Product",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:Customer",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:Purchase",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:PurchaseItem",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:Sale",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:SaleItem",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:StockMovement",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "class:inventory/models.py:UserProfile",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/models.py",
       "target": "function:inventory/models.py:create_or_update_user_profile",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
       "target": "class:inventory/forms.py:ProductForm",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
       "target": "class:inventory/forms.py:SupplierForm",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
       "target": "class:inventory/forms.py:CategoryForm",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
       "target": "class:inventory/forms.py:CustomerForm",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
       "target": "class:inventory/forms.py:StockAdjustmentForm",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
       "target": "class:inventory/forms.py:UserCreateForm",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
       "target": "class:inventory/forms.py:UserEditForm",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/forms.py",
@@ -1913,196 +1913,196 @@
       "target": "function:inventory/views.py:superuser_required",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:login_view",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:logout_view",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:dashboard",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:pos_view",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:api_search_products",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:api_pos_checkout",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:api_quick_customer",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:product_list",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:product_create",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:product_update",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:product_delete",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:low_stock_view",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:supplier_list",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:supplier_create",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:supplier_update",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:purchase_list",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:purchase_create",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:purchase_detail",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:sale_list",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:sale_detail",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:stock_adjustment_list",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:reports_view",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:user_list",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:user_create",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:user_update",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:user_delete",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
       "target": "function:inventory/views.py:user_toggle_status",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/views.py",
@@ -2256,49 +2256,49 @@
       "target": "class:inventory/apps.py:InventoryConfig",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/migrations/0001_initial.py",
       "target": "class:inventory/migrations/0001_initial.py:Migration",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/services.py",
       "target": "function:inventory/services.py:generate_invoice_number",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/services.py",
       "target": "function:inventory/services.py:generate_po_number",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/services.py",
       "target": "function:inventory/services.py:process_pos_sale",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/services.py",
       "target": "function:inventory/services.py:process_purchase_order",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/services.py",
       "target": "function:inventory/services.py:manual_stock_adjustment",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/services.py",
@@ -2312,7 +2312,7 @@
       "target": "class:inventory/tests.py:SmartInventorySystemTests",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
     },
     {
       "source": "file:inventory/tests.py",
@@ -2333,7 +2333,139 @@
       "target": "function:manage.py:main",
       "type": "contains",
       "direction": "forward",
-      "weight": 1.0
+      "weight": 1
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:presentation-ui",
+      "name": "Presentation & Web UI",
+      "description": "Responsive Bootstrap 5 templates, POS checkout modals, KPI cards, and Chart.js reporting dashboards.",
+      "nodeIds": [
+        "file:templates/inventory/base.html",
+        "file:templates/inventory/confirm_delete.html",
+        "file:templates/inventory/dashboard.html",
+        "file:templates/inventory/login.html",
+        "file:templates/inventory/low_stock_alerts.html",
+        "file:templates/inventory/pos.html",
+        "file:templates/inventory/product_form.html",
+        "file:templates/inventory/product_list.html",
+        "file:templates/inventory/purchase_detail.html",
+        "file:templates/inventory/purchase_form.html",
+        "file:templates/inventory/purchase_list.html",
+        "file:templates/inventory/reports.html",
+        "file:templates/inventory/sale_list.html",
+        "file:templates/inventory/sale_receipt.html",
+        "file:templates/inventory/stock_adjustments.html",
+        "file:templates/inventory/supplier_form.html",
+        "file:templates/inventory/supplier_list.html",
+        "file:templates/inventory/user_form.html",
+        "file:templates/inventory/user_list.html"
+      ]
+    },
+    {
+      "id": "layer:controllers-routing",
+      "name": "HTTP Controllers & Routing",
+      "description": "Django views, URL routing dispatchers, forms validation, and template context processors.",
+      "nodeIds": [
+        "file:inventory/context_processors.py",
+        "file:inventory/forms.py",
+        "file:inventory/urls.py",
+        "file:inventory/views.py",
+        "file:smart_inventory/urls.py"
+      ]
+    },
+    {
+      "id": "layer:business-logic",
+      "name": "Business Logic & Services",
+      "description": "Atomic transaction handling for POS sales checkout, purchase order increments, stock adjustments, and administrative tooling.",
+      "nodeIds": [
+        "file:inventory/admin.py",
+        "file:inventory/management/commands/seed_data.py",
+        "file:inventory/services.py"
+      ]
+    },
+    {
+      "id": "layer:data-models",
+      "name": "Data Models & Persistence",
+      "description": "Relational database models for Products, Categories, Suppliers, Purchases, Sales, and UserProfiles.",
+      "nodeIds": [
+        "file:inventory/models.py",
+        "file:inventory/apps.py",
+        "file:inventory/migrations/0001_initial.py",
+        "file:inventory/migrations/__init__.py"
+      ]
+    },
+    {
+      "id": "layer:core-infra",
+      "name": "Configuration & Infrastructure",
+      "description": "Django core settings, WSGI/ASGI application hooks, CLI management tools, and runtime launchers.",
+      "nodeIds": [
+        "file:start.sh",
+        "config:requirements.txt",
+        "file:manage.py",
+        "file:smart_inventory/asgi.py",
+        "file:smart_inventory/settings.py",
+        "file:smart_inventory/wsgi.py",
+        "config:static/.gitkeep"
+      ]
+    },
+    {
+      "id": "layer:docs-testing",
+      "name": "Documentation & Quality Assurance",
+      "description": "System documentation, architectural overview, and automated unit test suite verifying stock safety.",
+      "nodeIds": [
+        "document:README.md",
+        "file:inventory/__init__.py",
+        "file:inventory/tests.py",
+        "file:smart_inventory/__init__.py"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "1. System Overview & Architecture",
+      "description": "Explore the core architecture of the Smart Inventory & POS Billing system, its Django settings, and database configurations.",
+      "nodeIds": [
+        "document:README.md",
+        "file:smart_inventory/settings.py",
+        "file:manage.py"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "2. Relational Data Models & ORM",
+      "description": "Understand the core entities: Products, Categories, Suppliers, Purchases, and Sales transactions.",
+      "nodeIds": [
+        "file:inventory/models.py"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "3. Atomic Inventory & Sales Services",
+      "description": "Discover how the system enforces atomic stock deductions on checkout, restocks on purchase receipt, and logs audit trails.",
+      "nodeIds": [
+        "file:inventory/services.py"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "4. POS Register & Web Views",
+      "description": "Inspect the high-speed barcode search, interactive cart calculations, and real-time cashier checkout views.",
+      "nodeIds": [
+        "file:inventory/views.py",
+        "file:templates/inventory/pos.html",
+        "file:templates/inventory/dashboard.html"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "5. Automated Testing & Reliability",
+      "description": "Review automated test assertions verifying stock deductions, oversell protections, and receipt calculations.",
+      "nodeIds": [
+        "file:inventory/tests.py"
+      ]
     }
   ]
 }
