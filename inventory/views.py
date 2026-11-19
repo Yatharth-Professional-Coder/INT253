@@ -899,6 +899,10 @@ def user_update(request, pk):
                 target_user.is_superuser = True
                 target_user.is_staff = True
                 role_title = "Website Owner"
+            elif role == 'store_admin':
+                target_user.is_superuser = False
+                target_user.is_staff = True
+                role_title = "Store Admin"
             elif role == 'manager':
                 target_user.is_superuser = False
                 target_user.is_staff = True
@@ -920,6 +924,8 @@ def user_update(request, pk):
 
             # Update Access Permissions in UserProfile
             profile.role_title = role_title
+            profile.assigned_store = form.cleaned_data.get('assigned_store')
+            profile.can_manage_stores = form.cleaned_data.get('can_manage_stores', False) or (role == 'store_admin') or target_user.is_superuser
             profile.can_access_pos = form.cleaned_data['can_access_pos']
             profile.can_manage_products = form.cleaned_data['can_manage_products'] if not target_user.is_superuser else True
             profile.can_manage_suppliers = form.cleaned_data['can_manage_suppliers'] if not target_user.is_superuser else True
@@ -930,13 +936,23 @@ def user_update(request, pk):
             messages.success(request, f"Access privileges and details for '{target_user.username}' updated successfully!")
             return redirect('user_list')
     else:
-        current_role = 'admin' if target_user.is_superuser else ('manager' if target_user.is_staff else 'cashier')
+        if target_user.is_superuser:
+            current_role = 'admin'
+        elif profile.can_manage_stores:
+            current_role = 'store_admin'
+        elif target_user.is_staff:
+            current_role = 'manager'
+        else:
+            current_role = 'cashier'
+
         initial_data = {
             'first_name': target_user.first_name,
             'last_name': target_user.last_name,
             'email': target_user.email,
             'is_active': target_user.is_active,
             'role': current_role,
+            'assigned_store': profile.assigned_store,
+            'can_manage_stores': profile.can_manage_stores,
             'can_access_pos': profile.can_access_pos,
             'can_manage_products': profile.can_manage_products,
             'can_manage_suppliers': profile.can_manage_suppliers,
