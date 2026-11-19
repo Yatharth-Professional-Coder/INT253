@@ -46,6 +46,13 @@ urlpatterns = [
     path('users/<int:pk>/delete/', views.user_delete, name='user_delete'),
     path('users/<int:pk>/toggle-status/', views.user_toggle_status, name='user_toggle_status'),
 
+    # Store Admin: Multi-Store & Branch Management
+    path('stores/', views.store_list, name='store_list'),
+    path('stores/add/', views.store_create, name='store_create'),
+    path('stores/<int:pk>/edit/', views.store_update, name='store_update'),
+    path('stores/<int:pk>/toggle/', views.store_toggle_status, name='store_toggle_status'),
+    path('stores/<int:pk>/delete/', views.store_delete, name='store_delete'),
+
     # Profit & Inventory Reports
     path('reports/', views.reports_view, name='reports'),
 ]

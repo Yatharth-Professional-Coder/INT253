@@ -1003,3 +1003,85 @@ def user_toggle_status(request, pk):
     messages.success(request, f"User '{target_user.username}' has been {status_label}.")
     return redirect('user_list')
 
+
+# ==========================================
+# STORE & BRANCH MANAGEMENT (STORE ADMIN / OWNER)
+# ==========================================
+@store_admin_required
+def store_list(request):
+    """Store Admin page listing all business store branches & performance."""
+    stores = Store.objects.prefetch_related('staff_members', 'sales').all()
+    context = {
+        'stores': stores,
+        'total_stores': stores.count(),
+        'active_stores': stores.filter(is_active=True).count(),
+    }
+    return render(request, 'inventory/store_list.html', context)
+
+
+@store_admin_required
+def store_create(request):
+    """Store Admin: Add new store branch / outlet."""
+    if request.method == 'POST':
+        form = StoreForm(request.POST)
+        if form.is_valid():
+            store = form.save()
+            messages.success(request, f"New store branch '{store.name}' ({store.code}) added successfully!")
+            return redirect('store_list')
+    else:
+        form = StoreForm()
+
+    return render(request, 'inventory/store_form.html', {'form': form, 'title': 'Add New Store Branch / Outlet'})
+
+
+@store_admin_required
+def store_update(request, pk):
+    """Store Admin: Edit / modify store location, manager, and operational status."""
+    store = get_object_or_404(Store, pk=pk)
+    if request.method == 'POST':
+        form = StoreForm(request.POST, instance=store)
+        if form.is_valid():
+            store = form.save()
+            messages.success(request, f"Store branch '{store.name}' updated successfully!")
+            return redirect('store_list')
+    else:
+        form = StoreForm(instance=store)
+
+    return render(request, 'inventory/store_form.html', {'form': form, 'title': f'Modify Store: {store.name}', 'store': store})
+
+
+@store_admin_required
+def store_toggle_status(request, pk):
+    """Store Admin: 1-click toggle store operational status."""
+    store = get_object_or_404(Store, pk=pk)
+    if store.is_main and store.is_active:
+        messages.warning(request, "Primary flagship store should remain active.")
+        return redirect('store_list')
+
+    store.is_active = not store.is_active
+    store.save(update_fields=['is_active'])
+    status_label = "opened/activated" if store.is_active else "closed/deactivated"
+    messages.success(request, f"Store '{store.name}' is now {status_label}.")
+    return redirect('store_list')
+
+
+@store_admin_required
+def store_delete(request, pk):
+    """Store Admin: Delete store branch."""
+    store = get_object_or_404(Store, pk=pk)
+    if store.is_main:
+        messages.error(request, "Primary flagship store cannot be deleted.")
+        return redirect('store_list')
+
+    if request.method == 'POST':
+        name = store.name
+        store.delete()
+        messages.success(request, f"Store outlet '{name}' was deleted.")
+        return redirect('store_list')
+
+    return render(request, 'inventory/confirm_delete.html', {
+        'object': f"Store Branch '{store.name}' ({store.code})",
+        'type': 'Store Branch'
+    })
+
+
