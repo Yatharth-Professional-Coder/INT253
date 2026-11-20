@@ -78,6 +78,7 @@
                     <th>User &amp; Username</th>
                     <th>Email</th>
                     <th>Assigned Role</th>
+                    <th>Store Scope / Branch</th>
                     <th>Module Access Privileges</th>
                     <th class="text-center">Status</th>
                     <th class="text-end">Manage Access</th>
@@ -120,12 +121,34 @@
                         </span>
                     </td>
                     <td>
+                        {% if item.user.is_superuser %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle small">
+                                <i class="bi bi-globe me-1"></i>All Stores (Global Owner)
+                            </span>
+                        {% elif item.profile.can_manage_stores %}
+                            <span class="badge bg-warning-subtle text-dark border border-warning-subtle small">
+                                <i class="bi bi-buildings me-1"></i>All Stores (Store Admin)
+                            </span>
+                        {% elif item.profile.assigned_store %}
+                            <span class="badge bg-light text-dark border small">
+                                <i class="bi bi-geo-alt text-primary me-1"></i>{{ item.profile.assigned_store.name }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-light text-muted border small">
+                                <i class="bi bi-dash-circle me-1"></i>Floating / Unassigned
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
                         <div class="d-flex flex-wrap gap-1">
                             {% if item.user.is_superuser %}
                                 <span class="badge bg-danger-subtle text-danger border border-danger-subtle small">
                                     <i class="bi bi-check-all me-1"></i>Full System Access (Owner)
                                 </span>
                             {% else %}
+                                {% if item.profile.can_manage_stores %}
+                                    <span class="badge bg-warning-subtle text-dark border small" title="Can Add & Modify Stores"><i class="bi bi-shop me-1 text-dark"></i>Stores</span>
+                                {% endif %}
                                 {% if item.profile.can_access_pos %}
                                     <span class="badge bg-light text-dark border small" title="Can use POS Billing Terminal"><i class="bi bi-calculator me-1 text-primary"></i>POS</span>
                                 {% endif %}

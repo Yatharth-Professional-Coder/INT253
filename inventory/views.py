@@ -759,7 +759,7 @@ def reports_view(request):
 @superuser_required
 def user_list(request):
     """Website Owner portal listing all system users with role, status, and granular permissions."""
-    users = User.objects.all().select_related('profile').order_by('-date_joined')
+    users = User.objects.all().select_related('profile', 'profile__assigned_store').order_by('-date_joined')
     
     user_data = []
     for u in users:

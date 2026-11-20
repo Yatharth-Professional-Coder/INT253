@@ -83,15 +83,23 @@
 
                 <!-- Section 2: Role Category -->
                 <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">
-                    <i class="bi bi-briefcase text-primary me-2"></i>2. Primary System Role
+                    <i class="bi bi-briefcase text-primary me-2"></i>2. Primary System Role &amp; Store Assignment
                 </h5>
 
                 <div class="row g-3 mb-4">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label class="form-label fw-bold">Select Role Classification *</label>
                         {{ form.role }}
                         <div class="form-text small">
                             Selecting <strong>Website Owner / Super Admin</strong> grants full root access automatically.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Assigned Retail Store Branch</label>
+                        {{ form.assigned_store }}
+                        <div class="form-text small">
+                            Required for <strong>Store Managers</strong> &amp; <strong>Cashiers</strong> to set their outlet. (Website Owner and Store Admins have multi-store access).
                         </div>
                     </div>
                 </div>
@@ -103,6 +111,19 @@
                 <p class="text-muted small mb-3">Choose which business modules this employee is permitted to access.</p>
 
                 <div class="row g-3 mb-4">
+                    <!-- Store Admin Privileges -->
+                    <div class="col-md-6">
+                        <div class="card p-3 border rounded-3 h-100 bg-light border-warning-subtle">
+                            <div class="form-check">
+                                {{ form.can_manage_stores }}
+                                <label class="form-check-label fw-bold text-dark" for="{{ form.can_manage_stores.id_for_label }}">
+                                    <i class="bi bi-shop text-warning text-dark me-1"></i> Add &amp; Modify Store Branches (Store Admin)
+                                </label>
+                            </div>
+                            <div class="small text-muted ps-4 mt-1">Can create new store outlets, modify branch details, and manage locations.</div>
+                        </div>
+                    </div>
+
                     <!-- POS Billing -->
                     <div class="col-md-6">
                         <div class="card p-3 border rounded-3 h-100 bg-light">
