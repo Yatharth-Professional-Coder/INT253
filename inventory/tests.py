@@ -404,5 +404,106 @@ class SmartInventorySystemTests(TestCase):
         self.assertTrue(data_sup['success'])
         self.assertTrue(Supplier.objects.filter(name='Delta Supplies Ltd').exists())
 
+    def test_expiry_date_tracking_and_dashboard_alerts(self):
+        """Test product expiry date toggle, near expiry alerts, and dashboard warning banners."""
+        from django.utils import timezone
+        from datetime import timedelta
+        from inventory.forms import ProductForm
+
+        today = timezone.now().date()
+
+        # Product with expiry in 10 days (near expiry)
+        prod_expiring_soon = Product.objects.create(
+            name="Organic Cow Milk 1L",
+            sku="MLK-001",
+            category=self.category,
+            supplier=self.supplier,
+            cost_price=Decimal('40.00'),
+            selling_price=Decimal('65.00'),
+            current_stock=25,
+            min_stock_level=5,
+            unit="ltr",
+            has_expiry=True,
+            expiry_date=today + timedelta(days=10)
+        )
+
+        # Product expired 3 days ago
+        prod_expired = Product.objects.create(
+            name="Greek Yogurt 500g",
+            sku="YOG-002",
+            category=self.category,
+            supplier=self.supplier,
+            cost_price=Decimal('50.00'),
+            selling_price=Decimal('90.00'),
+            current_stock=10,
+            min_stock_level=5,
+            unit="pcs",
+            has_expiry=True,
+            expiry_date=today - timedelta(days=3)
+        )
+
+        # Non-perishable product (has_expiry=False)
+        self.assertFalse(self.prod_normal.has_expiry)
+        self.assertFalse(self.prod_normal.is_expired)
+        self.assertFalse(self.prod_normal.is_near_expiry)
+        self.assertIsNone(self.prod_normal.expiry_badge_info)
+
+        # Verify near-expiry properties
+        self.assertTrue(prod_expiring_soon.has_expiry)
+        self.assertTrue(prod_expiring_soon.is_near_expiry)
+        self.assertFalse(prod_expiring_soon.is_expired)
+        self.assertEqual(prod_expiring_soon.days_until_expiry, 10)
+        self.assertIsNotNone(prod_expiring_soon.expiry_badge_info)
+
+        # Verify expired properties
+        self.assertTrue(prod_expired.has_expiry)
+        self.assertTrue(prod_expired.is_expired)
+        self.assertFalse(prod_expired.is_near_expiry)
+        self.assertLess(prod_expired.days_until_expiry, 0)
+        self.assertEqual(prod_expired.expiry_badge_info['status'], 'expired')
+
+        # Test Form validation: when has_expiry is True, expiry_date is required
+        form_invalid = ProductForm(data={
+            'name': 'Test Item',
+            'sku': 'TI-001',
+            'cost_price': '10.00',
+            'selling_price': '20.00',
+            'current_stock': 10,
+            'min_stock_level': 5,
+            'unit': 'pcs',
+            'has_expiry': True,
+            'expiry_date': '',
+            'is_active': True,
+        })
+        self.assertFalse(form_invalid.is_valid())
+        self.assertIn('expiry_date', form_invalid.errors)
+
+        # When has_expiry is False, expiry_date is cleared/optional
+        form_valid = ProductForm(data={
+            'name': 'Test Item 2',
+            'sku': 'TI-002',
+            'cost_price': '10.00',
+            'selling_price': '20.00',
+            'current_stock': 10,
+            'min_stock_level': 5,
+            'unit': 'pcs',
+            'has_expiry': False,
+            'expiry_date': '',
+            'is_active': True,
+        })
+        self.assertTrue(form_valid.is_valid())
+
+        # Test Dashboard shows alert banner and watchlist
+        mgr = User.objects.create_user('mgr_expiry', 'mgr_expiry@test.com', 'pass123', is_staff=True)
+        self.client.login(username='mgr_expiry', password='pass123')
+        res = self.client.get(reverse('dashboard'))
+        self.assertEqual(res.status_code, 200)
+        self.assertIn('expired_count', res.context)
+        self.assertGreaterEqual(res.context['expired_count'], 1)
+        self.assertGreaterEqual(res.context['near_expiry_count'], 1)
+        self.assertContains(res, 'Shelf-Life Warning: Product Expiry Alerts Triggered')
+        self.assertContains(res, 'Organic Cow Milk 1L')
+        self.assertContains(res, 'Greek Yogurt 500g')
+
 
 

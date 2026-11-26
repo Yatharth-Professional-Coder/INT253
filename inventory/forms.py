@@ -4,7 +4,11 @@ from .models import Product, Supplier, Category, Customer, Purchase, StockMoveme
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'sku', 'barcode', 'category', 'supplier', 'cost_price', 'selling_price', 'current_stock', 'min_stock_level', 'unit', 'description', 'is_active']
+        fields = [
+            'name', 'sku', 'barcode', 'category', 'supplier',
+            'cost_price', 'selling_price', 'current_stock', 'min_stock_level',
+            'unit', 'description', 'has_expiry', 'expiry_date', 'is_active'
+        ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Tata Salt Vacuum Evaporated 1kg'}),
             'sku': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. GRO-TAT-001'}),
@@ -17,8 +21,22 @@ class ProductForm(forms.ModelForm):
             'min_stock_level': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
             'unit': forms.Select(attrs={'class': 'form-select'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Product specifications, pack size, ingredients, notes...'}),
+            'has_expiry': forms.CheckboxInput(attrs={'class': 'form-check-input', 'id': 'id_has_expiry', 'role': 'switch'}),
+            'expiry_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'id': 'id_expiry_date'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        has_expiry = cleaned_data.get('has_expiry')
+        expiry_date = cleaned_data.get('expiry_date')
+
+        if has_expiry:
+            if not expiry_date:
+                self.add_error('expiry_date', 'Please provide an expiry date, or toggle off expiry tracking.')
+        else:
+            cleaned_data['expiry_date'] = None
+        return cleaned_data
 
 
 class SupplierForm(forms.ModelForm):

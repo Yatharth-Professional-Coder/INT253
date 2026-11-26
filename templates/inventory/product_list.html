@@ -38,6 +38,8 @@
                 <option value="in" {% if selected_status == 'in' %}selected{% endif %}>In Stock</option>
                 <option value="low" {% if selected_status == 'low' %}selected{% endif %}>Low Stock (&le; Min)</option>
                 <option value="out" {% if selected_status == 'out' %}selected{% endif %}>Out of Stock (0)</option>
+                <option value="near_expiry" {% if selected_status == 'near_expiry' %}selected{% endif %}>Near Expiry (&le; 30d)</option>
+                <option value="expired" {% if selected_status == 'expired' %}selected{% endif %}>Expired Goods</option>
             </select>
         </div>
         <div class="col-md-2 d-flex gap-2">
@@ -76,6 +78,11 @@
                             {% if p.barcode %}
                             <span class="badge bg-light text-secondary border font-monospace"><i class="bi bi-upc me-1"></i>{{ p.barcode }}</span>
                             {% endif %}
+                            {% with b=p.expiry_badge_info %}
+                                {% if b %}
+                                <span class="badge {{ b.badge_class }}"><i class="bi {{ b.icon }} me-1"></i>{{ b.label }}</span>
+                                {% endif %}
+                            {% endwith %}
                         </div>
                     </td>
                     <td>

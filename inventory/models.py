@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from datetime import timedelta
 from decimal import Decimal
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -64,6 +65,8 @@ class Product(models.Model):
     min_stock_level = models.IntegerField(default=10, help_text="Threshold for low-stock alert")
     unit = models.CharField(max_length=20, choices=UNIT_CHOICES, default='pcs')
     description = models.TextField(blank=True, null=True)
+    has_expiry = models.BooleanField(default=False, help_text="Toggle on if this product has an expiry date")
+    expiry_date = models.DateField(blank=True, null=True, help_text="Product Expiration / Best-Before Date")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -73,6 +76,69 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.sku})"
+
+    @property
+    def is_expired(self):
+        """Check if product has expired and still has stock."""
+        if self.has_expiry and self.expiry_date:
+            return self.expiry_date < timezone.now().date() and self.current_stock > 0
+        return False
+
+    @property
+    def is_near_expiry(self):
+        """Check if product will expire within next 30 days and has stock."""
+        if self.has_expiry and self.expiry_date:
+            today = timezone.now().date()
+            return today <= self.expiry_date <= (today + timedelta(days=30)) and self.current_stock > 0
+        return False
+
+    @property
+    def days_until_expiry(self):
+        """Days remaining until expiry date."""
+        if self.has_expiry and self.expiry_date:
+            return (self.expiry_date - timezone.now().date()).days
+        return None
+
+    @property
+    def expiry_badge_info(self):
+        """Return CSS badge class, icon, and human label for UI display."""
+        if not self.has_expiry or not self.expiry_date:
+            return None
+        days = self.days_until_expiry
+        if days is None:
+            return None
+        if days < 0:
+            return {
+                'status': 'expired',
+                'label': f'Expired ({abs(days)}d ago)',
+                'badge_class': 'bg-danger text-white',
+                'icon': 'bi-calendar-x-fill',
+                'is_alert': True
+            }
+        elif days <= 7:
+            return {
+                'status': 'critical',
+                'label': f'Expires in {days}d',
+                'badge_class': 'bg-danger-subtle text-danger border border-danger-subtle fw-bold',
+                'icon': 'bi-exclamation-octagon-fill',
+                'is_alert': True
+            }
+        elif days <= 30:
+            return {
+                'status': 'warning',
+                'label': f'Expires in {days}d',
+                'badge_class': 'bg-warning-subtle text-dark border border-warning-subtle fw-semibold',
+                'icon': 'bi-clock-history',
+                'is_alert': True
+            }
+        else:
+            return {
+                'status': 'good',
+                'label': f'Exp: {self.expiry_date.strftime("%d %b %Y")}',
+                'badge_class': 'bg-light text-muted border',
+                'icon': 'bi-calendar-check',
+                'is_alert': False
+            }
 
     @property
     def is_low_stock(self):

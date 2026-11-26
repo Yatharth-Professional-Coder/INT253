@@ -42,6 +42,44 @@
 </div>
 {% endif %}
 
+<!-- Expiry Alert Banner if any products are expired or near expiry -->
+{% if total_expiry_alerts > 0 %}
+<div class="alert {% if expired_count > 0 %}alert-danger border-danger{% else %}alert-warning border-warning{% endif %} d-flex flex-column flex-md-row align-items-md-center justify-content-between p-3 rounded-3 shadow-sm mb-4 gap-3">
+    <div class="d-flex align-items-center gap-3">
+        <div class="{% if expired_count > 0 %}bg-danger text-white{% else %}bg-warning text-dark{% endif %} p-2 rounded-circle fs-4 lh-1">
+            <i class="bi {% if expired_count > 0 %}bi-calendar-x-fill{% else %}bi-clock-history{% endif %}"></i>
+        </div>
+        <div>
+            <h6 class="mb-1 fw-bold {% if expired_count > 0 %}text-danger{% else %}text-dark{% endif %}">
+                Shelf-Life Warning: Product Expiry Alerts Triggered
+            </h6>
+            <span class="small text-secondary">
+                {% if expired_count > 0 %}
+                    <strong class="text-danger"><i class="bi bi-x-circle-fill me-1"></i>{{ expired_count }} product{{ expired_count|pluralize }} ALREADY EXPIRED!</strong>
+                {% endif %}
+                {% if near_expiry_count > 0 %}
+                    {% if expired_count > 0 %}&bull;{% endif %}
+                    <strong class="text-dark"><i class="bi bi-clock-fill text-warning me-1"></i>{{ near_expiry_count }} product{{ near_expiry_count|pluralize }} expiring within 30 days.</strong>
+                {% endif %}
+                Review recommended to avoid financial loss or selling expired goods.
+            </span>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        {% if expired_count > 0 %}
+        <a href="{% url 'product_list' %}?status=expired" class="btn btn-sm btn-danger fw-semibold px-3 py-2 text-nowrap">
+            <i class="bi bi-calendar-x me-1"></i> View Expired ({{ expired_count }})
+        </a>
+        {% endif %}
+        {% if near_expiry_count > 0 %}
+        <a href="{% url 'product_list' %}?status=near_expiry" class="btn btn-sm btn-outline-dark fw-semibold px-3 py-2 text-nowrap">
+            <i class="bi bi-clock-history me-1"></i> View Near Expiry ({{ near_expiry_count }})
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
 <!-- Primary KPI Metrics Grid -->
 <div class="row g-3 mb-4">
     <!-- Today's Sales -->
@@ -192,6 +230,95 @@
         </div>
     </div>
 </div>
+
+<!-- Near Expiry & Expired Products Watchlist (Visible if any expiry alerts) -->
+{% if total_expiry_alerts > 0 %}
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="card card-custom p-4 border-warning border-opacity-50">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-warning-subtle text-dark p-2 rounded-circle fs-5 lh-1">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0">Perishable Goods: Expiry &amp; Shelf-Life Watchlist</h5>
+                        <p class="text-muted small mb-0">Products expired or expiring within 30 days requiring attention</p>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    {% if expired_count > 0 %}
+                    <span class="badge bg-danger text-white px-2 py-1">
+                        <i class="bi bi-x-circle me-1"></i>{{ expired_count }} Expired
+                    </span>
+                    {% endif %}
+                    {% if near_expiry_count > 0 %}
+                    <span class="badge bg-warning-subtle text-dark border border-warning-subtle px-2 py-1">
+                        <i class="bi bi-clock me-1"></i>{{ near_expiry_count }} Expiring Soon
+                    </span>
+                    {% endif %}
+                    <a href="{% url 'product_list' %}?status=near_expiry" class="btn btn-sm btn-outline-dark">
+                        View All in Catalog &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-custom align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Product &amp; SKU</th>
+                            <th>Category</th>
+                            <th class="text-center">Stock</th>
+                            <th class="text-center">Expiry Date</th>
+                            <th class="text-center">Shelf-Life Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in expiry_watchlist %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ item.name }}</div>
+                                <span class="badge bg-light text-muted border font-monospace" style="font-size: 0.72rem;">{{ item.sku }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">{{ item.category.name|default:"General" }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="fw-bold">{{ item.current_stock }}</span> {{ item.unit }}
+                            </td>
+                            <td class="text-center font-monospace">
+                                {{ item.expiry_date|date:"d M Y" }}
+                            </td>
+                            <td class="text-center">
+                                {% with b=item.expiry_badge_info %}
+                                    {% if b %}
+                                        <span class="badge {{ b.badge_class }} px-2 py-1">
+                                            <i class="bi {{ b.icon }} me-1"></i>{{ b.label }}
+                                        </span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'product_update' item.id %}" class="btn btn-outline-secondary" title="Edit Product / Expiry Date">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'stock_adjustment_list' %}" class="btn btn-outline-danger" title="Stock Adjustment / Write-off">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <!-- Recent Transactions & Purchases Row -->
 <div class="row g-4">

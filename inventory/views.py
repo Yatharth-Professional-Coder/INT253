@@ -100,6 +100,26 @@ def dashboard(request):
     total_products = products.count()
     low_stock_products = products.filter(current_stock__gt=0, current_stock__lte=F('min_stock_level'))
     out_of_stock_products = products.filter(current_stock__lte=0)
+    total_stock_alerts = low_stock_products.count() + out_of_stock_products.count()
+
+    # Product Expiry & Shelf-Life Metrics
+    thirty_days_later = today + timedelta(days=30)
+    expired_products = products.filter(
+        has_expiry=True,
+        expiry_date__lt=today,
+        current_stock__gt=0
+    ).order_by('expiry_date')
+    near_expiry_products = products.filter(
+        has_expiry=True,
+        expiry_date__gte=today,
+        expiry_date__lte=thirty_days_later,
+        current_stock__gt=0
+    ).order_by('expiry_date')
+
+    expired_count = expired_products.count()
+    near_expiry_count = near_expiry_products.count()
+    total_expiry_alerts = expired_count + near_expiry_count
+    expiry_watchlist = list(expired_products[:6]) + list(near_expiry_products[:6])
     
     # Inventory Valuation
     all_inventory = Product.objects.all()
@@ -152,6 +172,11 @@ def dashboard(request):
         'total_products': total_products,
         'low_stock_count': low_stock_products.count(),
         'out_of_stock_count': out_of_stock_products.count(),
+        'total_stock_alerts': total_stock_alerts,
+        'expired_count': expired_count,
+        'near_expiry_count': near_expiry_count,
+        'total_expiry_alerts': total_expiry_alerts,
+        'expiry_watchlist': expiry_watchlist,
         'inventory_val_cost': inventory_val_cost,
         'inventory_val_retail': inventory_val_retail,
         'potential_profit': potential_profit,
@@ -381,12 +406,17 @@ def product_list(request):
     if category_id:
         products = products.filter(category_id=category_id)
 
+    today = timezone.now().date()
     if stock_status == 'low':
         products = products.filter(current_stock__gt=0, current_stock__lte=F('min_stock_level'))
     elif stock_status == 'out':
         products = products.filter(current_stock__lte=0)
     elif stock_status == 'in':
         products = products.filter(current_stock__gt=F('min_stock_level'))
+    elif stock_status == 'expired':
+        products = products.filter(has_expiry=True, expiry_date__lt=today, current_stock__gt=0)
+    elif stock_status == 'near_expiry':
+        products = products.filter(has_expiry=True, expiry_date__gte=today, expiry_date__lte=today + timedelta(days=30), current_stock__gt=0)
 
     categories = Category.objects.all()
 

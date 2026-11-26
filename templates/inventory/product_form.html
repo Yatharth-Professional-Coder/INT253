@@ -125,6 +125,45 @@ if (typeof Html5Qrcode === 'undefined') {
                         <div class="form-text small text-danger">System triggers alert badge when stock drops to or below this.</div>
                     </div>
 
+                    <!-- Expiry Date Tracking Toggle & Date Picker -->
+                    <div class="col-md-12">
+                        <div class="card border p-3 rounded-3 bg-light shadow-sm">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="pe-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-calendar2-week-fill text-primary fs-5"></i>
+                                        <label class="form-check-label fw-bold mb-0 text-dark" for="id_has_expiry" style="cursor: pointer;">
+                                            Track Expiry Date (Perishable / Groceries / Medicines)
+                                        </label>
+                                    </div>
+                                    <div class="form-text small text-muted mt-1">
+                                        Toggle <strong>ON</strong> if this item has an expiration or best-before date; toggle <strong>OFF</strong> for non-perishable goods (hardware, stationery, electronics).
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch mb-0 fs-4">
+                                    {{ form.has_expiry }}
+                                </div>
+                            </div>
+                            <div id="expiryDateContainer" class="mt-3 pt-3 border-top" style="display: none;">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold text-danger d-flex align-items-center gap-1">
+                                            <i class="bi bi-clock-history"></i> Expiry / Best Before Date <span class="text-danger">*</span>
+                                        </label>
+                                        {{ form.expiry_date }}
+                                        <div class="form-text small">Items expiring within 30 days automatically trigger alert badges on the front dashboard.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert alert-secondary py-2 px-3 small mb-0 rounded-2 border-0 bg-white shadow-sm">
+                                            <i class="bi bi-info-circle me-1 text-primary"></i>
+                                            Automated dashboard alerts warn you <strong>30 days</strong> before expiry and flag expired stock for markdown or write-off.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Description -->
                     <div class="col-md-12">
                         <label class="form-label fw-bold">Product Description</label>
@@ -259,6 +298,26 @@ if (typeof Html5Qrcode === 'undefined') {
 {% block extra_js %}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Expiry Date Toggle Behavior
+        const hasExpiryToggle = document.getElementById("id_has_expiry");
+        const expiryDateContainer = document.getElementById("expiryDateContainer");
+        const expiryDateInput = document.getElementById("id_expiry_date");
+
+        function syncExpiryVisibility() {
+            if (!hasExpiryToggle || !expiryDateContainer) return;
+            if (hasExpiryToggle.checked) {
+                expiryDateContainer.style.display = "block";
+                if (expiryDateInput) expiryDateInput.required = true;
+            } else {
+                expiryDateContainer.style.display = "none";
+                if (expiryDateInput) expiryDateInput.required = false;
+            }
+        }
+
+        if (hasExpiryToggle) {
+            hasExpiryToggle.addEventListener("change", syncExpiryVisibility);
+            syncExpiryVisibility(); // Initial check on load
+        }
         // Quick Category Creation
         const categoryModalEl = document.getElementById("quickCategoryModal");
         const categoryModal = categoryModalEl ? new bootstrap.Modal(categoryModalEl) : null;
