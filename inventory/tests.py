@@ -366,4 +366,43 @@ class SmartInventorySystemTests(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertContains(res, 'Rs.')
 
+    def test_quick_category_and_supplier_api(self):
+        """Test quick category and supplier AJAX creation from product form."""
+        import json
+        mgr = User.objects.create_user('mgr_quick', 'mgr_quick@test.com', 'pass123', is_staff=True)
+        # Give profile permissions
+        mgr.profile.can_manage_products = True
+        mgr.profile.can_manage_suppliers = True
+        mgr.profile.save()
+        self.client.login(username='mgr_quick', password='pass123')
+
+        # Test quick category
+        res_cat = self.client.post(
+            reverse('api_quick_category'),
+            data=json.dumps({'name': 'Peripherals', 'description': 'Computer peripherals'}),
+            content_type='application/json'
+        )
+        self.assertEqual(res_cat.status_code, 200)
+        data_cat = res_cat.json()
+        self.assertTrue(data_cat['success'])
+        self.assertTrue(Category.objects.filter(name='Peripherals').exists())
+
+        # Test quick supplier
+        res_sup = self.client.post(
+            reverse('api_quick_supplier'),
+            data=json.dumps({
+                'name': 'Delta Supplies Ltd',
+                'contact_name': 'Sarah Connor',
+                'phone': '+91 99999 11111',
+                'email': 'sarah@delta.com',
+                'address': 'Tech Park, Bangalore'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(res_sup.status_code, 200)
+        data_sup = res_sup.json()
+        self.assertTrue(data_sup['success'])
+        self.assertTrue(Supplier.objects.filter(name='Delta Supplies Ltd').exists())
+
+
 

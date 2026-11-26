@@ -10,6 +10,8 @@ urlpatterns = [
     path('api/pos/checkout/', views.api_pos_checkout, name='api_pos_checkout'),
     path('api/pos/search/', views.api_search_products, name='api_pos_search'),
     path('api/pos/customer/quick/', views.api_quick_customer, name='api_quick_customer'),
+    path('api/category/quick/', views.api_quick_category, name='api_quick_category'),
+    path('api/supplier/quick/', views.api_quick_supplier, name='api_quick_supplier'),
 
     # Product Catalog & Low Stock
     path('products/', views.product_list, name='product_list'),

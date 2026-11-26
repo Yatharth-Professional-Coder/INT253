@@ -303,6 +303,59 @@ def api_quick_customer(request):
     return JsonResponse({'success': False, 'error': 'POST required'})
 
 
+@login_required
+def api_quick_category(request):
+    """Quickly create a category via AJAX modal from product form."""
+    if request.user.is_superuser:
+        return JsonResponse({'success': False, 'error': 'Website owner cannot manage operational inventory.'}, status=403)
+    if not (hasattr(request.user, 'profile') and request.user.profile.can_manage_products):
+        return JsonResponse({'success': False, 'error': 'Access Restricted: Permission to manage products required.'}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            name = data.get('name', '').strip()
+            if not name:
+                return JsonResponse({'success': False, 'error': 'Category name is required.'})
+
+            category, created = Category.objects.get_or_create(
+                name=name,
+                defaults={'description': data.get('description', '').strip()}
+            )
+            return JsonResponse({'success': True, 'id': category.id, 'name': category.name, 'created': created})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'POST required'})
+
+
+@login_required
+def api_quick_supplier(request):
+    """Quickly create a supplier via AJAX modal from product form."""
+    if request.user.is_superuser:
+        return JsonResponse({'success': False, 'error': 'Website owner cannot manage operational inventory.'}, status=403)
+    if not (hasattr(request.user, 'profile') and (request.user.profile.can_manage_products or request.user.profile.can_manage_suppliers)):
+        return JsonResponse({'success': False, 'error': 'Access Restricted: Permission to manage suppliers or products required.'}, status=403)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            name = data.get('name', '').strip()
+            if not name:
+                return JsonResponse({'success': False, 'error': 'Supplier / company name is required.'})
+
+            supplier = Supplier.objects.create(
+                name=name,
+                contact_name=data.get('contact_name', '').strip(),
+                phone=data.get('phone', '').strip(),
+                email=data.get('email', '').strip(),
+                address=data.get('address', '').strip(),
+            )
+            return JsonResponse({'success': True, 'id': supplier.id, 'name': supplier.name})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'POST required'})
+
+
 # ==========================================
 # PRODUCT & INVENTORY VIEWS
 # ==========================================
