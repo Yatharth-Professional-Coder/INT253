@@ -566,16 +566,36 @@ if (typeof Html5Qrcode === 'undefined') {
         productGrid.innerHTML = html;
     }
 
-    // Handle Card Click -> Add to Cart
-    window.handleProductClick = function(productId) {
-        const product = posState.products.find(p => p.id === productId);
-        if (!product || product.current_stock <= 0) return;
+    // Handle Adding Product to Cart (accepts either a Product Object or a Product ID)
+    function addToCart(productOrId) {
+        let product = null;
+        if (typeof productOrId === 'object' && productOrId !== null) {
+            product = productOrId;
+        } else {
+            product = posState.products.find(p => p.id === productOrId);
+        }
 
-        const cartItem = posState.cart.find(item => item.id === productId);
+        if (!product) {
+            console.warn("Product not found:", productOrId);
+            return false;
+        }
+
+        if (product.current_stock <= 0) {
+            alert(`"${product.name}" is out of stock!`);
+            return false;
+        }
+
+        // Ensure product is present in local posState.products
+        if (!posState.products.some(p => p.id === product.id)) {
+            posState.products.unshift(product);
+            renderProductGrid();
+        }
+
+        const cartItem = posState.cart.find(item => item.id === product.id);
         if (cartItem) {
             if (cartItem.quantity + 1 > product.current_stock) {
                 alert(`Cannot add more. Only ${product.current_stock} available in stock!`);
-                return;
+                return false;
             }
             cartItem.quantity += 1;
         } else {
@@ -583,13 +603,18 @@ if (typeof Html5Qrcode === 'undefined') {
                 id: product.id,
                 name: product.name,
                 sku: product.sku,
-                price: product.selling_price,
+                price: parseFloat(product.selling_price) || 0,
                 stock: product.current_stock,
-                unit: product.unit,
+                unit: product.unit || 'Unit',
                 quantity: 1
             });
         }
         renderCart();
+        return true;
+    }
+    window.addToCart = addToCart;
+    window.handleProductClick = function(productId) {
+        addToCart(productId);
     };
 
     // Render Cart Items & Recalculate Totals
@@ -715,6 +740,43 @@ if (typeof Html5Qrcode === 'undefined') {
 
     // Search and barcode scanner behavior
     let searchTimeout = null;
+    searchInput.addEventListener('keydown', async function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            const query = searchInput.value.trim();
+            if (!query) return;
+
+            let matched = posState.products.find(function(p) {
+                const b = p.barcode ? String(p.barcode).trim() : '';
+                const s = p.sku ? String(p.sku).trim() : '';
+                return (b && b === query) || (s && s.toLowerCase() === query.toLowerCase());
+            });
+
+            if (!matched) {
+                try {
+                    const res = await fetch("{% url 'api_pos_search' %}?q=" + encodeURIComponent(query));
+                    const data = await res.json();
+                    if (data.products && data.products.length > 0) {
+                        matched = data.products.find(function(p) {
+                            const b = p.barcode ? String(p.barcode).trim() : '';
+                            const s = p.sku ? String(p.sku).trim() : '';
+                            return (b && b === query) || (s && s.toLowerCase() === query.toLowerCase());
+                        }) || data.products[0];
+                    }
+                } catch(err) {}
+            }
+
+            if (matched) {
+                playRetailBeep();
+                addToCart(matched);
+                searchInput.value = '';
+                posState.searchQuery = '';
+                loadProducts();
+            }
+        }
+    });
+
     searchInput.addEventListener('input', function() {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(async () => {
@@ -722,7 +784,8 @@ if (typeof Html5Qrcode === 'undefined') {
             // If barcode matches exactly 1 item, auto add!
             await loadProducts();
             if (posState.products.length === 1 && (posState.products[0].barcode === posState.searchQuery || posState.products[0].sku.toLowerCase() === posState.searchQuery.toLowerCase())) {
-                handleProductClick(posState.products[0].id);
+                playRetailBeep();
+                addToCart(posState.products[0]);
                 searchInput.value = '';
                 posState.searchQuery = '';
                 await loadProducts();
@@ -953,35 +1016,45 @@ if (typeof Html5Qrcode === 'undefined') {
     let lastScanTime = 0;
 
     async function handleBarcodeScanned(decodedBarcode) {
+        const cleanBarcode = String(decodedBarcode || '').trim();
+        if (!cleanBarcode) return;
+
         playRetailBeep();
         const feedback = document.getElementById('posCameraFeedback');
         if (feedback) {
-            feedback.className = 'alert alert-success py-2 px-3 small mt-3 mb-1 text-center';
-            feedback.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Scanned: <strong>' + decodedBarcode + '</strong>';
+            feedback.className = 'alert alert-info py-2 px-3 small mt-3 mb-1 text-center';
+            feedback.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Processing: <strong>' + cleanBarcode + '</strong>';
         }
 
-        // Search local state first
+        // 1. Search local state first (case-insensitive barcode or SKU match)
         let matchedProduct = posState.products.find(function(p) {
-            return p.barcode === decodedBarcode || (p.sku && p.sku.toLowerCase() === decodedBarcode.toLowerCase());
+            const b = p.barcode ? String(p.barcode).trim() : '';
+            const s = p.sku ? String(p.sku).trim() : '';
+            return (b && b === cleanBarcode) || (s && s.toLowerCase() === cleanBarcode.toLowerCase());
         });
 
-        // If not in currently loaded slice, search API
+        // 2. If not in currently loaded slice, search API
         if (!matchedProduct) {
             try {
-                const res = await fetch("{% url 'api_pos_search' %}?q=" + encodeURIComponent(decodedBarcode));
+                const res = await fetch("{% url 'api_pos_search' %}?q=" + encodeURIComponent(cleanBarcode));
                 const data = await res.json();
                 if (data.products && data.products.length > 0) {
                     matchedProduct = data.products.find(function(p) {
-                        return p.barcode === decodedBarcode || (p.sku && p.sku.toLowerCase() === decodedBarcode.toLowerCase());
+                        const b = p.barcode ? String(p.barcode).trim() : '';
+                        const s = p.sku ? String(p.sku).trim() : '';
+                        return (b && b === cleanBarcode) || (s && s.toLowerCase() === cleanBarcode.toLowerCase());
                     }) || data.products[0];
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Barcode lookup failed:", e);
+            }
         }
 
         if (matchedProduct) {
             if (matchedProduct.current_stock > 0) {
-                addToCart(matchedProduct);
-                if (feedback) {
+                const added = addToCart(matchedProduct);
+                if (added && feedback) {
+                    feedback.className = 'alert alert-success py-2 px-3 small mt-3 mb-1 text-center';
                     feedback.innerHTML = '<i class="bi bi-cart-check-fill text-success me-1"></i> Added <strong>' + matchedProduct.name + '</strong> to cart!';
                 }
             } else {
@@ -991,12 +1064,12 @@ if (typeof Html5Qrcode === 'undefined') {
                 }
             }
         } else {
-            searchInput.value = decodedBarcode;
-            posState.searchQuery = decodedBarcode;
+            searchInput.value = cleanBarcode;
+            posState.searchQuery = cleanBarcode;
             await loadProducts();
             if (feedback) {
                 feedback.className = 'alert alert-warning py-2 px-3 small mt-3 mb-1 text-center';
-                feedback.innerHTML = '<i class="bi bi-info-circle me-1"></i> Scanned: <strong>' + decodedBarcode + '</strong> (Filtered in list)';
+                feedback.innerHTML = '<i class="bi bi-exclamation-circle-fill me-1"></i> Barcode <strong>' + cleanBarcode + '</strong> not found in database.';
             }
         }
 
@@ -1006,7 +1079,7 @@ if (typeof Html5Qrcode === 'undefined') {
                 const modalEl = document.getElementById('posCameraModal');
                 const modalInstance = bootstrap.Modal.getInstance(modalEl);
                 if (modalInstance) modalInstance.hide();
-            }, 650);
+            }, 800);
         }
     }
 

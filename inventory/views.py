@@ -209,7 +209,8 @@ def api_search_products(request):
         products = products.filter(
             Q(name__icontains=q) |
             Q(sku__icontains=q) |
-            Q(barcode__iexact=q)
+            Q(barcode__iexact=q) |
+            Q(barcode__icontains=q)
         )
 
     data = [
