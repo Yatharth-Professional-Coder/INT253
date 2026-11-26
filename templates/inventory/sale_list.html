@@ -26,13 +26,13 @@
     <div class="col-md-6 col-lg-3">
         <div class="card card-custom p-3">
             <span class="text-muted small text-uppercase fw-semibold">Filtered Total Sales</span>
-            <h4 class="fw-bold mb-0 text-primary">${{ total_sales_sum|floatformat:2 }}</h4>
+            <h4 class="fw-bold mb-0 text-primary">Rs. {{ total_sales_sum|floatformat:2 }}</h4>
         </div>
     </div>
     <div class="col-md-6 col-lg-3">
         <div class="card card-custom p-3">
             <span class="text-muted small text-uppercase fw-semibold">Total Gross Profit</span>
-            <h4 class="fw-bold mb-0 text-success">${{ total_profit_sum|floatformat:2 }}</h4>
+            <h4 class="fw-bold mb-0 text-success">Rs. {{ total_profit_sum|floatformat:2 }}</h4>
         </div>
     </div>
 </div>
@@ -115,17 +115,17 @@
                         </span>
                     </td>
                     <td class="text-end font-monospace text-muted">
-                        ${{ s.subtotal|floatformat:2 }}
+                        Rs. {{ s.subtotal|floatformat:2 }}
                     </td>
                     <td class="text-end small text-muted">
-                        {% if s.discount_amount > 0 %}<span class="text-danger">-${{ s.discount_amount|floatformat:2 }}</span><br>{% endif %}
-                        <span class="text-secondary">+${{ s.tax_amount|floatformat:2 }}</span>
+                        {% if s.discount_amount > 0 %}<span class="text-danger">-Rs. {{ s.discount_amount|floatformat:2 }}</span><br>{% endif %}
+                        <span class="text-secondary">+Rs. {{ s.tax_amount|floatformat:2 }}</span>
                     </td>
                     <td class="text-end font-monospace fw-bold text-dark fs-6">
-                        ${{ s.grand_total|floatformat:2 }}
+                        Rs. {{ s.grand_total|floatformat:2 }}
                     </td>
                     <td class="text-end font-monospace fw-semibold text-success">
-                        +${{ s.total_profit|floatformat:2 }}
+                        +Rs. {{ s.total_profit|floatformat:2 }}
                     </td>
                     <td class="text-center">
                         <a href="{% url 'sale_detail' s.id %}" class="btn btn-sm btn-outline-secondary" title="View & Print Invoice">

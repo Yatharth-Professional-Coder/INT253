@@ -339,3 +339,31 @@ class SmartInventorySystemTests(TestCase):
         self.assertEqual(res_del.status_code, 302)
         self.assertFalse(Store.objects.filter(code='STR-EAST-01').exists())
 
+    def test_currency_symbol_and_formatting(self):
+        """Test that application uses Rs. currency symbol across context and templates."""
+        from inventory.context_processors import inventory_globals
+        ctx = inventory_globals(None)
+        self.assertEqual(ctx.get('currency_symbol'), 'Rs.')
+
+        # Verify Sale string representation uses Rs.
+        sale = Sale.objects.create(
+            invoice_number="INV-TEST-99",
+            cashier="Cashier 1",
+            subtotal=Decimal('100.00'),
+            tax_rate=Decimal('0.00'),
+            tax_amount=Decimal('0.00'),
+            discount_amount=Decimal('0.00'),
+            grand_total=Decimal('100.00'),
+            amount_paid=Decimal('100.00'),
+            change_amount=Decimal('0.00')
+        )
+        self.assertIn('Rs. 100.00', str(sale))
+
+        # Test manager sees Rs. on dashboard
+        mgr = User.objects.create_user('mgr_currency', 'mgr_curr@test.com', 'pass123', is_staff=True)
+        self.client.login(username='mgr_currency', password='pass123')
+        res = self.client.get(reverse('dashboard'))
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, 'Rs.')
+
+

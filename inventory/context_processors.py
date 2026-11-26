@@ -15,5 +15,5 @@ def inventory_globals(request):
         'out_of_stock_count': out_of_stock_count,
         'total_stock_alerts': low_stock_count + out_of_stock_count,
         'app_name': 'SmartStock POS & Inventory',
-        'currency_symbol': '$',
+        'currency_symbol': 'Rs.',
     }

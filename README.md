@@ -9,9 +9,9 @@ A comprehensive, production-ready **Smart Inventory Management & Point of Sale (
 ### 1. ⚡ High-Speed POS Billing Terminal (`/pos/`)
 * **Real-Time Barcode & Name Search**: Instant search and barcode scanner support (press `F2` to focus). Scanning an exact barcode immediately adds the item to the cart.
 * **Interactive Cart**: Quantity adjustment steppers (`+` / `-`), line subtotal calculations, and item removals.
-* **Smart Calculations**: Configurable sales tax rates (`0%`, `5%`, `10%`, `12%`, `18%`), instant dollar discounts, and real-time Grand Total updates.
+* **Smart Calculations**: Configurable sales tax rates (`0%`, `5%`, `10%`, `12%`, `18%`), instant discounts, and real-time Grand Total updates.
 * **Payment Flexibility**: Support for Cash, Credit/Debit Card, UPI / QR Code, and Credit / Due.
-* **Cash Tender Calculator**: Live change return calculation (e.g., Given $100 &rarr; Change $18.50).
+* **Cash Tender Calculator**: Live change return calculation (e.g., Given Rs. 500 &rarr; Change Rs. 120.00).
 * **Instant Tax Invoice & Receipt Modal**: Automatically pops up post-transaction with print formatting for both thermal receipt printers and standard A4 sheets.
 * **Quick Customer Creation**: Add new customer profiles without leaving the POS register.
 

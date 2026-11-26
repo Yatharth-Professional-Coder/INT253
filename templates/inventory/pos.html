@@ -211,7 +211,7 @@
             <div class="bg-light p-3 rounded-3 border mb-3">
                 <div class="d-flex justify-content-between text-muted small mb-1">
                     <span>Subtotal</span>
-                    <span id="displaySubtotal" class="fw-semibold text-dark">$0.00</span>
+                    <span id="displaySubtotal" class="fw-semibold text-dark">Rs. 0.00</span>
                 </div>
                 <div class="row g-2 align-items-center mb-1">
                     <div class="col-6 d-flex align-items-center text-muted small">
@@ -225,22 +225,22 @@
                         </select>
                     </div>
                     <div class="col-6 text-end text-muted small">
-                        <span>+$</span><span id="displayTax">0.00</span>
+                        <span>+Rs. </span><span id="displayTax">0.00</span>
                     </div>
                 </div>
                 <div class="row g-2 align-items-center mb-2">
                     <div class="col-6 d-flex align-items-center text-muted small">
-                        <span>Discount ($):</span>
+                        <span>Discount (Rs.):</span>
                         <input type="number" id="discountInput" class="form-control form-control-sm py-0 ms-1" value="0.00" min="0" step="0.50" style="width: 75px; font-size: 0.8rem;">
                     </div>
                     <div class="col-6 text-end text-muted small">
-                        <span>-$</span><span id="displayDiscount">0.00</span>
+                        <span>-Rs. </span><span id="displayDiscount">0.00</span>
                     </div>
                 </div>
 
                 <div class="border-top pt-2 d-flex justify-content-between align-items-center">
                     <span class="fs-6 fw-bold text-dark">Grand Total</span>
-                    <span id="displayGrandTotal" class="fs-4 fw-extrabold text-primary">$0.00</span>
+                    <span id="displayGrandTotal" class="fs-4 fw-extrabold text-primary">Rs. 0.00</span>
                 </div>
             </div>
 
@@ -266,13 +266,13 @@
                 <div id="cashTenderContainer" class="row g-2 align-items-center">
                     <div class="col-6">
                         <div class="input-group input-group-sm">
-                            <span class="input-group-text">$</span>
+                            <span class="input-group-text">Rs.</span>
                             <input type="number" id="amountPaidInput" class="form-control" placeholder="Tendered" min="0" step="1">
                         </div>
                     </div>
                     <div class="col-6 text-end">
                         <div class="small text-muted">Change:</div>
-                        <div id="displayChange" class="fw-bold text-success fs-6">$0.00</div>
+                        <div id="displayChange" class="fw-bold text-success fs-6">Rs. 0.00</div>
                     </div>
                 </div>
             </div>
@@ -379,23 +379,23 @@
                 <div class="py-2 border-bottom border-dashed small">
                     <div class="d-flex justify-content-between text-muted">
                         <span>Subtotal:</span>
-                        <span id="receiptSubtotal">$0.00</span>
+                        <span id="receiptSubtotal">Rs. 0.00</span>
                     </div>
                     <div class="d-flex justify-content-between text-muted">
                         <span>Discount:</span>
-                        <span id="receiptDiscount">-$0.00</span>
+                        <span id="receiptDiscount">-Rs. 0.00</span>
                     </div>
                     <div class="d-flex justify-content-between text-muted">
                         <span>Tax:</span>
-                        <span id="receiptTax">+$0.00</span>
+                        <span id="receiptTax">+Rs. 0.00</span>
                     </div>
                     <div class="d-flex justify-content-between fs-5 fw-bold text-dark pt-1">
                         <span>Total Paid:</span>
-                        <span id="receiptGrandTotal">$0.00</span>
+                        <span id="receiptGrandTotal">Rs. 0.00</span>
                     </div>
                     <div class="d-flex justify-content-between text-muted" id="receiptChangeRow">
-                        <span>Cash Tendered: <strong id="receiptTendered">$0.00</strong></span>
-                        <span>Change Returned: <strong class="text-success" id="receiptChange">$0.00</strong></span>
+                        <span>Cash Tendered: <strong id="receiptTendered">Rs. 0.00</strong></span>
+                        <span>Change Returned: <strong class="text-success" id="receiptChange">Rs. 0.00</strong></span>
                     </div>
                 </div>
 
@@ -505,7 +505,7 @@
                         <h6 class="fw-bold mb-1 text-truncate" title="${p.name}">${p.name}</h6>
                         <div class="text-secondary small mb-2" style="font-size: 0.75rem;">SKU: ${p.sku}</div>
                         <div class="d-flex align-items-center justify-content-between mt-auto">
-                            <span class="fs-6 fw-bold text-primary">$${p.selling_price.toFixed(2)}</span>
+                            <span class="fs-6 fw-bold text-primary">Rs. ${p.selling_price.toFixed(2)}</span>
                             <button class="btn btn-sm ${isOutOfStock ? 'btn-secondary' : 'btn-outline-primary'} py-0 px-2" ${isOutOfStock ? 'disabled' : ''}>
                                 <i class="bi bi-plus-lg"></i>
                             </button>
@@ -549,11 +549,11 @@
         if (posState.cart.length === 0) {
             cartItemsList.innerHTML = '';
             cartEmptyState.style.display = 'block';
-            displaySubtotal.innerText = '$0.00';
+            displaySubtotal.innerText = 'Rs. 0.00';
             displayTax.innerText = '0.00';
             displayDiscount.innerText = '0.00';
-            displayGrandTotal.innerText = '$0.00';
-            displayChange.innerText = '$0.00';
+            displayGrandTotal.innerText = 'Rs. 0.00';
+            displayChange.innerText = 'Rs. 0.00';
             amountPaidInput.value = '';
             return;
         }
@@ -570,7 +570,7 @@
                 <tr>
                     <td>
                         <div class="fw-semibold text-truncate" style="max-width: 140px;" title="${item.name}">${item.name}</div>
-                        <span class="text-muted" style="font-size: 0.75rem;">$${item.price.toFixed(2)} / ${item.unit}</span>
+                        <span class="text-muted" style="font-size: 0.75rem;">Rs. ${item.price.toFixed(2)} / ${item.unit}</span>
                     </td>
                     <td class="text-center">
                         <div class="d-inline-flex align-items-center gap-1">
@@ -580,7 +580,7 @@
                         </div>
                     </td>
                     <td class="text-end fw-semibold text-dark">
-                        $${lineTotal.toFixed(2)}
+                        Rs. ${lineTotal.toFixed(2)}
                     </td>
                     <td class="text-center">
                         <button class="btn btn-sm text-danger p-0 border-0 bg-transparent" onclick="removeFromCart(${index})" title="Remove">
@@ -600,10 +600,10 @@
         const taxAmount = (taxable * (taxRate / 100));
         const grandTotal = taxable + taxAmount;
 
-        displaySubtotal.innerText = '$' + subtotal.toFixed(2);
+        displaySubtotal.innerText = 'Rs. ' + subtotal.toFixed(2);
         displayDiscount.innerText = discount.toFixed(2);
         displayTax.innerText = taxAmount.toFixed(2);
-        displayGrandTotal.innerText = '$' + grandTotal.toFixed(2);
+        displayGrandTotal.innerText = 'Rs. ' + grandTotal.toFixed(2);
 
         // Update tendered & change
         if (!amountPaidInput.value || parseFloat(amountPaidInput.value) < grandTotal) {
@@ -636,11 +636,11 @@
     function updateChangeCalculation(grandTotal) {
         const paid = parseFloat(amountPaidInput.value) || 0.0;
         const change = Math.max(0, paid - grandTotal);
-        displayChange.innerText = '$' + change.toFixed(2);
+        displayChange.innerText = 'Rs. ' + change.toFixed(2);
     }
 
     amountPaidInput.addEventListener('input', function() {
-        const grandTotalText = displayGrandTotal.innerText.replace('$', '');
+        const grandTotalText = displayGrandTotal.innerText.replace('Rs.', '').replace('$', '').trim();
         const grandTotal = parseFloat(grandTotalText) || 0.0;
         updateChangeCalculation(grandTotal);
     });
@@ -715,12 +715,12 @@
             return;
         }
 
-        const grandTotalText = displayGrandTotal.innerText.replace('$', '');
+        const grandTotalText = displayGrandTotal.innerText.replace('Rs.', '').replace('$', '').trim();
         const grandTotal = parseFloat(grandTotalText) || 0.0;
         const paid = parseFloat(amountPaidInput.value) || grandTotal;
 
         if (posState.paymentMethod === 'cash' && paid < grandTotal) {
-            if (!confirm(`Amount tendered ($${paid.toFixed(2)}) is less than Grand Total ($${grandTotal.toFixed(2)}). Mark balance as Due/Credit?`)) {
+            if (!confirm(`Amount tendered (Rs. ${paid.toFixed(2)}) is less than Grand Total (Rs. ${grandTotal.toFixed(2)}). Mark balance as Due/Credit?`)) {
                 return;
             }
         }
@@ -796,19 +796,19 @@
                 <tr>
                     <td class="text-start py-1">${p.name}</td>
                     <td class="text-center py-1">${item.quantity}</td>
-                    <td class="text-end py-1">$${item.unit_price.toFixed(2)}</td>
-                    <td class="text-end py-1 font-monospace">$${line.toFixed(2)}</td>
+                    <td class="text-end py-1">Rs. ${item.unit_price.toFixed(2)}</td>
+                    <td class="text-end py-1 font-monospace">Rs. ${line.toFixed(2)}</td>
                 </tr>
             `;
         });
         document.getElementById('receiptItemsBody').innerHTML = itemsHtml;
 
-        document.getElementById('receiptSubtotal').innerText = '$' + (saleResult.grand_total - (payload.tax_rate > 0 ? (saleResult.grand_total * payload.tax_rate / 100) : 0)).toFixed(2);
-        document.getElementById('receiptDiscount').innerText = '-$' + payload.discount_amount.toFixed(2);
-        document.getElementById('receiptTax').innerText = '+$' + ((saleResult.grand_total * payload.tax_rate / 100) || 0).toFixed(2);
-        document.getElementById('receiptGrandTotal').innerText = '$' + saleResult.grand_total.toFixed(2);
-        document.getElementById('receiptTendered').innerText = '$' + saleResult.amount_paid.toFixed(2);
-        document.getElementById('receiptChange').innerText = '$' + saleResult.change_amount.toFixed(2);
+        document.getElementById('receiptSubtotal').innerText = 'Rs. ' + (saleResult.grand_total - (payload.tax_rate > 0 ? (saleResult.grand_total * payload.tax_rate / 100) : 0)).toFixed(2);
+        document.getElementById('receiptDiscount').innerText = '-Rs. ' + payload.discount_amount.toFixed(2);
+        document.getElementById('receiptTax').innerText = '+Rs. ' + ((saleResult.grand_total * payload.tax_rate / 100) || 0).toFixed(2);
+        document.getElementById('receiptGrandTotal').innerText = 'Rs. ' + saleResult.grand_total.toFixed(2);
+        document.getElementById('receiptTendered').innerText = 'Rs. ' + saleResult.amount_paid.toFixed(2);
+        document.getElementById('receiptChange').innerText = 'Rs. ' + saleResult.change_amount.toFixed(2);
 
         receiptModal.show();
     }

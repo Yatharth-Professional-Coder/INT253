@@ -62,7 +62,7 @@
                         {% endif %}
                     </td>
                     <td class="text-end font-monospace fw-bold text-dark fs-6">
-                        ${{ po.total_amount|floatformat:2 }}
+                        Rs. {{ po.total_amount|floatformat:2 }}
                     </td>
                     <td class="text-end">
                         <a href="{% url 'purchase_detail' po.id %}" class="btn btn-sm btn-outline-secondary" title="View Purchase Order">

@@ -43,10 +43,10 @@
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <span class="text-muted fw-semibold small text-uppercase">Total Sales Revenue</span>
                 <div class="stat-icon bg-primary-subtle text-primary">
-                    <i class="bi bi-currency-dollar"></i>
+                    <i class="bi bi-wallet2"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-1">${{ total_revenue|floatformat:2 }}</h3>
+            <h3 class="fw-bold mb-1">Rs. {{ total_revenue|floatformat:2 }}</h3>
             <div class="text-muted small">
                 {{ total_sales_count }} Completed Invoices ({{ total_units_sold }} units)
             </div>
@@ -62,7 +62,7 @@
                     <i class="bi bi-box-seam"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-1 text-danger">${{ total_cogs|floatformat:2 }}</h3>
+            <h3 class="fw-bold mb-1 text-danger">Rs. {{ total_cogs|floatformat:2 }}</h3>
             <div class="text-muted small">
                 Total supplier purchase costs of sold items
             </div>
@@ -78,7 +78,7 @@
                     <i class="bi bi-graph-up-arrow"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-1 text-success">${{ gross_profit|floatformat:2 }}</h3>
+            <h3 class="fw-bold mb-1 text-success">Rs. {{ gross_profit|floatformat:2 }}</h3>
             <div class="text-muted small">
                 Net Profit = (Revenue - Tax) - COGS
             </div>
@@ -119,17 +119,17 @@
         </div>
         <div class="col-sm-6 col-md-3 border-end">
             <div class="text-muted small text-uppercase fw-semibold mb-1">Inventory Value (At Cost)</div>
-            <h3 class="fw-bold text-dark mb-0">${{ inventory_valuation_cost|floatformat:2 }}</h3>
+            <h3 class="fw-bold text-dark mb-0">Rs. {{ inventory_valuation_cost|floatformat:2 }}</h3>
             <span class="text-muted small">Total supplier acquisition cost</span>
         </div>
         <div class="col-sm-6 col-md-3 border-end">
             <div class="text-muted small text-uppercase fw-semibold mb-1">Inventory Value (At Retail)</div>
-            <h3 class="fw-bold text-primary mb-0">${{ inventory_valuation_retail|floatformat:2 }}</h3>
+            <h3 class="fw-bold text-primary mb-0">Rs. {{ inventory_valuation_retail|floatformat:2 }}</h3>
             <span class="text-muted small">Total selling value</span>
         </div>
         <div class="col-sm-6 col-md-3">
             <div class="text-muted small text-uppercase fw-semibold mb-1">Projected Unrealized Profit</div>
-            <h3 class="fw-bold text-success mb-0">+${{ potential_future_profit|floatformat:2 }}</h3>
+            <h3 class="fw-bold text-success mb-0">+Rs. {{ potential_future_profit|floatformat:2 }}</h3>
             <span class="text-success small fw-medium">Profit upon selling current stock</span>
         </div>
     </div>
@@ -169,13 +169,13 @@
                                 {{ item.units_sold }}
                             </td>
                             <td class="text-end font-monospace">
-                                ${{ item.revenue|floatformat:2 }}
+                                Rs. {{ item.revenue|floatformat:2 }}
                             </td>
                             <td class="text-end font-monospace text-muted">
-                                ${{ item.cogs|floatformat:2 }}
+                                Rs. {{ item.cogs|floatformat:2 }}
                             </td>
                             <td class="text-end font-monospace fw-bold text-success">
-                                +${{ item.profit|floatformat:2 }}
+                                +Rs. {{ item.profit|floatformat:2 }}
                             </td>
                             <td class="text-center">
                                 <span class="badge bg-success-subtle text-success border border-success-subtle">
@@ -203,7 +203,7 @@
             <div class="mb-3">
                 <div class="d-flex justify-content-between small fw-semibold mb-1">
                     <span>{{ cat.product__category__name|default:"General" }}</span>
-                    <span>${{ cat.total_revenue|floatformat:2 }} ({{ cat.total_qty }} units)</span>
+                    <span>Rs. {{ cat.total_revenue|floatformat:2 }} ({{ cat.total_qty }} units)</span>
                 </div>
                 <div class="progress" style="height: 6px;">
                     <div class="progress-bar bg-primary" role="progressbar" style="width: {% if total_revenue > 0 %}{{ cat.total_revenue|floatformat:0 }}{% else %}0{% endif %}%;"></div>
@@ -224,7 +224,7 @@
                         <i class="bi {% if p.payment_method == 'cash' %}bi-cash{% elif p.payment_method == 'card' %}bi-credit-card{% elif p.payment_method == 'upi' %}bi-qr-code{% else %}bi-clock{% endif %} me-2"></i>
                         {{ p.payment_method }}
                     </span>
-                    <span class="font-monospace fw-bold">${{ p.total_amt|floatformat:2 }} <small class="text-muted">({{ p.count }})</small></span>
+                    <span class="font-monospace fw-bold">Rs. {{ p.total_amt|floatformat:2 }} <small class="text-muted">({{ p.count }})</small></span>
                 </li>
                 {% empty %}
                 <li class="list-group-item px-0 text-muted small">No sales payments.</li>

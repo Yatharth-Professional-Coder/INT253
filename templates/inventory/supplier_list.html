@@ -57,7 +57,7 @@
                         <span class="badge bg-light text-dark border">{{ s.total_pos|default:0 }} POs</span>
                     </td>
                     <td class="text-end font-monospace fw-semibold text-dark">
-                        ${{ s.purchased_amount|default:0|floatformat:2 }}
+                        Rs. {{ s.purchased_amount|default:0|floatformat:2 }}
                     </td>
                     <td class="text-end">
                         <div class="btn-group btn-group-sm">

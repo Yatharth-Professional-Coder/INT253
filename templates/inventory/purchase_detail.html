@@ -82,15 +82,15 @@
                             <td class="fw-semibold text-dark">{{ item.product.name }}</td>
                             <td><span class="badge bg-light text-muted border font-monospace">{{ item.product.sku }}</span></td>
                             <td class="text-center fw-bold">{{ item.quantity }} {{ item.product.unit }}</td>
-                            <td class="text-end font-monospace">${{ item.unit_cost|floatformat:2 }}</td>
-                            <td class="text-end font-monospace fw-bold">${{ item.total_price|floatformat:2 }}</td>
+                            <td class="text-end font-monospace">Rs. {{ item.unit_cost|floatformat:2 }}</td>
+                            <td class="text-end font-monospace fw-bold">Rs. {{ item.total_price|floatformat:2 }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                     <tfoot>
                         <tr>
                             <th colspan="5" class="text-end fs-6">Grand Total Amount:</th>
-                            <th class="text-end fs-5 fw-bold text-primary font-monospace">${{ purchase.total_amount|floatformat:2 }}</th>
+                            <th class="text-end fs-5 fw-bold text-primary font-monospace">Rs. {{ purchase.total_amount|floatformat:2 }}</th>
                         </tr>
                     </tfoot>
                 </table>

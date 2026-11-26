@@ -53,10 +53,10 @@
                     <i class="bi bi-cash-stack"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-1">${{ today_revenue|floatformat:2 }}</h3>
+            <h3 class="fw-bold mb-1">Rs. {{ today_revenue|floatformat:2 }}</h3>
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-success-subtle text-success small fw-semibold">
-                    <i class="bi bi-graph-up me-1"></i> Profit: ${{ today_profit|floatformat:2 }}
+                    <i class="bi bi-graph-up me-1"></i> Profit: Rs. {{ today_profit|floatformat:2 }}
                 </span>
                 <span class="text-muted small">today</span>
             </div>
@@ -72,10 +72,10 @@
                     <i class="bi bi-wallet2"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-1">${{ month_revenue|floatformat:2 }}</h3>
+            <h3 class="fw-bold mb-1">Rs. {{ month_revenue|floatformat:2 }}</h3>
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-success-subtle text-success small fw-semibold">
-                    <i class="bi bi-check-circle me-1"></i> Gross Profit: ${{ month_profit|floatformat:2 }}
+                    <i class="bi bi-check-circle me-1"></i> Gross Profit: Rs. {{ month_profit|floatformat:2 }}
                 </span>
             </div>
         </div>
@@ -90,9 +90,9 @@
                     <i class="bi bi-boxes"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-1">${{ inventory_val_retail|floatformat:2 }}</h3>
+            <h3 class="fw-bold mb-1">Rs. {{ inventory_val_retail|floatformat:2 }}</h3>
             <div class="text-muted small">
-                Cost: <strong class="text-dark">${{ inventory_val_cost|floatformat:2 }}</strong> &bull; Pot. Profit: <span class="text-success fw-bold">${{ potential_profit|floatformat:2 }}</span>
+                Cost: <strong class="text-dark">Rs. {{ inventory_val_cost|floatformat:2 }}</strong> &bull; Pot. Profit: <span class="text-success fw-bold">Rs. {{ potential_profit|floatformat:2 }}</span>
             </div>
         </div>
     </div>
@@ -234,7 +234,7 @@
                                 </span>
                             </td>
                             <td class="text-end fw-bold text-dark">
-                                ${{ sale.grand_total|floatformat:2 }}
+                                Rs. {{ sale.grand_total|floatformat:2 }}
                             </td>
                             <td class="text-center">
                                 <a href="{% url 'sale_detail' sale.id %}" class="btn btn-sm btn-light border text-muted py-0 px-2" title="Print Receipt">
@@ -296,7 +296,7 @@
                                 {% endif %}
                             </td>
                             <td class="text-end fw-bold text-dark">
-                                ${{ po.total_amount|floatformat:2 }}
+                                Rs. {{ po.total_amount|floatformat:2 }}
                             </td>
                             <td class="text-center">
                                 <a href="{% url 'purchase_detail' po.id %}" class="btn btn-sm btn-light border text-muted py-0 px-2">
@@ -329,7 +329,7 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Revenue ($)',
+                    label: 'Revenue (Rs.)',
                     data: dataValues,
                     borderColor: '#2563eb',
                     backgroundColor: 'rgba(37, 99, 235, 0.1)',
@@ -349,7 +349,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return ' Revenue: $' + context.raw.toFixed(2);
+                                return ' Revenue: Rs. ' + context.raw.toFixed(2);
                             }
                         }
                     }
@@ -361,7 +361,7 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: function(value) { return '$' + value; }
+                            callback: function(value) { return 'Rs. ' + value; }
                         },
                         grid: { color: '#f1f5f9' }
                     }

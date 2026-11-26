@@ -85,10 +85,10 @@
                         <span class="text-muted small">{{ p.supplier.name|default:"None" }}</span>
                     </td>
                     <td class="text-end font-monospace text-muted">
-                        ${{ p.cost_price|floatformat:2 }}
+                        Rs. {{ p.cost_price|floatformat:2 }}
                     </td>
                     <td class="text-end font-monospace fw-bold text-dark">
-                        ${{ p.selling_price|floatformat:2 }}
+                        Rs. {{ p.selling_price|floatformat:2 }}
                     </td>
                     <td class="text-center">
                         <span class="badge bg-success-subtle text-success border border-success-subtle">
@@ -111,7 +111,7 @@
                         {% endif %}
                     </td>
                     <td class="text-end font-monospace">
-                        ${{ p.inventory_value_retail|floatformat:2 }}
+                        Rs. {{ p.inventory_value_retail|floatformat:2 }}
                     </td>
                     <td class="text-end">
                         <div class="btn-group btn-group-sm">

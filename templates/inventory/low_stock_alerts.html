@@ -112,7 +112,7 @@
                         {{ p.min_stock_level }} {{ p.unit }}
                     </td>
                     <td class="text-end font-monospace">
-                        ${{ p.cost_price|floatformat:2 }} / unit
+                        Rs. {{ p.cost_price|floatformat:2 }} / unit
                     </td>
                     <td class="text-end">
                         <a href="{% url 'purchase_create' %}?product_id={{ p.id }}" class="btn btn-sm btn-danger fw-semibold d-inline-flex align-items-center gap-1">
@@ -186,7 +186,7 @@
                         </span>
                     </td>
                     <td class="text-end font-monospace">
-                        ${{ p.cost_price|floatformat:2 }}
+                        Rs. {{ p.cost_price|floatformat:2 }}
                     </td>
                     <td class="text-end">
                         <a href="{% url 'purchase_create' %}?product_id={{ p.id }}" class="btn btn-sm btn-outline-primary fw-semibold d-inline-flex align-items-center gap-1">

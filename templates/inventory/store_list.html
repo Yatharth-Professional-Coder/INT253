@@ -114,7 +114,7 @@
                         <span class="badge bg-light text-dark border">{{ store.staff_members.count }} Staff</span>
                     </td>
                     <td class="text-end font-monospace fw-bold text-dark fs-6">
-                        ${{ store.total_revenue|floatformat:2 }}
+                        Rs. {{ store.total_revenue|floatformat:2 }}
                         <div class="text-muted small fw-normal">{{ store.total_sales_count }} sales</div>
                     </td>
                     <td class="text-center">

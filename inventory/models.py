@@ -229,7 +229,7 @@ class Sale(models.Model):
         ordering = ['-sale_date']
 
     def __str__(self):
-        return f"Invoice #{self.invoice_number} - ${self.grand_total}"
+        return f"Invoice #{self.invoice_number} - Rs. {self.grand_total}"
 
     @property
     def total_cost(self):
