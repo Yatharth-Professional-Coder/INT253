@@ -27,11 +27,13 @@ class Command(BaseCommand):
         # Ensure clean super admin
         if not User.objects.filter(username='admin').exists():
             admin_u = User.objects.create_superuser('admin', 'admin@smartstock.local', 'admin123')
-            admin_u.first_name = "Website"
-            admin_u.last_name = "Owner"
+            admin_u.first_name = "Yatharth"
+            admin_u.last_name = ""
             admin_u.save()
         else:
             admin_u = User.objects.get(username='admin')
+            admin_u.first_name = "Yatharth"
+            admin_u.last_name = ""
             admin_u.set_password('admin123')
             admin_u.is_superuser = True
             admin_u.is_staff = True
