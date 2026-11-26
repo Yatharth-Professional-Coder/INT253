@@ -1,6 +1,17 @@
 {% extends 'inventory/base.html' %}
+{% load static %}
 
 {% block title %}{{ title }} | SmartStock Pro{% endblock %}
+
+{% block extra_head %}
+<!-- HTML5 QR & Barcode Scanner Library -->
+<script src="{% static 'js/html5-qrcode.min.js' %}"></script>
+<script>
+if (typeof Html5Qrcode === 'undefined') {
+    document.write('<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"><\/script>');
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -43,9 +54,19 @@
                         <div class="form-text small">Unique inventory code used for tracking.</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Barcode / UPC / EAN</label>
-                        {{ form.barcode }}
-                        <div class="form-text small">Used for POS barcode scanners.</div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-bold mb-0">Barcode / UPC / EAN</label>
+                            <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 fw-semibold" data-bs-toggle="modal" data-bs-target="#productCameraModal" title="Scan Barcode via Laptop Camera">
+                                <i class="bi bi-camera-fill text-primary"></i> <span class="small">Scan with Camera</span>
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            {{ form.barcode }}
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#productCameraModal" title="Scan Barcode via Laptop Camera">
+                                <i class="bi bi-camera-fill"></i>
+                            </button>
+                        </div>
+                        <div class="form-text small">Used for POS barcode scanners. Click camera to scan automatically.</div>
                     </div>
 
                     <!-- Category & Supplier with Quick Add '+' button -->
@@ -205,6 +226,34 @@
         </div>
     </div>
 </div>
+
+<!-- Quick Barcode Camera Scanner Modal -->
+<div class="modal fade" id="productCameraModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-dark text-white py-3">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-upc-scan text-primary fs-5"></i>
+                    <span>Scan Product Barcode</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 text-center">
+                <div class="position-relative d-inline-block w-100" style="max-width: 440px;">
+                    <div id="productCameraViewport" style="width: 100%; min-height: 280px; border-radius: 12px; overflow: hidden; background: #0f172a;"></div>
+                </div>
+                <div id="productCameraFeedback" class="alert alert-info py-2 px-3 small mt-3 mb-1 text-center">
+                    <i class="bi bi-camera-video me-1"></i> Starting webcam... Hold the product barcode facing your camera.
+                </div>
+            </div>
+            <div class="modal-footer bg-light py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -342,6 +391,96 @@
                 } finally {
                     saveSupplierBtn.disabled = false;
                     saveSupplierBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Save & Select Supplier';
+                }
+            });
+        }
+
+        // Web Audio Retail Scanner Beep
+        function playRetailBeep() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const audioCtx = new AudioCtx();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(1760, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.12);
+            } catch(e) {}
+        }
+
+        // Product Form Camera Barcode Scanner
+        const prodCameraModalEl = document.getElementById("productCameraModal");
+        let prodHtml5QrCode = null;
+        let isProdScanning = false;
+
+        if (prodCameraModalEl) {
+            prodCameraModalEl.addEventListener("shown.bs.modal", async function() {
+                const feedback = document.getElementById("productCameraFeedback");
+                try {
+                    if (typeof Html5Qrcode === "undefined") {
+                        if (feedback) {
+                            feedback.className = "alert alert-danger py-2 px-3 small mt-3 mb-1 text-center";
+                            feedback.textContent = "Camera scanner library failed to load. Please verify network access.";
+                        }
+                        return;
+                    }
+                    prodHtml5QrCode = new Html5Qrcode("productCameraViewport");
+                    isProdScanning = true;
+                    if (feedback) {
+                        feedback.className = "alert alert-info py-2 px-3 small mt-3 mb-1 text-center";
+                        feedback.innerHTML = '<i class="bi bi-camera-video me-1"></i> Laptop camera active. Hold barcode facing your webcam.';
+                    }
+
+                    const cameras = await Html5Qrcode.getCameras().catch(function() { return []; });
+                    const cameraConfig = cameras && cameras.length > 0 ? cameras[0].id : { facingMode: "user" };
+
+                    await prodHtml5QrCode.start(
+                        cameraConfig,
+                        {
+                            fps: 12,
+                            qrbox: { width: 300, height: 170 },
+                            aspectRatio: 1.333334
+                        },
+                        function(decodedText) {
+                            const barcodeInput = document.getElementById("id_barcode");
+                            if (barcodeInput) {
+                                barcodeInput.value = decodedText.trim();
+                                barcodeInput.classList.add("is-valid");
+                            }
+                            playRetailBeep();
+                            if (feedback) {
+                                feedback.className = "alert alert-success py-2 px-3 small mt-3 mb-1 text-center";
+                                feedback.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Captured: <strong>' + decodedText.trim() + '</strong>';
+                            }
+                            setTimeout(function() {
+                                const modalInstance = bootstrap.Modal.getInstance(prodCameraModalEl);
+                                if (modalInstance) modalInstance.hide();
+                            }, 500);
+                        },
+                        function(err) {}
+                    );
+                } catch (err) {
+                    isProdScanning = false;
+                    if (feedback) {
+                        feedback.className = "alert alert-danger py-2 px-3 small mt-3 mb-1 text-center";
+                        feedback.innerHTML = '<i class="bi bi-exclamation-octagon-fill me-1"></i> Camera access error: ' + (err.message || err);
+                    }
+                }
+            });
+
+            prodCameraModalEl.addEventListener("hidden.bs.modal", async function() {
+                if (prodHtml5QrCode && isProdScanning) {
+                    try {
+                        await prodHtml5QrCode.stop();
+                        prodHtml5QrCode.clear();
+                    } catch(e) {}
+                    isProdScanning = false;
                 }
             });
         }

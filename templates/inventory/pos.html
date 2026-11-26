@@ -1,8 +1,16 @@
 {% extends 'inventory/base.html' %}
+{% load static %}
 
 {% block title %}POS Billing Terminal | SmartStock Pro{% endblock %}
 
 {% block extra_head %}
+<!-- HTML5 QR & Barcode Scanner Library -->
+<script src="{% static 'js/html5-qrcode.min.js' %}"></script>
+<script>
+if (typeof Html5Qrcode === 'undefined') {
+    document.write('<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"><\/script>');
+}
+</script>
 <style>
     .pos-container {
         height: calc(100vh - 120px);
@@ -135,14 +143,16 @@
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                         <input type="text" id="posSearchInput" class="form-control border-start-0 ps-0" placeholder="Scan barcode or type product name / SKU (Press F2 to focus)..." autofocus autocomplete="off">
-                        <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn"><i class="bi bi-x-lg"></i></button>
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn" title="Clear Search"><i class="bi bi-x-lg"></i></button>
+                        <button class="btn btn-primary d-flex align-items-center gap-1 px-3 shadow-sm" type="button" data-bs-toggle="modal" data-bs-target="#posCameraModal" title="Scan Barcode via Laptop Camera">
+                            <i class="bi bi-camera-fill"></i> <span class="d-none d-sm-inline small fw-bold">Camera Scan</span>
+                        </button>
                     </div>
                 </div>
                 <div class="col-md-5 d-flex gap-2 justify-content-md-end">
-                    <div class="badge bg-light text-dark border d-flex align-items-center gap-1 px-3">
-                        <i class="bi bi-upc-scan text-primary"></i>
-                        <span>Barcode Ready</span>
-                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 shadow-sm px-2 py-1" data-bs-toggle="modal" data-bs-target="#posCameraModal" title="Open Laptop Camera Scanner">
+                        <i class="bi bi-upc-scan"></i> <span class="small fw-semibold">Camera Scanner</span>
+                    </button>
                     <span id="productCounter" class="badge bg-primary-subtle text-primary border d-flex align-items-center px-3">
                         Loading products...
                     </span>
@@ -316,6 +326,44 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" id="saveQuickCustomerBtn" class="btn btn-primary">Save &amp; Select</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: LAPTOP CAMERA BARCODE SCANNER -->
+<div class="modal fade" id="posCameraModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-dark text-white py-3">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+                    <i class="bi bi-upc-scan text-primary fs-5"></i>
+                    <span>Laptop Camera Barcode Scanner</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" id="closePosCameraBtn" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3 text-center">
+                <div class="position-relative d-inline-block w-100" style="max-width: 440px;">
+                    <div id="posCameraViewport" style="width: 100%; min-height: 280px; border-radius: 12px; overflow: hidden; background: #0f172a;"></div>
+                </div>
+                <div id="posCameraFeedback" class="alert alert-info py-2 px-3 small mt-3 mb-1 text-center">
+                    <i class="bi bi-camera-video me-1"></i> Starting camera... Hold the product barcode facing your webcam.
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2 px-2">
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="posScanBeepToggle" checked>
+                        <label class="form-check-label small text-muted" for="posScanBeepToggle">Sound Beep</label>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="posContinuousScanToggle">
+                        <label class="form-check-label small text-muted" for="posContinuousScanToggle">Continuous Scan</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Stop &amp; Close Camera
+                </button>
             </div>
         </div>
     </div>
@@ -875,6 +923,149 @@
             }
         }
         return cookieValue;
+    }
+
+    // ==========================================
+    // LAPTOP CAMERA BARCODE SCANNER LOGIC
+    // ==========================================
+    function playRetailBeep() {
+        const toggle = document.getElementById('posScanBeepToggle');
+        if (toggle && !toggle.checked) return;
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+            const audioCtx = new AudioContextClass();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1760, audioCtx.currentTime); // 1.76kHz crisp retail scanner pitch
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.12);
+        } catch(e) {}
+    }
+
+    let posHtml5QrCode = null;
+    let isPosScanning = false;
+    let lastScanTime = 0;
+
+    async function handleBarcodeScanned(decodedBarcode) {
+        playRetailBeep();
+        const feedback = document.getElementById('posCameraFeedback');
+        if (feedback) {
+            feedback.className = 'alert alert-success py-2 px-3 small mt-3 mb-1 text-center';
+            feedback.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Scanned: <strong>' + decodedBarcode + '</strong>';
+        }
+
+        // Search local state first
+        let matchedProduct = posState.products.find(function(p) {
+            return p.barcode === decodedBarcode || (p.sku && p.sku.toLowerCase() === decodedBarcode.toLowerCase());
+        });
+
+        // If not in currently loaded slice, search API
+        if (!matchedProduct) {
+            try {
+                const res = await fetch("{% url 'api_pos_search' %}?q=" + encodeURIComponent(decodedBarcode));
+                const data = await res.json();
+                if (data.products && data.products.length > 0) {
+                    matchedProduct = data.products.find(function(p) {
+                        return p.barcode === decodedBarcode || (p.sku && p.sku.toLowerCase() === decodedBarcode.toLowerCase());
+                    }) || data.products[0];
+                }
+            } catch(e) {}
+        }
+
+        if (matchedProduct) {
+            if (matchedProduct.current_stock > 0) {
+                addToCart(matchedProduct);
+                if (feedback) {
+                    feedback.innerHTML = '<i class="bi bi-cart-check-fill text-success me-1"></i> Added <strong>' + matchedProduct.name + '</strong> to cart!';
+                }
+            } else {
+                if (feedback) {
+                    feedback.className = 'alert alert-warning py-2 px-3 small mt-3 mb-1 text-center';
+                    feedback.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning me-1"></i> <strong>' + matchedProduct.name + '</strong> is OUT OF STOCK!';
+                }
+            }
+        } else {
+            searchInput.value = decodedBarcode;
+            posState.searchQuery = decodedBarcode;
+            await loadProducts();
+            if (feedback) {
+                feedback.className = 'alert alert-warning py-2 px-3 small mt-3 mb-1 text-center';
+                feedback.innerHTML = '<i class="bi bi-info-circle me-1"></i> Scanned: <strong>' + decodedBarcode + '</strong> (Filtered in list)';
+            }
+        }
+
+        const continuousToggle = document.getElementById('posContinuousScanToggle');
+        if (!continuousToggle || !continuousToggle.checked) {
+            setTimeout(function() {
+                const modalEl = document.getElementById('posCameraModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) modalInstance.hide();
+            }, 650);
+        }
+    }
+
+    const posCameraModalEl = document.getElementById('posCameraModal');
+    if (posCameraModalEl) {
+        posCameraModalEl.addEventListener('shown.bs.modal', async function () {
+            const feedback = document.getElementById('posCameraFeedback');
+            try {
+                if (typeof Html5Qrcode === 'undefined') {
+                    if (feedback) {
+                        feedback.className = 'alert alert-danger py-2 px-3 small mt-3 mb-1 text-center';
+                        feedback.textContent = 'Camera scanner library not available. Please verify network access.';
+                    }
+                    return;
+                }
+                posHtml5QrCode = new Html5Qrcode("posCameraViewport");
+                isPosScanning = true;
+                if (feedback) {
+                    feedback.className = 'alert alert-info py-2 px-3 small mt-3 mb-1 text-center';
+                    feedback.innerHTML = '<i class="bi bi-camera-video me-1"></i> Laptop camera active. Hold product barcode facing webcam.';
+                }
+
+                const cameras = await Html5Qrcode.getCameras().catch(function() { return []; });
+                const cameraConfig = cameras && cameras.length > 0 ? cameras[0].id : { facingMode: "user" };
+
+                await posHtml5QrCode.start(
+                    cameraConfig,
+                    {
+                        fps: 12,
+                        qrbox: { width: 300, height: 170 },
+                        aspectRatio: 1.333334
+                    },
+                    function(decodedText) {
+                        const now = Date.now();
+                        if (now - lastScanTime > 1600) {
+                            lastScanTime = now;
+                            handleBarcodeScanned(decodedText.trim());
+                        }
+                    },
+                    function(err) {}
+                );
+            } catch (err) {
+                isPosScanning = false;
+                if (feedback) {
+                    feedback.className = 'alert alert-danger py-2 px-3 small mt-3 mb-1 text-center';
+                    feedback.innerHTML = '<i class="bi bi-exclamation-octagon-fill me-1"></i> Camera access error: ' + (err.message || err);
+                }
+            }
+        });
+
+        posCameraModalEl.addEventListener('hidden.bs.modal', async function () {
+            if (posHtml5QrCode && isPosScanning) {
+                try {
+                    await posHtml5QrCode.stop();
+                    posHtml5QrCode.clear();
+                } catch(e) {}
+                isPosScanning = false;
+            }
+        });
     }
 
     // Initialize
