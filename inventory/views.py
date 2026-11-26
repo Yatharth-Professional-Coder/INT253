@@ -744,12 +744,24 @@ def reports_view(request):
     total_items_in_stock = sum(max(0, p.current_stock) for p in all_products)
 
     # Category breakdown
-    category_sales = (
+    category_sales_qs = (
         SaleItem.objects.filter(sale__status='completed', sale__sale_date__range=(start_date, end_date))
         .values('product__category__name')
         .annotate(total_revenue=Sum('total_price'), total_qty=Sum('quantity'))
         .order_by('-total_revenue')
     )
+
+    category_sales = []
+    for cat in category_sales_qs:
+        rev = cat['total_revenue'] or Decimal('0.00')
+        percent = round(float((rev / total_revenue) * Decimal('100')), 1) if total_revenue > Decimal('0.00') else 0.0
+        category_sales.append({
+            'name': cat['product__category__name'] or 'General',
+            'product__category__name': cat['product__category__name'],
+            'total_revenue': rev,
+            'total_qty': cat['total_qty'] or 0,
+            'percent': percent,
+        })
 
     # Payment Methods breakdown
     payment_breakdown = (
