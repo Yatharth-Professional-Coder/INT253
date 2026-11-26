@@ -182,7 +182,7 @@
                     </td>
                     <td class="text-center">
                         <span class="text-danger fw-bold small">
-                            -{{ p.min_stock_level|add:"-"|add:p.current_stock|default:0 }} to safe
+                            -{{ p.stock_deficit }} {{ p.unit }} to safe
                         </span>
                     </td>
                     <td class="text-end font-monospace">

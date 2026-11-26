@@ -119,9 +119,6 @@
                 border: 1px solid #e2e8f0;
             }
         }
-            box-shadow: 0 6px 12px -2px rgba(37, 99, 235, 0.4);
-            color: #ffffff !important;
-        }
 
         /* Card Styles */
         .card-custom {
@@ -244,7 +241,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container-fluid px-2 px-md-3 px-xl-4">
             <!-- Brand -->
-            <a class="navbar-brand me-2 me-lg-3 flex-shrink-0" href="{% url 'dashboard' %}">
+            <a class="navbar-brand me-2 me-lg-3 flex-shrink-0" href="{% if not user.is_authenticated %}{% url 'login' %}{% elif user.is_superuser %}{% url 'user_list' %}{% else %}{% url 'dashboard' %}{% endif %}">
                 <i class="bi bi-box-seam-fill text-primary"></i>
                 <span class="fw-bold">SmartStock <span class="badge bg-primary text-white" style="font-size: 0.65rem; vertical-align: middle;">PRO</span></span>
             </a>

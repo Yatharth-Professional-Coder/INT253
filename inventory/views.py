@@ -829,6 +829,7 @@ def user_list(request):
         'users_list': user_data,
         'total_users': users.count(),
         'active_users': users.filter(is_active=True).count(),
+        'inactive_users': users.filter(is_active=False).count(),
     }
     return render(request, 'inventory/user_list.html', context)
 
@@ -1043,6 +1044,7 @@ def store_list(request):
         'stores': stores,
         'total_stores': stores.count(),
         'active_stores': stores.filter(is_active=True).count(),
+        'inactive_stores': stores.filter(is_active=False).count(),
     }
     return render(request, 'inventory/store_list.html', context)
 

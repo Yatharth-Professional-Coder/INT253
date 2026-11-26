@@ -85,6 +85,11 @@ class Product(models.Model):
         return self.current_stock <= 0
 
     @property
+    def stock_deficit(self):
+        """Quantity needed to reach minimum threshold safety level."""
+        return max(0, self.min_stock_level - self.current_stock)
+
+    @property
     def stock_status(self):
         if self.current_stock <= 0:
             return 'out_of_stock'
