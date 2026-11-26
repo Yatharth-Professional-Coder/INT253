@@ -272,7 +272,7 @@ if (typeof Html5Qrcode === 'undefined') {
                     </button>
                 </div>
 
-                <!-- Cash Tendered & Change -->
+                <!-- Cash Tendered & Change (Visible only when Cash is selected) -->
                 <div id="cashTenderContainer" class="row g-2 align-items-center">
                     <div class="col-6">
                         <div class="input-group input-group-sm">
@@ -285,6 +285,9 @@ if (typeof Html5Qrcode === 'undefined') {
                         <div id="displayChange" class="fw-bold text-success fs-6">Rs. 0.00</div>
                     </div>
                 </div>
+
+                <!-- Non-Cash Payment Confirmation Banner (Visible when Card, UPI, or Credit is selected) -->
+                <div id="nonCashPaymentContainer" class="p-2 rounded-2 border d-none small"></div>
             </div>
 
             <!-- Action Buttons: Clear & Checkout -->
@@ -628,6 +631,7 @@ if (typeof Html5Qrcode === 'undefined') {
             displayGrandTotal.innerText = 'Rs. 0.00';
             displayChange.innerText = 'Rs. 0.00';
             amountPaidInput.value = '';
+            updatePaymentMethodUI();
             return;
         }
 
@@ -680,9 +684,10 @@ if (typeof Html5Qrcode === 'undefined') {
 
         // Update tendered & change
         if (!amountPaidInput.value || parseFloat(amountPaidInput.value) < grandTotal) {
-            amountPaidInput.value = grandTotal.toFixed(2);
+            amountPaidInput.value = grandTotal > 0 ? grandTotal.toFixed(2) : '';
         }
         updateChangeCalculation(grandTotal);
+        updatePaymentMethodUI();
     }
 
     window.updateItemQty = function(index, delta) {
@@ -712,6 +717,49 @@ if (typeof Html5Qrcode === 'undefined') {
         displayChange.innerText = 'Rs. ' + change.toFixed(2);
     }
 
+    // Toggle Payment Method UI: Hide "Rs. Tendered" when payment is NOT Cash!
+    function updatePaymentMethodUI() {
+        const cashContainer = document.getElementById('cashTenderContainer');
+        const nonCashContainer = document.getElementById('nonCashPaymentContainer');
+        const grandTotalText = displayGrandTotal.innerText.replace('Rs.', '').replace('$', '').trim();
+        const grandTotal = parseFloat(grandTotalText) || 0.0;
+
+        if (posState.paymentMethod === 'cash') {
+            // SHOW cash tendered input & change
+            if (cashContainer) cashContainer.classList.remove('d-none');
+            if (nonCashContainer) nonCashContainer.classList.add('d-none');
+            if (!amountPaidInput.value || parseFloat(amountPaidInput.value) < grandTotal) {
+                amountPaidInput.value = grandTotal > 0 ? grandTotal.toFixed(2) : '';
+            }
+            updateChangeCalculation(grandTotal);
+        } else {
+            // HIDE "Rs. Tendered" & Change for any non-cash method!
+            if (cashContainer) cashContainer.classList.add('d-none');
+            if (nonCashContainer) {
+                nonCashContainer.classList.remove('d-none');
+                if (posState.paymentMethod === 'card') {
+                    nonCashContainer.className = 'p-2 rounded-2 border border-primary-subtle bg-primary-subtle text-primary small d-flex justify-content-between align-items-center';
+                    nonCashContainer.innerHTML = `
+                        <span><i class="bi bi-credit-card-fill me-1"></i> Card Swipe / POS Terminal</span>
+                        <strong class="fs-6">Exact: Rs. ${grandTotal.toFixed(2)}</strong>
+                    `;
+                } else if (posState.paymentMethod === 'upi') {
+                    nonCashContainer.className = 'p-2 rounded-2 border border-success-subtle bg-success-subtle text-success small d-flex justify-content-between align-items-center';
+                    nonCashContainer.innerHTML = `
+                        <span><i class="bi bi-qr-code-scan me-1"></i> Scan UPI QR Code (GPay / PhonePe / Paytm)</span>
+                        <strong class="fs-6">Exact: Rs. ${grandTotal.toFixed(2)}</strong>
+                    `;
+                } else if (posState.paymentMethod === 'due') {
+                    nonCashContainer.className = 'p-2 rounded-2 border border-warning-subtle bg-warning-subtle text-dark small d-flex justify-content-between align-items-center';
+                    nonCashContainer.innerHTML = `
+                        <span><i class="bi bi-clock-history text-warning me-1"></i> Customer Credit / Khata (Due Bill)</span>
+                        <strong class="text-danger fs-6">Balance Due: Rs. ${grandTotal.toFixed(2)}</strong>
+                    `;
+                }
+            }
+        }
+    }
+
     amountPaidInput.addEventListener('input', function() {
         const grandTotalText = displayGrandTotal.innerText.replace('Rs.', '').replace('$', '').trim();
         const grandTotal = parseFloat(grandTotalText) || 0.0;
@@ -727,6 +775,7 @@ if (typeof Html5Qrcode === 'undefined') {
             document.querySelectorAll('.payment-method-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             posState.paymentMethod = this.dataset.method;
+            updatePaymentMethodUI();
         });
     });
 
@@ -828,12 +877,21 @@ if (typeof Html5Qrcode === 'undefined') {
 
         const grandTotalText = displayGrandTotal.innerText.replace('Rs.', '').replace('$', '').trim();
         const grandTotal = parseFloat(grandTotalText) || 0.0;
-        const paid = parseFloat(amountPaidInput.value) || grandTotal;
+        let paid = grandTotal;
 
-        if (posState.paymentMethod === 'cash' && paid < grandTotal) {
-            if (!confirm(`Amount tendered (Rs. ${paid.toFixed(2)}) is less than Grand Total (Rs. ${grandTotal.toFixed(2)}). Mark balance as Due/Credit?`)) {
-                return;
+        if (posState.paymentMethod === 'cash') {
+            paid = parseFloat(amountPaidInput.value);
+            if (isNaN(paid)) paid = grandTotal;
+            if (paid < grandTotal) {
+                if (!confirm(`Amount tendered (Rs. ${paid.toFixed(2)}) is less than Grand Total (Rs. ${grandTotal.toFixed(2)}). Mark balance as Due/Credit?`)) {
+                    return;
+                }
             }
+        } else if (posState.paymentMethod === 'due') {
+            paid = 0.0;
+        } else {
+            // card, upi
+            paid = grandTotal;
         }
 
         checkoutBtn.disabled = true;
@@ -918,8 +976,18 @@ if (typeof Html5Qrcode === 'undefined') {
         document.getElementById('receiptDiscount').innerText = '-Rs. ' + payload.discount_amount.toFixed(2);
         document.getElementById('receiptTax').innerText = '+Rs. ' + ((saleResult.grand_total * payload.tax_rate / 100) || 0).toFixed(2);
         document.getElementById('receiptGrandTotal').innerText = 'Rs. ' + saleResult.grand_total.toFixed(2);
-        document.getElementById('receiptTendered').innerText = 'Rs. ' + saleResult.amount_paid.toFixed(2);
-        document.getElementById('receiptChange').innerText = 'Rs. ' + saleResult.change_amount.toFixed(2);
+
+        // Show Cash Tendered & Change only for Cash sales!
+        const receiptChangeRow = document.getElementById('receiptChangeRow');
+        if (receiptChangeRow) {
+            if (payload.payment_method === 'cash') {
+                receiptChangeRow.style.display = 'flex';
+                document.getElementById('receiptTendered').innerText = 'Rs. ' + saleResult.amount_paid.toFixed(2);
+                document.getElementById('receiptChange').innerText = 'Rs. ' + saleResult.change_amount.toFixed(2);
+            } else {
+                receiptChangeRow.style.display = 'none';
+            }
+        }
 
         receiptModal.show();
     }

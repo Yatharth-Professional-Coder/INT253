@@ -57,8 +57,15 @@ def process_pos_sale(items, customer=None, customer_name="Walk-in Customer", cus
     tax_amount = round(taxable_amount * (tax_rate / Decimal('100')), 2)
     grand_total = taxable_amount + tax_amount
 
-    amount_paid = Decimal(str(amount_paid)) if amount_paid else grand_total
-    change_amount = max(Decimal('0.00'), amount_paid - grand_total)
+    if payment_method in ['card', 'upi']:
+        amount_paid = grand_total
+        change_amount = Decimal('0.00')
+    elif payment_method == 'due':
+        amount_paid = Decimal('0.00')
+        change_amount = Decimal('0.00')
+    else:
+        amount_paid = Decimal(str(amount_paid)) if amount_paid else grand_total
+        change_amount = max(Decimal('0.00'), amount_paid - grand_total)
 
     invoice_no = generate_invoice_number("INV")
 

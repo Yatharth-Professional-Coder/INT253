@@ -75,7 +75,7 @@
                 <div class="col-sm-6 text-sm-end">
                     <h6 class="text-muted text-uppercase small fw-bold mb-1">Payment Method</h6>
                     <span class="fs-6 fw-bold text-dark text-uppercase">{{ sale.get_payment_method_display }}</span>
-                    {% if sale.amount_paid %}
+                    {% if sale.payment_method == 'cash' and sale.amount_paid %}
                     <div class="text-muted small">Tendered: Rs. {{ sale.amount_paid|floatformat:2 }} | Change: Rs. {{ sale.change_amount|floatformat:2 }}</div>
                     {% endif %}
                 </div>

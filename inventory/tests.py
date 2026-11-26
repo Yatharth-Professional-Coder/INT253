@@ -114,6 +114,35 @@ class SmartInventorySystemTests(TestCase):
         self.assertEqual(movement.previous_stock, initial_stock)
         self.assertEqual(movement.new_stock, expected_stock)
 
+    def test_pos_non_cash_payment_modes(self):
+        """Test that card, upi, and credit/due sales record appropriate amount_paid and zero change."""
+        # Test Card
+        sale_card = process_pos_sale(
+            items=[{'product_id': self.prod_normal.id, 'quantity': 1, 'unit_price': self.prod_normal.selling_price}],
+            payment_method='card'
+        )
+        self.assertEqual(sale_card.payment_method, 'card')
+        self.assertEqual(sale_card.amount_paid, sale_card.grand_total)
+        self.assertEqual(sale_card.change_amount, Decimal('0.00'))
+
+        # Test UPI
+        sale_upi = process_pos_sale(
+            items=[{'product_id': self.prod_normal.id, 'quantity': 1, 'unit_price': self.prod_normal.selling_price}],
+            payment_method='upi'
+        )
+        self.assertEqual(sale_upi.payment_method, 'upi')
+        self.assertEqual(sale_upi.amount_paid, sale_upi.grand_total)
+        self.assertEqual(sale_upi.change_amount, Decimal('0.00'))
+
+        # Test Due / Credit
+        sale_due = process_pos_sale(
+            items=[{'product_id': self.prod_normal.id, 'quantity': 1, 'unit_price': self.prod_normal.selling_price}],
+            payment_method='due'
+        )
+        self.assertEqual(sale_due.payment_method, 'due')
+        self.assertEqual(sale_due.amount_paid, Decimal('0.00'))
+        self.assertEqual(sale_due.change_amount, Decimal('0.00'))
+
     def test_overselling_prevention(self):
         """Test that attempting to sell more items than available raises ValueError."""
         with self.assertRaises(ValueError):
