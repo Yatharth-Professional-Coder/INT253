@@ -215,13 +215,13 @@
                 </div>
                 <div class="row g-2 align-items-center mb-1">
                     <div class="col-6 d-flex align-items-center text-muted small">
-                        <span>Tax Rate:</span>
-                        <select id="taxRateSelect" class="form-select form-select-sm py-0 ms-1" style="width: 70px; font-size: 0.8rem;">
-                            <option value="0">0%</option>
-                            <option value="5" selected>5%</option>
-                            <option value="10">10%</option>
-                            <option value="12">12%</option>
-                            <option value="18">18%</option>
+                        <span>Tax (GST):</span>
+                        <select id="taxRateSelect" class="form-select form-select-sm py-0 ms-1" style="width: 85px; font-size: 0.8rem;">
+                            <option value="0">0% GST</option>
+                            <option value="5" selected>5% GST</option>
+                            <option value="12">12% GST</option>
+                            <option value="18">18% GST</option>
+                            <option value="28">28% GST</option>
                         </select>
                     </div>
                     <div class="col-6 text-end text-muted small">
@@ -302,15 +302,15 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label small fw-semibold">Customer Name *</label>
-                    <input type="text" id="newCustName" class="form-control" placeholder="Full Name" required>
+                    <input type="text" id="newCustName" class="form-control" placeholder="e.g. Rahul Verma" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-semibold">Phone Number</label>
-                    <input type="text" id="newCustPhone" class="form-control" placeholder="+1 (555) 000-0000">
+                    <input type="text" id="newCustPhone" class="form-control" placeholder="+91 98765 43210">
                 </div>
                 <div class="mb-3">
                     <label class="form-label small fw-semibold">Email</label>
-                    <input type="email" id="newCustEmail" class="form-control" placeholder="name@domain.com">
+                    <input type="email" id="newCustEmail" class="form-control" placeholder="rahul.verma@gmail.com">
                 </div>
             </div>
             <div class="modal-footer">
@@ -335,8 +335,8 @@
                 <!-- Thermal Receipt Layout -->
                 <div class="text-center pb-3 border-bottom border-dashed">
                     <h4 class="fw-bold mb-0">SmartStock Pro</h4>
-                    <p class="text-muted small mb-1">Official Tax Invoice / Cash Memo</p>
-                    <div class="small text-secondary">Tel: +1 (555) 123-4567 | info@smartstock.local</div>
+                    <p class="text-muted small mb-1">Tax Invoice / Cash Memo &bull; GSTIN: 07AAAAA0000A1Z5</p>
+                    <div class="small text-secondary">Tel: +91 98765 43210 | support@smartstock.in</div>
                 </div>
 
                 <div class="py-2 border-bottom border-dashed small">

@@ -16,7 +16,7 @@ class SmartInventorySystemTests(TestCase):
         # Create Category & Supplier
         self.category = Category.objects.create(name="Tech", description="Electronic gadgets")
         self.supplier = Supplier.objects.create(
-            name="Alpha Supplies", contact_name="John V.", phone="+1 555-1234", email="john@alpha.com"
+            name="Alpha Supplies", contact_name="Rahul Verma", phone="+91 98765 43210", email="rahul@alpha.in"
         )
 
         # Create Products
@@ -60,7 +60,7 @@ class SmartInventorySystemTests(TestCase):
         )
 
         self.customer = Customer.objects.create(
-            name="Alice Walker", phone="555-9876", email="alice@test.com"
+            name="Amit Kumar", phone="+91 98765 43211", email="amit@test.in"
         )
 
     def test_stock_status_properties(self):
@@ -305,9 +305,9 @@ class SmartInventorySystemTests(TestCase):
         res_add = self.client.post(reverse('store_create'), {
             'name': 'Eastside Mall Branch',
             'code': 'STR-EAST-01',
-            'manager_name': 'Robert Manager',
-            'phone': '+1 555-8888',
-            'city': 'Seattle, WA',
+            'manager_name': 'Rajesh Sharma',
+            'phone': '+91 98765 43212',
+            'city': 'Bengaluru, Karnataka',
             'is_main': False,
             'is_active': True
         })
@@ -319,9 +319,9 @@ class SmartInventorySystemTests(TestCase):
         res_edit = self.client.post(reverse('store_update', kwargs={'pk': new_store.id}), {
             'name': 'Eastside Supercenter',
             'code': 'STR-EAST-01',
-            'manager_name': 'Robert Manager',
-            'phone': '+1 555-9999',
-            'city': 'Seattle, WA',
+            'manager_name': 'Rajesh Sharma',
+            'phone': '+91 98765 43213',
+            'city': 'Bengaluru, Karnataka',
             'is_main': False,
             'is_active': True
         })

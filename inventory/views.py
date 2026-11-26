@@ -957,6 +957,7 @@ def user_create(request):
                 # Configure UserProfile access permissions
                 profile, _ = UserProfile.objects.get_or_create(user=user)
                 profile.role_title = role_title
+                profile.phone = form.cleaned_data.get('phone', '')
                 profile.assigned_store = form.cleaned_data.get('assigned_store')
                 profile.can_manage_stores = form.cleaned_data.get('can_manage_stores', False) or (role == 'store_admin') or user.is_superuser
                 profile.can_access_pos = form.cleaned_data['can_access_pos']
@@ -1034,6 +1035,7 @@ def user_update(request, pk):
 
             # Update Access Permissions in UserProfile
             profile.role_title = role_title
+            profile.phone = form.cleaned_data.get('phone', '')
             profile.assigned_store = form.cleaned_data.get('assigned_store')
             profile.can_manage_stores = form.cleaned_data.get('can_manage_stores', False) or (role == 'store_admin') or target_user.is_superuser
             profile.can_access_pos = form.cleaned_data['can_access_pos']
@@ -1058,6 +1060,7 @@ def user_update(request, pk):
         initial_data = {
             'first_name': target_user.first_name,
             'last_name': target_user.last_name,
+            'phone': profile.phone or '',
             'email': target_user.email,
             'is_active': target_user.is_active,
             'role': current_role,

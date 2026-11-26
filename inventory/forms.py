@@ -6,9 +6,9 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['name', 'sku', 'barcode', 'category', 'supplier', 'cost_price', 'selling_price', 'current_stock', 'min_stock_level', 'unit', 'description', 'is_active']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Wireless Ergonomic Mouse'}),
-            'sku': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. ELEC-MOU-001'}),
-            'barcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Scan or enter barcode'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Tata Salt Vacuum Evaporated 1kg'}),
+            'sku': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. GRO-TAT-001'}),
+            'barcode': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Scan or enter barcode (e.g. 8901030383721)'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
             'supplier': forms.Select(attrs={'class': 'form-select'}),
             'cost_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0'}),
@@ -16,7 +16,7 @@ class ProductForm(forms.ModelForm):
             'current_stock': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
             'min_stock_level': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
             'unit': forms.Select(attrs={'class': 'form-select'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Product specifications, size, notes...'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Product specifications, pack size, ingredients, notes...'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -26,12 +26,12 @@ class SupplierForm(forms.ModelForm):
         model = Supplier
         fields = ['name', 'contact_name', 'phone', 'email', 'address', 'notes']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company or Vendor Name'}),
-            'contact_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Sales Rep or Contact Person'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+1 (555) 000-0000'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'orders@supplier.com'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Warehouse/Office address'}),
-            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Terms, payment conditions, notes'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Company or Vendor Name (e.g. Apex Enterprises Pvt Ltd)'}),
+            'contact_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Sales Rep or Contact Person (e.g. Rahul Sharma)'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+91 98765 43210'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'orders@apexenterprises.in'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'e.g. Plot 45, Okhla Industrial Area Phase-III, New Delhi 110020'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Payment terms, GSTIN: 07AAAAA0000A1Z5, credit period'}),
         }
 
 
@@ -40,8 +40,8 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields = ['name', 'description']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Category Name'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Category description'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Kirana & Grocery, Electronics, Dairy & Snacks'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Category specifications or description'}),
         }
 
 
@@ -50,10 +50,10 @@ class CustomerForm(forms.ModelForm):
         model = Customer
         fields = ['name', 'phone', 'email', 'address']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Customer Full Name'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email address'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Customer address'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Customer Full Name (e.g. Amit Kumar)'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+91 98765 43210'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'customer@gmail.com'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'e.g. Flat 302, Shanti Kunj, Sector 62, Noida, UP'}),
         }
 
 
@@ -89,13 +89,13 @@ class StoreForm(forms.ModelForm):
         model = Store
         fields = ['name', 'code', 'manager_name', 'phone', 'email', 'address', 'city', 'is_main', 'is_active']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Downtown Flagship Store'}),
-            'code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. STR-01'}),
-            'manager_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Branch Manager Name'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+1 (555) 000-0000'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'store01@smartstock.local'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Street address, Suite / Unit'}),
-            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City, State'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Connaught Place Flagship Store'}),
+            'code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. STR-DEL-01'}),
+            'manager_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Branch Manager Name (e.g. Vikramaditya Singh)'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+91 98765 43210'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'delhi.cp@smartstock.in'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Shop 12, Block B, Inner Circle, Connaught Place'}),
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'New Delhi, Delhi'}),
             'is_main': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
@@ -115,15 +115,19 @@ class UserCreateForm(forms.Form):
     )
     first_name = forms.CharField(
         max_length=150, required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name (e.g. Aarav)'})
     )
     last_name = forms.CharField(
         max_length=150, required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name (e.g. Patel)'})
+    )
+    phone = forms.CharField(
+        max_length=30, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+91 98765 43210'})
     )
     email = forms.EmailField(
         required=False,
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'user@smartstock.local'})
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'employee@smartstock.in'})
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Create strong password'})
@@ -180,15 +184,19 @@ class UserEditForm(forms.Form):
 
     first_name = forms.CharField(
         max_length=150, required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name (e.g. Aarav)'})
     )
     last_name = forms.CharField(
         max_length=150, required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name (e.g. Patel)'})
+    )
+    phone = forms.CharField(
+        max_length=30, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+91 98765 43210'})
     )
     email = forms.EmailField(
         required=False,
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'user@smartstock.local'})
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'employee@smartstock.in'})
     )
     role = forms.ChoiceField(
         choices=ROLE_CHOICES,
