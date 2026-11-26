@@ -764,11 +764,27 @@ def reports_view(request):
         })
 
     # Payment Methods breakdown
-    payment_breakdown = (
+    payment_breakdown_qs = (
         sales.values('payment_method')
         .annotate(total_amt=Sum('grand_total'), count=Count('id'))
         .order_by('-total_amt')
     )
+    payment_icons = {
+        'cash': 'bi-cash',
+        'card': 'bi-credit-card',
+        'upi': 'bi-qr-code',
+        'transfer': 'bi-bank',
+        'due': 'bi-clock',
+    }
+    payment_breakdown = []
+    for p in payment_breakdown_qs:
+        pm = p['payment_method']
+        payment_breakdown.append({
+            'payment_method': pm,
+            'icon': payment_icons.get(pm, 'bi-wallet2'),
+            'total_amt': p['total_amt'],
+            'count': p['count'],
+        })
 
     context = {
         'range_type': range_type,
