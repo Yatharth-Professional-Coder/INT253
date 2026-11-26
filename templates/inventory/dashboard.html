@@ -318,11 +318,18 @@
 {% endblock %}
 
 {% block extra_js %}
+<script id="chart-dates-data" type="application/json">{{ chart_dates_json|safe }}</script>
+<script id="chart-revenue-data" type="application/json">{{ chart_revenue_json|safe }}</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('salesTrendChart').getContext('2d');
-        const labels = {{ chart_dates_json|safe }};
-        const dataValues = {{ chart_revenue_json|safe }};
+        const canvas = document.getElementById('salesTrendChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        const datesEl = document.getElementById('chart-dates-data');
+        const revenueEl = document.getElementById('chart-revenue-data');
+        const labels = datesEl ? JSON.parse(datesEl.textContent || '[]') : [];
+        const dataValues = revenueEl ? JSON.parse(revenueEl.textContent || '[]') : [];
 
         new Chart(ctx, {
             type: 'line',
@@ -349,7 +356,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return ' Revenue: Rs. ' + context.raw.toFixed(2);
+                                return ' Revenue: Rs. ' + Number(context.raw || 0).toFixed(2);
                             }
                         }
                     }

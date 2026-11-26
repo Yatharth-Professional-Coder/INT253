@@ -98,22 +98,28 @@
 {% endblock %}
 
 {% block extra_js %}
+<script id="products-catalog-data" type="application/json">
+[
+    {% for p in products %}
+    {
+        "id": {{ p.id }},
+        "name": "{{ p.name|escapejs }}",
+        "sku": "{{ p.sku|escapejs }}",
+        "cost": {{ p.cost_price }},
+        "stock": {{ p.current_stock }},
+        "unit": "{{ p.get_unit_display|escapejs }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+<script id="preselected-id-data" type="application/json">{% if preselect_product_id %}{{ preselect_product_id }}{% else %}null{% endif %}</script>
 <script>
     // Product catalog data
-    const productsData = [
-        {% for p in products %}
-        {
-            id: {{ p.id }},
-            name: "{{ p.name|escapejs }}",
-            sku: "{{ p.sku|escapejs }}",
-            cost: {{ p.cost_price }},
-            stock: {{ p.current_stock }},
-            unit: "{{ p.get_unit_display|escapejs }}"
-        }{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ];
+    const productsDataEl = document.getElementById('products-catalog-data');
+    const productsData = productsDataEl ? JSON.parse(productsDataEl.textContent || '[]') : [];
 
-    const preselectedId = {% if preselect_product_id %}{{ preselect_product_id }}{% else %}null{% endif %};
+    const preselectedEl = document.getElementById('preselected-id-data');
+    const preselectedId = preselectedEl ? JSON.parse(preselectedEl.textContent || 'null') : null;
     const poItemsBody = document.getElementById('poItemsBody');
     const grandPoTotal = document.getElementById('grandPoTotal');
 
