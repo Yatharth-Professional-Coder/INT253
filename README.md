@@ -94,24 +94,18 @@ Or manually run:
 ### 2. Access the Application
 Open your browser and navigate to:
 * **Login Page**: [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/)
-* **Multi-Store Management**: [http://127.0.0.1:8000/stores/](http://127.0.0.1:8000/stores/)
-* **Super Admin User Portal**: [http://127.0.0.1:8000/users/](http://127.0.0.1:8000/users/)
-* **Dashboard**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+* **Super Admin Portal (User & Access Control)**: [http://127.0.0.1:8000/users/](http://127.0.0.1:8000/users/)
+* **Multi-Store Management (Store Admin)**: [http://127.0.0.1:8000/stores/](http://127.0.0.1:8000/stores/)
+* **Dashboard (Staff & Managers)**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 * **POS Billing Terminal**: [http://127.0.0.1:8000/pos/](http://127.0.0.1:8000/pos/)
-* **Low-Stock Alerts**: [http://127.0.0.1:8000/low-stock/](http://127.0.0.1:8000/low-stock/)
-* **Products Inventory**: [http://127.0.0.1:8000/products/](http://127.0.0.1:8000/products/)
-* **Purchases (Stock In)**: [http://127.0.0.1:8000/purchases/](http://127.0.0.1:8000/purchases/)
-* **Sales Ledger**: [http://127.0.0.1:8000/sales/](http://127.0.0.1:8000/sales/)
-* **Profit & Inventory Reports**: [http://127.0.0.1:8000/reports/](http://127.0.0.1:8000/reports/)
 * **Django Admin**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
 
-### 3. Pre-configured Role Credentials
-| Role | Username | Password | Access Privileges |
+### 3. Website Owner Credentials
+The system initializes with a clean, production-ready database (zero demo items/sales). Use the initial Website Owner account to log in and configure your staff accounts and store branches:
+
+| Role | Username | Password | Dedicated Scope |
 | :--- | :--- | :--- | :--- |
-| **Website Owner (Super Admin)** | `admin` | `admin123` | Complete platform control: User & permission matrix, Store outlets, POS, Inventory, Reports, Django Admin |
-| **Store Admin** | `storeadmin` | `storeadmin123` | Multi-Store management: Add, edit, and configure store branches, view branch performance, products & reports |
-| **Store Manager** | `manager` | `manager123` | Branch inventory catalog, Supplier POs, Audit corrections, and Financial reports |
-| **POS Cashier** | `cashier1` | `cashier123` | POS Billing Terminal, sales checkout, and sales invoice generation |
+| **Website Owner (Super Admin)** | `admin` | `admin123` | **Strictly User & Access Management**: Add/modify users, grant granular permissions, and appoint Store Admins. |
 
 ---
 

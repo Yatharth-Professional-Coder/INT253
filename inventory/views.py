@@ -32,12 +32,14 @@ def superuser_required(view_func):
     return wrapper
 
 def store_admin_required(view_func):
-    """Decorator allowing Website Owner or Store Admin with store management privileges."""
+    """Decorator allowing Store Admin with store management privileges."""
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect('login')
-        if request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_manage_stores):
+        if request.user.is_superuser:
+            return redirect('user_list')
+        if hasattr(request.user, 'profile') and request.user.profile.can_manage_stores:
             return view_func(request, *args, **kwargs)
         messages.error(request, "Access restricted: You need Store Administrator privileges to add or modify stores.")
         return redirect('dashboard')
@@ -49,6 +51,8 @@ def store_admin_required(view_func):
 def login_view(request):
     """Clean, modern user login portal."""
     if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('user_list')
         return redirect('dashboard')
 
     if request.method == 'POST':
@@ -60,8 +64,12 @@ def login_view(request):
             if user.is_active:
                 login(request, user)
                 messages.success(request, f"Welcome back, {user.first_name or user.username}!")
-                next_url = request.GET.get('next') or request.POST.get('next') or 'dashboard'
-                return redirect(next_url)
+                next_url = request.GET.get('next') or request.POST.get('next')
+                if next_url and next_url != 'dashboard':
+                    return redirect(next_url)
+                if user.is_superuser:
+                    return redirect('user_list')
+                return redirect('dashboard')
             else:
                 messages.error(request, "This account is inactive. Please contact a Super Administrator.")
         else:
@@ -80,6 +88,9 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     """Main executive dashboard with real-time inventory and profit analytics."""
+    if request.user.is_superuser:
+        return redirect('user_list')
+
     today = timezone.now().date()
     start_of_today = timezone.make_aware(timezone.datetime.combine(today, timezone.datetime.min.time()))
     start_of_month = timezone.make_aware(timezone.datetime(today.year, today.month, 1))
@@ -166,7 +177,10 @@ def dashboard(request):
 @login_required
 def pos_view(request):
     """Fast, interactive Point of Sale billing terminal."""
-    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_access_pos)):
+    if request.user.is_superuser:
+        messages.info(request, "Website Owner accounts are dedicated exclusively to User Management and Access Control.")
+        return redirect('user_list')
+    if not (hasattr(request.user, 'profile') and request.user.profile.can_access_pos):
         messages.error(request, "Access Restricted: You do not have permission to access the POS Billing terminal. Please contact the Website Owner.")
         return redirect('dashboard')
 
@@ -295,6 +309,8 @@ def api_quick_customer(request):
 @login_required
 def product_list(request):
     """View products with filtering, search, and stock level badges."""
+    if request.user.is_superuser:
+        return redirect('user_list')
     query = request.GET.get('q', '').strip()
     category_id = request.GET.get('category')
     stock_status = request.GET.get('status')
@@ -408,6 +424,8 @@ def product_delete(request, pk):
 @login_required
 def low_stock_view(request):
     """Dedicated Low-Stock Alerts Center."""
+    if request.user.is_superuser:
+        return redirect('user_list')
     low_stock_items = Product.objects.filter(
         current_stock__gt=0, 
         current_stock__lte=F('min_stock_level'), 
@@ -432,6 +450,8 @@ def low_stock_view(request):
 @login_required
 def supplier_list(request):
     """Suppliers list with purchase count & total amount."""
+    if request.user.is_superuser:
+        return redirect('user_list')
     suppliers = Supplier.objects.annotate(
         total_pos=Count('purchases'),
         purchased_amount=Sum('purchases__total_amount')
@@ -471,6 +491,8 @@ def supplier_update(request, pk):
 @login_required
 def purchase_list(request):
     """List purchase orders."""
+    if request.user.is_superuser:
+        return redirect('user_list')
     purchases = Purchase.objects.select_related('supplier').prefetch_related('items').order_by('-purchase_date')
     return render(request, 'inventory/purchase_list.html', {'purchases': purchases})
 
@@ -546,6 +568,8 @@ def purchase_detail(request, pk):
 @login_required
 def sale_list(request):
     """Sales history list with filtering and search."""
+    if request.user.is_superuser:
+        return redirect('user_list')
     sales = Sale.objects.prefetch_related('items').order_by('-sale_date')
     
     q = request.GET.get('q', '').strip()
@@ -593,6 +617,8 @@ def sale_detail(request, pk):
 @login_required
 def stock_adjustment_list(request):
     """Stock movement audit logs and adjustment form."""
+    if request.user.is_superuser:
+        return redirect('user_list')
     movements = StockMovement.objects.select_related('product').order_by('-created_at')[:100]
     can_adjust = request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_adjust_stock)
 
@@ -633,7 +659,9 @@ def stock_adjustment_list(request):
 @login_required
 def reports_view(request):
     """Comprehensive Profit, Loss, and Inventory Valuation Reports."""
-    if not (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.can_view_reports)):
+    if request.user.is_superuser:
+        return redirect('user_list')
+    if not (hasattr(request.user, 'profile') and request.user.profile.can_view_reports):
         messages.error(request, "Access Restricted: You do not have permission to view Financial & Profit reports. Contact the Website Owner.")
         return redirect('dashboard')
 

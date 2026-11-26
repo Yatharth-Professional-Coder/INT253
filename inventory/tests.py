@@ -154,16 +154,39 @@ class SmartInventorySystemTests(TestCase):
         self.assertEqual(movement.new_stock, initial_stock + purchase_qty)
 
     def test_authentication_and_route_protection(self):
-        """Test that unauthenticated users are redirected to login."""
+        """Test that unauthenticated users are redirected to login, Super Admin sees only user and access, and staff see operational routes."""
         res = self.client.get(reverse('dashboard'))
         self.assertEqual(res.status_code, 302)
         self.assertIn('/login/', res.url)
 
-        # Log in as Super Admin
+        # 1. Log in as Super Admin: should have access to user_list, and be redirected from operational views
         login_success = self.client.login(username='testadmin', password='pass123')
         self.assertTrue(login_success)
 
-        routes = [
+        # Super admin accesses User & Access portal
+        res_users = self.client.get(reverse('user_list'))
+        self.assertEqual(res_users.status_code, 200)
+
+        # Super admin redirected from operational views to user_list
+        res_dash = self.client.get(reverse('dashboard'))
+        self.assertEqual(res_dash.status_code, 302)
+        self.assertIn('/users/', res_dash.url)
+
+        res_pos = self.client.get(reverse('pos'))
+        self.assertEqual(res_pos.status_code, 302)
+        self.assertIn('/users/', res_pos.url)
+
+        # 2. Create staff manager user with operational permissions
+        staff_user = User.objects.create_user('testmanager', 'manager@test.com', 'pass123', is_staff=True)
+        staff_user.profile.can_access_pos = True
+        staff_user.profile.can_manage_products = True
+        staff_user.profile.can_manage_suppliers = True
+        staff_user.profile.can_view_reports = True
+        staff_user.profile.can_adjust_stock = True
+        staff_user.profile.save()
+
+        self.client.login(username='testmanager', password='pass123')
+        operational_routes = [
             reverse('dashboard'),
             reverse('pos'),
             reverse('product_list'),
@@ -173,10 +196,9 @@ class SmartInventorySystemTests(TestCase):
             reverse('sale_list'),
             reverse('stock_adjustment_list'),
             reverse('reports'),
-            reverse('user_list'),
         ]
 
-        for route in routes:
+        for route in operational_routes:
             response = self.client.get(route)
             self.assertEqual(response.status_code, 200, f"Route {route} failed with status {response.status_code}")
 
